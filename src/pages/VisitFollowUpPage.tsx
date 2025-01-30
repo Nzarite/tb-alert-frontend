@@ -1,8 +1,5 @@
-
 const VisitFollowUpPage = () => {
-  return (
-    <div>VisitFollowUpPage</div>
-  )
-}
+	return <div>VisitFollowUpPage</div>;
+};
 
-export default VisitFollowUpPage
+export default VisitFollowUpPage;
