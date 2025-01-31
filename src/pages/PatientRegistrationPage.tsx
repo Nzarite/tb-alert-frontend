@@ -1,8 +1,5 @@
-
 const PatientRegistrationPage = () => {
-  return (
-    <div>PatientRegistrationPage</div>
-  )
-}
+	return <div>PatientRegistrationPage</div>;
+};
 
-export default PatientRegistrationPage
+export default PatientRegistrationPage;
