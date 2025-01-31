@@ -2,11 +2,13 @@
 	border: 0px;
 	margin: 0px;
 	padding: 0px;
+	user-select: none;
 }
 
 body {
 	height: 100vh;
 	width: 100vw;
+	background-color: var(--cfl-background-white);
 }
 
 :root {
@@ -14,4 +16,5 @@ body {
 	--cfl-green-hover: #083041;
 	--cfl-background-white: #fafafa;
 	--cfl-card-or-input-white: #fff;
+	--cfl-card-or-input-white-hover: rgba(0, 0, 0, 0.1);
 }

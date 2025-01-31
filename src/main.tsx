@@ -10,7 +10,7 @@ import ErrorPage from "./pages/ErrorPage";
 import LandingPage from "./pages/LandingPage";
 import PageLayout from "./pages/PageLayout";
 import PatientRegistrationPage from "./pages/PatientRegistrationPage";
-import VisitFollowUpPage from "./pages/VisitFollowUpPage";
+import VisitFollowUpPage from "./pages/VisitFollowUpComponent/VisitFollowUpPage";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
