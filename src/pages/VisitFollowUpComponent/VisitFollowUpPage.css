@@ -17,6 +17,10 @@
 	user-select: none;
 }
 
+.btn:disabled {
+	opacity: 0.5;
+}
+
 .remove-btn {
 	background-color: red;
 	color: white;
