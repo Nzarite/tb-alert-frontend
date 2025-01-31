@@ -12,4 +12,6 @@ body {
 :root {
 	--cfl-green: #0b455c;
 	--cfl-green-hover: #083041;
+	--cfl-background-white: #fafafa;
+	--cfl-card-or-input-white: #fff;
 }
