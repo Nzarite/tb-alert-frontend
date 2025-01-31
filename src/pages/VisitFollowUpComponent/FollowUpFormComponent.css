@@ -122,3 +122,7 @@ input[type="checkbox"] {
 .submit-btn:hover {
 	background-color: var(--cfl-green-hover);
 }
+
+.error-message {
+	color: red;
+}
