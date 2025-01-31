@@ -3,7 +3,7 @@ import "./Navbar.css";
 const Navbar = () => {
 	return (
 		<div id="navbar">
-			<div>Connect For Life</div>
+			<div>TB Alert</div>
 		</div>
 	);
 };
