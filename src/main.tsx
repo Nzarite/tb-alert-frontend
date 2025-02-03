@@ -1,3 +1,4 @@
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createRoot } from "react-dom/client";
 import {
 	createBrowserRouter,
@@ -12,6 +13,29 @@ import PageLayout from "./pages/PageLayout";
 import PatientRegistrationPage from "./pages/PatientRegistrationPage";
 import VisitFollowUpPage from "./pages/VisitFollowUpComponent/VisitFollowUpPage";
 
+const theme = createTheme({
+	palette: {
+		background: {
+			default: "#fafafa",
+		},
+		primary: {
+			main: "#0B455C",
+		},
+	},
+	components: {
+		MuiPaper: {
+			styleOverrides: {
+				root: {
+					borderRadius: 12,
+				},
+			},
+		},
+	},
+	typography: {
+		fontSize: 12
+	},
+});
+
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route element={<PageLayout />}>
@@ -23,4 +47,8 @@ const router = createBrowserRouter(
 	)
 );
 
-createRoot(document.getElementById("root")!).render(<RouterProvider router={router} />);
+createRoot(document.getElementById("root")!).render(
+	<ThemeProvider theme={theme}>
+		<RouterProvider router={router} />
+	</ThemeProvider>
+);

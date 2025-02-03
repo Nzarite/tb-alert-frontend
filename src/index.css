@@ -3,6 +3,8 @@
 	margin: 0px;
 	padding: 0px;
 	user-select: none;
+	box-sizing: border-box;
+	font-family: "Roboto";
 }
 
 body {

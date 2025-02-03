@@ -1,31 +1,63 @@
-import Box from "@mui/material/Box";
+import { Chip } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import { Pencil } from "react-bootstrap-icons";
+import { FollowUpsDataInterface } from "../../components/VisitDataTypes";
 
 interface FollowUpSidebarProps {
-	noOfFollowUps: number;
 	selectedIndex: number;
 	setIndex: (index: number) => void;
+	data: FollowUpsDataInterface[];
 }
 
-export default function FollowUpSidebar({
-	noOfFollowUps,
-	selectedIndex,
-	setIndex,
-}: FollowUpSidebarProps) {
+export default function FollowUpSidebar({ selectedIndex, setIndex, data }: FollowUpSidebarProps) {
+	const getStatusColor = (dateOfFollowUp: string, filled: boolean) => {
+		const today = Date.now();
+		const dof = Date.parse(dateOfFollowUp);
+
+		if (today < dof) return "warning";
+		return filled ? "success" : "error";
+	};
+
+	const getStatusName = (dateOfFollowUp: string, filled: boolean) => {
+		const today = Date.now();
+		const dof = Date.parse(dateOfFollowUp);
+
+		if (today < dof) return "Scheduled";
+		return filled ? "Completed" : "Missed";
+	};
+
+	const isEditable = (dateOfFollowUp: string) => {
+		const today = Date.now();
+		const dof = Date.parse(dateOfFollowUp);
+
+		return today > dof;
+	};
+
 	return (
-		<Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-			<List component="nav" aria-label="main mailbox folders">
-				{Array.from({ length: noOfFollowUps }).map((_, index) => (
-					<ListItemButton
-						key={index}
-						selected={selectedIndex === index}
-						onClick={() => setIndex(index)}>
-						<ListItemText primary={`Follow Up ${index + 1}`} />
-					</ListItemButton>
-				))}
-			</List>
-		</Box>
+		<List component="nav" aria-label="follow-up options">
+			{data.map((item, index) => (
+				<ListItemButton
+					key={index}
+					selected={selectedIndex === index}
+					onClick={() => setIndex(index)}
+					sx={{
+						backgroundColor: selectedIndex === index ? "primary" : "inherit",
+						borderRadius: 1,
+					}}
+					disabled={!isEditable(item.date)}
+					disableTouchRipple>
+					<ListItemText primary={`Follow Up ${index + 1}`} secondary={item.date} />
+					<Chip
+						label={getStatusName(item.date, item.filled)}
+						color={getStatusColor(item.date, item.filled)}
+						variant="outlined"
+						size="small"
+					/>
+					{isEditable(item.date) && <Pencil />}
+				</ListItemButton>
+			))}
+		</List>
 	);
 }
