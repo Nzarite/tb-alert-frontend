@@ -1,0 +1,134 @@
+{
+	"patient": {
+		"patientID": 3,
+		"firstname": "XYZ",
+		"lastname": "ABC"
+	},
+	"followUps": [
+		{
+			"date": "2025-01-16",
+			"filled": true,
+			"recoveryStatus": null,
+			"medications": [
+				{
+					"id": 1,
+					"nameOfMedicine": "Medicine1",
+					"missedDosage": 5,
+					"comment": "lorem ipsum"
+				},
+				{
+					"id": 1,
+					"nameOfMedicine": "Medicine2",
+					"missedDosage": 1,
+					"comment": "lorem ipsum"
+				},
+				{
+					"id": 1,
+					"nameOfMedicine": "Medicine3",
+					"missedDosage": 20,
+					"comment": "lorem ipsum"
+				}
+			]
+		},
+		{
+			"date": "2025-01-17",
+			"filled": false,
+			"recoveryStatus": null,
+			"medications": [
+				{
+					"id": 1,
+					"nameOfMedicine": "Medicine1",
+					"missedDosage": null,
+					"comment": null
+				},
+				{
+					"id": 1,
+					"nameOfMedicine": "Medicine2",
+					"missedDosage": null,
+					"comment": null
+				},
+				{
+					"id": 1,
+					"nameOfMedicine": "Medicine3",
+					"missedDosage": null,
+					"comment": null
+				}
+			]
+		},
+		{
+			"date": "2025-01-18",
+			"filled": true,
+			"recoveryStatus": "lorem ipsum2",
+			"medications": [
+				{
+					"id": 1,
+					"nameOfMedicine": "Medicine1",
+					"missedDosage": 1,
+					"comment": "lorem ipsum"
+				},
+				{
+					"id": 1,
+					"nameOfMedicine": "Medicine2",
+					"missedDosage": 2,
+					"comment": "lorem ipsum"
+				},
+				{
+					"id": 1,
+					"nameOfMedicine": "Medicine3",
+					"missedDosage": 3,
+					"comment": "lorem ipsum"
+				}
+			]
+		},
+		{
+			"date": "2025-02-19",
+			"filled": false,
+			"recoveryStatus": null,
+			"medications": [
+				{
+					"id": 2,
+					"nameOfMedicine": "Medicine1",
+					"missedDosage": null,
+					"comment": null
+				},
+				{
+					"id": 2,
+					"nameOfMedicine": "Medicine2",
+					"missedDosage": null,
+					"comment": null
+				},
+				{
+					"id": 2,
+					"nameOfMedicine": "Medicine3",
+					"missedDosage": null,
+					"comment": null
+				}
+			]
+		},
+		{
+			"date": "2025-02-20",
+			"filled": false,
+			"recoveryStatus": "lorem ipsum2",
+			"medications": [
+				{
+					"id": 3,
+					"nameOfMedicine": "Medicine1",
+					"missedDosage": null,
+					"comment": null
+				},
+				{
+					"id": 3,
+					"nameOfMedicine": "Medicine2",
+					"missedDosage": null,
+					"comment": null
+				},
+				{
+					"id": 3,
+					"nameOfMedicine": "Medicine3",
+					"missedDosage": null,
+					"comment": null
+				}
+			]
+		}
+	]
+}
