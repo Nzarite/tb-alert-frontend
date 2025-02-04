@@ -11,6 +11,7 @@ import ErrorPage from "./pages/ErrorPage";
 import LandingPage from "./pages/LandingPage";
 import PageLayout from "./pages/PageLayout";
 import PatientRegistrationPage from "./pages/PatientRegistrationPage";
+import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
 import VisitFollowUpPage from "./pages/VisitFollowUpComponent/VisitFollowUpPage";
 
 const theme = createTheme({
@@ -32,7 +33,7 @@ const theme = createTheme({
 		},
 	},
 	typography: {
-		fontSize: 12
+		fontSize: 12,
 	},
 });
 
@@ -42,6 +43,10 @@ const router = createBrowserRouter(
 			<Route path="/" element={<LandingPage />} />
 			<Route path="/registerPatient" element={<PatientRegistrationPage />} />
 			<Route path="/visit" element={<VisitFollowUpPage />} />
+			<Route
+				path="/register/state-coordinator"
+				element={<StateCoordinatorRegistrationPage />}
+			/>
 			<Route path="*" element={<ErrorPage />} />
 		</Route>
 	)
