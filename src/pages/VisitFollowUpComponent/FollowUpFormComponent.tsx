@@ -7,12 +7,12 @@ import { FollowUpsDataInterface } from "../../components/VisitDataTypes";
 
 interface FollowUpFormComponentProps {
 	index: number;
-	data: FollowUpsDataInterface;
+	data: FollowUpsDataInterface | null;
 }
 
 const schema = z.object({
 	isPatientAlive: z.boolean(),
-	description: z.string().min(10, "Description must be at least 10 characters long"),
+	recoveryStatus: z.string().min(10, "Description must be at least 10 characters long"),
 	medications: z.array(
 		z.object({
 			missedDoses: z
@@ -35,6 +35,7 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 		handleSubmit,
 		formState: { errors, isValid },
 		reset,
+		watch,
 	} = useForm<FormData>({
 		resolver: zodResolver(schema),
 		mode: "all",
@@ -45,14 +46,44 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 	};
 
 	useEffect(() => {
-		reset({
-			description: "",
-			medications: data.medications.map((med) => ({
-				missedDoses: "0",
-				comments: "",
-			})),
-		});
+		if (data) {
+			reset({
+				recoveryStatus: data.recoveryStatus ?? "",
+				medications:
+					data.medications?.map((med) => ({
+						missedDoses: med.missedDosage ?? 0,
+						comments: med.comment ?? "",
+					})) || [],
+			});
+		}
 	}, [index, data, reset]);
+
+	const MedicationRow = ({ medicine, index, errors, register }) => (
+		<div style={{ display: "flex", gap: "50px", alignItems: "flex-start" }}>
+			<Typography variant="body1" sx={{ marginTop: 2.5 }}>
+				{medicine.nameOfMedicine}:
+			</Typography>
+			<TextField
+				id={`missedDoses-${index}`}
+				label="Missed Doses"
+				placeholder="Enter no. of doses missed"
+				fullWidth
+				error={!!errors.medications?.[index]?.missedDoses}
+				helperText={errors.medications?.[index]?.missedDoses?.message || ""}
+				{...register(`medications.${index}.missedDoses`)}
+				InputLabelProps={{ shrink: watch(`medications.${index}.missedDoses`) >= 0 }}
+			/>
+			<TextField
+				id={`comments-${index}`}
+				label="Comments"
+				placeholder="Enter Comments"
+				multiline
+				fullWidth
+				{...register(`medications.${index}.comments`)}
+				InputLabelProps={{ shrink: watch(`medications.${index}.comments`).length > 0 }}
+			/>
+		</div>
+	);
 
 	return (
 		<Paper
@@ -62,75 +93,64 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 				overflow: "auto",
 				padding: 4,
 			}}>
-			{/* Heading */}
-			<Typography variant="h6" sx={{ mb: 2 }}>
-				Follow Up {index} <Typography variant="subtitle1">{data.date}</Typography>
-			</Typography>
-			<Divider variant="fullWidth" sx={{ mb: 3 }} />
+			{data ? (
+				<>
+					{/* Heading */}
+					<Typography variant="h6" sx={{ mb: 2 }}>
+						Follow Up {index} <Typography variant="subtitle1">{data.date}</Typography>
+					</Typography>
+					<Divider variant="fullWidth" sx={{ mb: 3 }} />
+					<Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
+						<Stack spacing={4}>
+							{/* Patient Condition Switch */}
+							<div style={{ display: "flex", alignItems: "center" }}>
+								<Typography variant="subtitle1">Is Patient Alive ?</Typography>
+								<Switch {...register("isPatientAlive")} />
+							</div>
 
-			<Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
-				<Stack spacing={4}>
-					{/* Patient Condition Switch */}
-					<div style={{ display: "flex", alignItems: "center" }}>
-						<Typography variant="subtitle1">Is Patient Alive ?</Typography>
-						<Switch {...register("isPatientAlive")} />
-					</div>
-
-					{/* Patient Condition Description */}
-					<TextField
-						label="Description"
-						placeholder="Enter the condition of the patient in detail"
-						multiline
-						rows={3}
-						error={!!errors.description}
-						helperText={errors.description?.message}
-						{...register("description")}
-					/>
-
-					{/* Patient Medication Data */}
-					{data.medications.map((medicine, index) => (
-						<div
-							style={{ display: "flex", gap: "50px", alignItems: "flex-start" }}
-							key={medicine.id}>
-							<Typography variant="body1" sx={{ marginTop: 2.5 }}>
-								{medicine.nameOfMedicine}:
-							</Typography>
+							{/* Patient Condition Description */}
 							<TextField
-								id={`missedDoses-${index}`}
-								label="Missed Doses"
-								placeholder="Enter no. of doses missed"
-								fullWidth
-								error={!!errors.medications?.[index]?.missedDoses}
-								helperText={errors.medications?.[index]?.missedDoses?.message}
-								{...register(`medications.${index}.missedDoses`)}
-							/>
-							<TextField
-								id={`comments-${index}`}
-								label="Comments"
-								placeholder="Enter Comments"
+								id="recoveryStatus-desc"
+								label="Recovery Status"
+								placeholder="Enter the condition of the patient in detail"
 								multiline
-								fullWidth
-								{...register(`medications.${index}.comments`)}
+								rows={3}
+								error={!!errors.recoveryStatus}
+								helperText={errors.recoveryStatus?.message}
+								{...register("recoveryStatus")}
+								InputLabelProps={{ shrink: watch("recoveryStatus").length > 0 }}
 							/>
-						</div>
-					))}
 
-					<Divider variant="fullWidth" sx={{ mb: 4 }} />
+							{data?.medications.map((medicine, index) => (
+								<MedicationRow
+									key={medicine.id}
+									medicine={medicine}
+									index={index}
+									errors={errors}
+									register={register}
+								/>
+							))}
 
-					<Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-						<Button variant="outlined" color="primary" onClick={() => reset()}>
-							Cancel
-						</Button>
-						<Button
-							type="submit"
-							variant="contained"
-							color="primary"
-							disabled={!isValid}>
-							Submit
-						</Button>
+							<Divider variant="fullWidth" sx={{ mb: 4 }} />
+
+							<Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+								<Button variant="outlined" color="primary" onClick={() => reset()}>
+									Cancel
+								</Button>
+								<Button
+									type="submit"
+									variant="contained"
+									color="primary"
+									disabled={!isValid}>
+									Submit
+								</Button>
+							</Box>
+						</Stack>
 					</Box>
-				</Stack>
-			</Box>
+				</>
+			) : (
+				<Typography>No Follow ups Found</Typography>
+			)}
 		</Paper>
 	);
 };
