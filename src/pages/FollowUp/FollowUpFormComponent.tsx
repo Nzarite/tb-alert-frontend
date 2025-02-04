@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Divider, Paper, Stack, Switch, TextField, Typography } from "@mui/material";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FollowUpsDataInterface } from "../../components/VisitDataTypes";
