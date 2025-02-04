@@ -12,6 +12,7 @@ import LandingPage from "./pages/LandingPage";
 import PageLayout from "./pages/PageLayout";
 import PatientRegistrationPage from "./pages/PatientRegistrationPage";
 import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
+import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
 import VisitFollowUpPage from "./pages/VisitFollowUpComponent/VisitFollowUpPage";
 
 const theme = createTheme({
@@ -47,6 +48,7 @@ const router = createBrowserRouter(
 				path="/register/state-coordinator"
 				element={<StateCoordinatorRegistrationPage />}
 			/>
+			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
 			<Route path="*" element={<ErrorPage />} />
 		</Route>
 	)
