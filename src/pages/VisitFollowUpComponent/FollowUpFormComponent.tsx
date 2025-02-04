@@ -80,7 +80,11 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 				multiline
 				fullWidth
 				{...register(`medications.${index}.comments`)}
-				InputLabelProps={{ shrink: watch(`medications.${index}.comments`).length > 0 }}
+				InputLabelProps={{
+					shrink:
+						watch(`medications.${index}.comments`) !== undefined &&
+						watch(`medications.${index}.comments`).length > 0,
+				}}
 			/>
 		</div>
 	);
@@ -118,7 +122,11 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 								error={!!errors.recoveryStatus}
 								helperText={errors.recoveryStatus?.message}
 								{...register("recoveryStatus")}
-								InputLabelProps={{ shrink: watch("recoveryStatus").length > 0 }}
+								InputLabelProps={{
+									shrink:
+										watch("recoveryStatus") !== undefined &&
+										watch("recoveryStatus").length > 0,
+								}}
 							/>
 
 							{data?.medications.map((medicine, index) => (
