@@ -40,11 +40,14 @@ const theme = createTheme({
 		fontSize: 12,
 	},
 });
+import CaregiverRegistrationPage from "./pages/CaregiverRegistrationPage";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route element={<PageLayout />}>
 			<Route path="/" element={<LandingPage />} />
+			<Route path="/registerPatient" element={<PatientRegistrationPage />} />
+			<Route path="/registercaregiver" element={<CaregiverRegistrationPage />} />
 			<Route path="/register/patient" element={<PatientRegistrationPage />} />
 			<Route path="/visit" element={<VisitFollowUpPage />} />
 			<Route

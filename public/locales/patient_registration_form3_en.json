@@ -1,0 +1,15 @@
+{
+    "nikshaydetailsform": {
+        "contactScreeningDone": "Contact Screening Done1",
+        "contactScreeningDate": "Date of Contact Screening",
+        "availableHhcs": "No of HHCs available",
+        "screenedHhcs": "No of HHCs screened",
+        "hhcsWithTbSymptoms": "No of HHCs found with TB Sympotoms",
+        "hhcsReferredForTbTesting": "No of HHCs found with TB Sympotoms referred for TB testing",
+        "hhcsDiagnosedTb": "No.of HHCs diagnosed TB",
+        "hhcsDiagnosedTbOnAtt": "No of HHCs diagnosed with TB initiated on ATT",
+        "hhcsUndergoneLBTI": "No of HHCs undergone for LTBI test",
+        "eligibleForTpt": "No.of eligible for TPT",
+        "hhcsInitiatedOnTpt": "No of HHCs initiated on TPT"
+    }
+}

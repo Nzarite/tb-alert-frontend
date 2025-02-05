@@ -1,13 +1,9 @@
 import { useState } from "react";
-import { Box, Container, Typography, Button, Stepper, Step, StepLabel, TextField, Grid, Paper } from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const personalInfoSchema = z.object({
-  firstName: z.string().min(1, "First Name is required"),
-  lastName: z.string().min(1, "Last Name is required"),
-});
+import { Box, Container, Typography, Button, Stepper, Step, StepLabel, Grid, Paper } from "@mui/material";
+import { useForm } from "react-hook-form";
+import PatientDetailsForm from "../components/PatientDetailsForm/PatientDetailsForm";
+import NikshayDetailsForm from "../components/NikshayDetailsForm/NikshayDetailsForm";
+import ContactScreeningDetailsForm from "../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
 
 export type PatientRegistrationData = {
   firstName: string;
@@ -25,8 +21,26 @@ export type PatientRegistrationData = {
   dateOfTreatmentInitiation: string;
   typeOfTb: string;
   dsTbDrTb: string;
-  pwtbDoneForUdst: Boolean;
-  contactScreening: Boolean;
+  nikshayId: string;
+  udstDone: boolean;
+  udstTestDate: string;
+  udstTestResult: string;
+  enrolledForDbt: boolean;
+  dbtEnrollmentDate: string;
+  nikshayMitraLinked: boolean;
+  nikshayMitraLinkDate: string;
+  nikshayMitraName: string;
+  contactScreeningDone: boolean;
+  contactScreeningDate: string;
+  availableHhcs: number;
+  screenedHhcs: number;
+  hhcsWithTbSymptoms: number;
+  hhcsReferredForTbTesting: number;
+  hhcsDiagnosedTb: number;
+  hhcsDiagnosedTbOnAtt: number;
+  hhcsUndergoneLBTI: number;
+  eligibleForTpt: number;
+  hhcsInitiatedOnTpt: number;
 };
 
 const steps = ["Patient Details", "Nikshay Details", "Contact Screening Details"];
@@ -34,12 +48,9 @@ const steps = ["Patient Details", "Nikshay Details", "Contact Screening Details"
 const PatientRegistrationPage = () => {
 
   const [activeStep, setActiveStep] = useState(0);
+  const [language, setLanguage] = useState("en");
 
-  const {control, handleSubmit, formState: { errors }, reset,} = useForm<PatientRegistrationData>({
-    resolver: zodResolver(
-      personalInfoSchema
-    ),
-  });
+  const { handleSubmit, formState: { errors }} = useForm<PatientRegistrationData>();
 
   const onSubmit = (data: PatientRegistrationData) => {
     console.log("Step Data:", data);
@@ -57,24 +68,6 @@ const PatientRegistrationPage = () => {
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
-
-  const patientDetailsFields = [
-    { name: "firstName", label: "First Name", type: "text" },
-    { name: "lastName", label: "Last Name", type: "text" },
-    { name: "districtName", label: "Name of the District", type: "text" },
-    { name: "blockName", label: "Name of the Block", type: "text" },
-    { name: "gpName", label: "Name of the GP", type: "text" },
-    { name: "villageName", label: "Name of the Village", type: "text" },
-    { name: "typeOfPwtb", label: "Type of PwTB", type: "select", options: ["Identified by Project", "Received from NTEP"] },
-    { name: "clinicalMicrobiological", label: "Clinical/Microbiological", type: "select", options: ["Clinical", "Microbiological"] },
-    { name: "nameOfPwtb", label: "Name of PwTB", type: "text" },
-    { name: "age", label: "Age", type: "number" },
-    { name: "contactNumber", label: "Contact Number", type: "text" },
-    { name: "dateOfDiagnosis", label: "Date of Diagnosis", type: "text" },
-    { name: "dateOfTreatmentInitiation", label: "Date of Treatment Initiation", type: "text" },
-    { name: "typeOfTb", label: "Type of TB(PTB/EPTB)", type: "select", options: ["PTB", "EPTB"] },
-    { name: "dsTbDrTb", label: "DS-TB/DR-TB", type: "select", options: ["DS-TB", "DR-TB"] },
-  ];
 
   return (
     <>
@@ -99,84 +92,13 @@ const PatientRegistrationPage = () => {
           <Paper sx={{ p: 3 }}>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               {activeStep === 0 && (
-                <Box>
-                  <Typography variant="h6">Patient Details</Typography>
-                  {patientDetailsFields.map(({ name, label, type, options }) => (
-                    <Controller
-                      key={name}
-                      name={name as keyof PatientRegistrationData}
-                      control={control}
-                      render={({ field }) => 
-                        type === "select" ? (
-                          <TextField
-                            {...field}
-                            select
-                            label={label}
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            error={!!errors[name as keyof PatientRegistrationData]}
-                            helperText={errors[name as keyof PatientRegistrationData]?.message}
-                            slotProps={{ select: { native: true } }}
-                          >
-                            {/* <option value=""></option> */}
-                            {options?.map((option) => (
-                              <option key={option} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </TextField>
-                        ) : (
-                          <TextField
-                            {...field}
-                            label={label}
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            type={type} 
-                            error={!!errors[name as keyof PatientRegistrationData]}
-                            helperText={errors[name as keyof PatientRegistrationData]?.message}
-                          />
-                    )}
-                    />
-                  ))}
-                </Box>
+                <PatientDetailsForm language={language}/>
               )}
               {activeStep === 1 && (
-                <Box>
-                  <Typography variant="h6">Nikshay Details</Typography>
-                  <Controller
-                    name="pwtbDoneForUdst"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label="PWTB Done for UDST"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    )}
-                  />
-                </Box>
+                <NikshayDetailsForm language={language}/>
               )}
               {activeStep === 2 && (
-                <Box>
-                  <Typography variant="h6">Contact Screening Details</Typography>
-                  <Controller
-                    name="dsTbDrTb"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label="DS-TB/DR-TB"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    )}
-                  />
-                </Box>
+                <ContactScreeningDetailsForm language={language}/>
               )}
 
               <Box mt={3} display="flex" justifyContent="space-between">

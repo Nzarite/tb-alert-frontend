@@ -1,0 +1,25 @@
+{
+    "nikshaydetailsform": {
+        "nikshayId": "Nikshay Id1",
+        "udstDone": {
+            "label": "Whether the PwTB done for UDST",
+            "options": ["Yes", "No"]
+        },
+        "udstTestDate": "UDST Test Date",
+        "udstTestResult": {
+            "label": "UDST Test Result",
+            "options": ["Rifampicin Resistant", "Rifampicin Sensitive"]
+        },
+        "enrolledForDbt": {
+            "label": "Enrolled for DBT",
+            "options": ["Yes", "No"]
+        },
+        "dbtEnrollmentDate": "DBT Enrollment Date",
+        "nikshayMitraLinked": {
+            "label":"Nikshay Mitra Linked",
+            "options":["Yes", "No"]
+        },
+        "nikshayMitraLinkDate": "Nikshay Mitra Link Date",
+        "nikshayMitraName": "Nikshay Mitra Name"
+    }
+}
