@@ -10,12 +10,14 @@ import ErrorPage from "./pages/ErrorPage";
 import LandingPage from "./pages/LandingPage";
 import PatientRegistrationPage from "./pages/PatientRegistrationPage";
 import VisitFollowUpPage from "./pages/VisitFollowUpPage";
+import CaregiverRegistrationPage from "./pages/CaregiverRegistrationPage";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<>
 			<Route path="/" element={<LandingPage />} />
 			<Route path="/registerPatient" element={<PatientRegistrationPage />} />
+			<Route path="/registercaregiver" element={<CaregiverRegistrationPage />} />
 			<Route path="/visit" element={<VisitFollowUpPage />} />
 			<Route path="/*" element={<ErrorPage />} />
 		</>
