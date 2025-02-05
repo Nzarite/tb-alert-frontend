@@ -1,19 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	Box,
-	Button,
-	Divider,
-	FormControl,
-	FormHelperText,
-	InputLabel,
-	MenuItem,
-	Paper,
-	Select,
-	Stack,
-	TextField,
-	Typography,
-} from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
+import { Box, Button, Divider, Paper, Stack, TextField, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import StateData from "../../../components/Json/states.json";
 
@@ -38,7 +25,6 @@ const TeleCommunicationRegistration = () => {
 		handleSubmit,
 		formState: { errors, isValid },
 		reset,
-		control,
 	} = useForm<FormData>({
 		resolver: zodResolver(schema),
 		mode: "all",

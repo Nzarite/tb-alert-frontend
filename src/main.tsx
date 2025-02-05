@@ -8,9 +8,9 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import ErrorPage from "./pages/ErrorPage";
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "./pages/Homepage/LandingPage";
 import PageLayout from "./pages/PageLayout";
-import PatientRegistrationPage from "./pages/PatientRegistrationPage";
+import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
 import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
 import VisitFollowUpPage from "./pages/VisitFollowUpComponent/VisitFollowUpPage";
