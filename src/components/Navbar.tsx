@@ -1,9 +1,12 @@
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useState } from "react";
 import { MdLogout } from "react-icons/md";
 import { RiAccountBoxFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = () => {
+  const [language, setLanguage] = useState("English");
   return (
     <div id="navbar">
       <div className="navbar-left">
@@ -12,6 +15,19 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="navbar-right">
+        <FormControl id="language-menu">
+          <Select
+            labelId="language-type-label"
+            label="Language"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <MenuItem value="en">English</MenuItem>
+            <MenuItem value="hin">Hindi</MenuItem>
+            <MenuItem value="tel">Telugu</MenuItem>
+          </Select>
+        </FormControl>
+
         <Link to="#" className="navbar-text">
           <RiAccountBoxFill title="Profile" size={25} />
         </Link>

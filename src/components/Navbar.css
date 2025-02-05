@@ -17,14 +17,21 @@
 
 .navbar-left{
 	margin-left: 50px;
+	align-items: center;
 }
 
 .navbar-right{
 	margin-right: 100px;
+	align-items: center;
 }
 
 .navbar-text{
 	color: white;
 	font-weight: bold;
 	text-decoration: none;
+}
+
+#language-menu{
+	background-color: white;
+	/* border-radius: 10px; */
 }
