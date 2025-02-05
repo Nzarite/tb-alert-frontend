@@ -13,7 +13,7 @@ const schema = z.object({
 	gender: z.string().nonempty("Please select a gender"),
 	email: z.string().email("Please enter a valid email"),
 	state: z.string().nonempty("Please select a state"),
-	contact: z
+	phoneNumber: z
 		.string()
 		.nonempty("Contact can't be empty")
 		.regex(/^\d+$/, "Contact must contain only numbers")
@@ -73,7 +73,7 @@ const StateCoordinatorRegistrationPage = () => {
 			disabled: false,
 		},
 		{
-			name: "contact",
+			name: "phoneNumber",
 			label: "Contact",
 			placeholder: "Enter Phone Number",
 			type: "text",
