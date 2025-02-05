@@ -1,0 +1,72 @@
+{
+	"patient": {
+		"patientId": 1,
+		"firstName": "ram",
+		"lastName": "charan",
+		"gender": "M",
+		"dateOfBirth": "1999-05-02",
+		"phone": "12323",
+		"block": "systedusram block",
+		"gp": "gg gp",
+		"village": "light village",
+		"district": "chota district",
+		"currentStatus": null
+	},
+	"followUpDetails": [
+		{
+			"medicationDetails": [
+				{
+					"medicationId": 1,
+					"medicationName": "abcd",
+					"missedDosages": 1,
+					"comments": "no water11111 "
+				}
+			],
+			"remarks": "avcd",
+			"date": "2025-02-05",
+			"followUpStatus": true
+		},
+		{
+			"medicationDetails": [],
+			"remarks": "",
+			"date": "2025-02-20",
+			"followUpStatus": true
+		},
+		{
+			"medicationDetails": [],
+			"remarks": "",
+			"date": "2025-03-07",
+			"followUpStatus": true
+		},
+		{
+			"medicationDetails": [],
+			"remarks": "",
+			"date": "2025-03-22",
+			"followUpStatus": true
+		},
+		{
+			"medicationDetails": [],
+			"remarks": "",
+			"date": "2025-04-21",
+			"followUpStatus": true
+		},
+		{
+			"medicationDetails": [],
+			"remarks": "",
+			"date": "2025-05-21",
+			"followUpStatus": true
+		},
+		{
+			"medicationDetails": [],
+			"remarks": "",
+			"date": "2025-06-20",
+			"followUpStatus": true
+		},
+		{
+			"medicationDetails": [],
+			"remarks": "",
+			"date": "2025-07-20",
+			"followUpStatus": true
+		}
+	]
+}
