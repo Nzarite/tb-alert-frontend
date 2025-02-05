@@ -7,13 +7,13 @@ import {
 	RouterProvider,
 } from "react-router-dom";
 import "./index.css";
-import ErrorPage from "./pages/ErrorPage";
+import ErrorPage from "./pages/Error/ErrorPage";
 import LandingPage from "./pages/Homepage/LandingPage";
 import PageLayout from "./pages/PageLayout";
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
 import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
-import VisitFollowUpPage from "./pages/VisitFollowUpComponent/VisitFollowUpPage";
+import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 
 const theme = createTheme({
 	palette: {
