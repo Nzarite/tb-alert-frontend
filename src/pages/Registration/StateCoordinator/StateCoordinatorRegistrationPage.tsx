@@ -1,20 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	Box,
-	Button,
-	Divider,
-	FormControl,
-	FormHelperText,
-	InputLabel,
-	MenuItem,
-	Paper,
-	Select,
-	Stack,
-	TextField,
-	Typography,
-} from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
+import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
+import FormFieldRenderer from "../../../components/FormFieldRender";
 import StateData from "../../../components/Json/states.json";
 
 const schema = z.object({
@@ -34,7 +22,6 @@ type FormData = z.infer<typeof schema>;
 
 const StateCoordinatorRegistrationPage = () => {
 	const {
-		register,
 		handleSubmit,
 		formState: { errors, isValid },
 		reset,
@@ -43,6 +30,45 @@ const StateCoordinatorRegistrationPage = () => {
 		resolver: zodResolver(schema),
 		mode: "all",
 	});
+
+	const formFields = [
+		{
+			name: "firstName",
+			label: "First Name",
+			placeholder: "Enter First Name",
+			type: "text",
+			disabled: false,
+		},
+		{
+			name: "lastName",
+			label: "Last Name",
+			placeholder: "Enter Last Name",
+			type: "text",
+			disabled: false,
+		},
+		{
+			name: "username",
+			label: "Username",
+			placeholder: "Enter Username",
+			type: "text",
+			disabled: false,
+		},
+		{
+			name: "email",
+			label: "Email",
+			placeholder: "Enter Email",
+			type: "text",
+			disabled: false,
+		},
+		{
+			name: "contact",
+			label: "Contact",
+			placeholder: "Enter Phone Number",
+			type: "text",
+			disabled: false,
+		},
+		{ name: "state", label: "State", type: "select", options: StateData, disabled: false },
+	];
 
 	const formSubmitHandler = (data: FormData) => {
 		console.log("Submitted Data: ", data);
@@ -59,84 +85,19 @@ const StateCoordinatorRegistrationPage = () => {
 				margin: "30px auto 0px auto",
 			}}>
 			<Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>
-				Register State Co-ordinator
+				Register State Coordinator
 			</Typography>
 			<Divider sx={{ marginBottom: "30px" }} />
 			<Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
 				<Stack spacing={3}>
-					<Box sx={{ display: "flex", justifyContent: "space-between", gap: "15px" }}>
-						{/* First Name */}
-						<TextField
-							label="First Name"
-							placeholder="Enter First Name"
-							error={!!errors.firstName}
-							helperText={errors.firstName?.message}
-							{...register("firstName")}
-							fullWidth
-						/>
-
-						{/* Last Name */}
-						<TextField
-							label="Last Name"
-							placeholder="Enter Last Name"
-							error={!!errors.lastName}
-							helperText={errors.lastName?.message}
-							{...register("lastName")}
-							fullWidth
-						/>
-					</Box>
-
-					{/* Username */}
-					<TextField
-						label="Username"
-						placeholder="Enter Username"
-						error={!!errors.username}
-						helperText={errors.username?.message}
-						{...register("username")}
-					/>
-
-					{/* Email */}
-					<TextField
-						label="Email"
-						placeholder="Enter Email"
-						error={!!errors.email}
-						helperText={errors.email?.message}
-						{...register("email")}
-					/>
-
-					{/* Contact */}
-					<TextField
-						label="Contact"
-						placeholder="Enter Phone Number"
-						error={!!errors.contact}
-						helperText={errors.contact?.message}
-						{...register("contact")}
-					/>
-
-					{/* State Selector */}
-					<FormControl error={!!errors.state}>
-						<InputLabel id="state-label">State</InputLabel>
-						<Controller
-							name="state"
+					{formFields.map((field) => (
+						<FormFieldRenderer
+							key={field.name}
+							field={field}
 							control={control}
-							defaultValue=""
-							render={({ field }) => (
-								<Select
-									labelId="state-label"
-									id="state-selector"
-									value={field.value}
-									onChange={field.onChange}
-									label="State">
-									{StateData.map((c) => (
-										<MenuItem key={c.value} value={c.value}>
-											{c.label}
-										</MenuItem>
-									))}
-								</Select>
-							)}
+							errors={errors}
 						/>
-						<FormHelperText>{errors.state?.message}</FormHelperText>
-					</FormControl>
+					))}
 
 					{/* Buttons */}
 					<Box sx={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
