@@ -65,6 +65,7 @@ const FormFieldRenderer = ({ field, control, errors }: FormFieldRendererProps) =
 								))}
 							</Select>
 						)}
+						disabled={disabled}
 					/>
 					<FormHelperText>{errors[name]?.message}</FormHelperText>
 				</FormControl>

@@ -4,11 +4,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
 import StateData from "../../../components/Json/states.json";
+import axiosInstance from "../../../components/axiosInstance";
 
 const schema = z.object({
 	firstName: z.string().min(1, "First name can't be empty"),
 	lastName: z.string(),
-	username: z.string().min(1, "Username can't be empty"),
+	// username: z.string().min(1, "Username can't be empty"),
+	gender: z.string().nonempty("Please select a gender"),
 	email: z.string().email("Please enter a valid email"),
 	state: z.string().nonempty("Please select a state"),
 	contact: z
@@ -54,6 +56,16 @@ const StateCoordinatorRegistrationPage = () => {
 			disabled: false,
 		},
 		{
+			name: "gender",
+			label: "Gender",
+			type: "select",
+			options: [
+				{ label: "Male", value: "M" },
+				{ label: "Female", value: "F" },
+			],
+			disabled: false,
+		},
+		{
 			name: "email",
 			label: "Email",
 			placeholder: "Enter Email",
@@ -70,8 +82,15 @@ const StateCoordinatorRegistrationPage = () => {
 		{ name: "state", label: "State", type: "select", options: StateData, disabled: false },
 	];
 
-	const formSubmitHandler = (data: FormData) => {
-		console.log("Submitted Data: ", data);
+	const formSubmitHandler = async (data: FormData) => {
+		const formData = { ...data, role: "state_head" };
+		console.log("Submitted Data: ", formData);
+		try {
+			await axiosInstance.post("/person", formData);
+			reset();
+		} catch (err: any) {
+			console.error(err);
+		}
 	};
 
 	return (
