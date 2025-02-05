@@ -1,0 +1,20 @@
+{
+    "patientdetailsform": {
+        "firstName": "First Name1",
+        "lastName": "Last Name",
+        "districtName": "Name of the District",
+        "blockName": "Name of the Block",
+        "gpName": "Name of the GP",
+        "villageName": "Name of the Village",
+        "typeOfPwtb": "Type of PwTB",
+        "clinicalMicrobiological": "Clinical/Microbiological",
+        "nameOfPwtb": "Name of PwTB",
+        "age": "Age",
+        "contactNumber": "Contact Number",
+        "dateOfDiagnosis": "Date of Diagnosis",
+        "dateOfTreatmentInitiation": "Date of Treatment Initiation",
+        "typeOfTb": "Type of TB(PTB/EPTB)",
+        "dsTbDrTb": "DS-TB/DR-TB"
+    }
+}
+  
