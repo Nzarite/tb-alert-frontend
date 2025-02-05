@@ -4,11 +4,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
 import StateData from "../../../components/Json/states.json";
+import axiosInstance from "../../../components/axiosInstance";
 
 const schema = z.object({
 	firstName: z.string().min(1, "First name can't be empty"),
 	lastName: z.string(),
-	username: z.string().min(1, "Username can't be empty"),
+	// username: z.string().min(1, "Username can't be empty"),
+	gender: z.string().nonempty("Please select a Gender"),
 	email: z.string().email("Please enter a valid email"),
 	state: z.string().nonempty("Please select a state"),
 	contact: z
@@ -30,10 +32,6 @@ const TeleCommunicationRegistration = () => {
 		resolver: zodResolver(schema),
 		mode: "all",
 	});
-
-	const formSubmitHandler = (data: FormData) => {
-		console.log("Submitted Data: ", data);
-	};
 
 	const formFields = [
 		{
@@ -58,6 +56,16 @@ const TeleCommunicationRegistration = () => {
 			disabled: false,
 		},
 		{
+			name: "gender",
+			label: "Gender",
+			type: "select",
+			options: [
+				{ label: "Male", value: "M" },
+				{ label: "Female", value: "F" },
+			],
+			disabled: false,
+		},
+		{
 			name: "email",
 			label: "Email",
 			placeholder: "Enter Email",
@@ -74,11 +82,23 @@ const TeleCommunicationRegistration = () => {
 		{
 			name: "state",
 			label: "State",
-			value: `${StateData[0].label}`,
-			type: "text",
+			value: StateData[0].value,
+			type: "select",
+			options: StateData,
 			disabled: true,
 		},
 	];
+
+	const formSubmitHandler = async (data: FormData) => {
+		const formData = { ...data, role: "telecaller" };
+		console.log("Submitted Data: ", data);
+		try {
+			await axiosInstance.post("/person", formData);
+			reset();
+		} catch (err: any) {
+			console.error(err);
+		}
+	};
 
 	return (
 		<Paper
