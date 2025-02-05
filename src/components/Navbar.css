@@ -6,6 +6,25 @@
 	display: flex;
 	justify-content: space-between;
 	position: sticky;
-	top: 0px;
 	z-index: 100;
+}
+
+.navbar-left, .navbar-right{
+	display: flex;
+	flex-direction: row;
+	gap: 30px;
+}
+
+.navbar-left{
+	margin-left: 50px;
+}
+
+.navbar-right{
+	margin-right: 100px;
+}
+
+.navbar-text{
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
 }
