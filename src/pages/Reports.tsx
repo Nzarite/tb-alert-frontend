@@ -87,9 +87,9 @@ function Reports() {
             label="Report Type"
             onChange={(e) => setReportType(e.target.value)}
           >
-            <MenuItem value="sales">Still Under Treatment</MenuItem>
-            <MenuItem value="inventory">Treated And Cured</MenuItem>
-            <MenuItem value="finance">Died During Treatment</MenuItem>
+            <MenuItem>Still Under Treatment</MenuItem>
+            <MenuItem>Treated And Cured</MenuItem>
+            <MenuItem>Died During Treatment</MenuItem>
           </Select>
         </FormControl>
         <Button
