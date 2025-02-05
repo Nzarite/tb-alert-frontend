@@ -1,14 +1,14 @@
-import { Chip } from "@mui/material";
+import { Chip, Divider, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { Pencil } from "react-bootstrap-icons";
-import { FollowUpsDataInterface } from "../../components/VisitDataTypes";
+import { VisitDataInterface } from "../../components/VisitDataTypes";
 
 interface FollowUpSidebarProps {
 	selectedIndex: number;
 	setIndex: (index: number) => void;
-	data: FollowUpsDataInterface[];
+	data: VisitDataInterface;
 }
 
 export default function FollowUpSidebar({ selectedIndex, setIndex, data }: FollowUpSidebarProps) {
@@ -37,7 +37,11 @@ export default function FollowUpSidebar({ selectedIndex, setIndex, data }: Follo
 
 	return (
 		<List component="nav" aria-label="follow-up options">
-			{data.map((item, index) => (
+			<Typography variant="h6" sx={{ marginBottom: 2 }}>
+				Patient: {data.patient.firstName} {data.patient.lastName}
+			</Typography>
+			<Divider sx={{ marginBottom: 2 }} />
+			{data.followUpDetails.map((item, index) => (
 				<ListItemButton
 					key={index}
 					selected={selectedIndex === index}
@@ -50,8 +54,8 @@ export default function FollowUpSidebar({ selectedIndex, setIndex, data }: Follo
 					disableTouchRipple>
 					<ListItemText primary={`Follow Up ${index + 1}`} secondary={item.date} />
 					<Chip
-						label={getStatusName(item.date, item.filled)}
-						color={getStatusColor(item.date, item.filled)}
+						label={getStatusName(item.date, item.followUpStatus)}
+						color={getStatusColor(item.date, item.followUpStatus)}
 						variant="outlined"
 						size="small"
 					/>
