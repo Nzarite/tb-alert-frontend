@@ -10,9 +10,9 @@ interface FollowUpFormComponentProps {
 }
 
 const schema = z.object({
-	isPatientAlive: z.boolean(),
-	recoveryStatus: z.string().min(10, "Description must be at least 10 characters long"),
-	medications: z.array(
+	currentStatus: z.string(),
+	remarks: z.string().min(1, "Description can't be null"),
+	missedMedications: z.array(
 		z.object({
 			missedDoses: z
 				.string()
@@ -21,7 +21,7 @@ const schema = z.object({
 				.transform(Number)
 				.refine((val) => val >= 0, { message: "Missed doses cannot be negative" }),
 
-			comments: z.string().optional(),
+			comment: z.string().optional(),
 		})
 	),
 });
@@ -39,11 +39,11 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 		resolver: zodResolver(schema),
 		mode: "all",
 		defaultValues: {
-			recoveryStatus: data.recoveryStatus ?? "",
-			medications:
-				data.medications?.map((med) => ({
-					missedDoses: med.missedDosage ?? 0,
-					comments: med.comment ?? "",
+			remarks: data?.remarks ?? "",
+			missedMedications:
+				data?.medicationDetails?.map((med) => ({
+					missedDoses: med.missedDosages ?? 0,
+					comment: med.comments ?? "",
 				})) || [],
 		},
 	});
@@ -51,19 +51,6 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 	const formSubmitHandler = (data: FormData) => {
 		console.log("Submitted Data: ", data);
 	};
-
-	// useEffect(() => {
-	// 	if (data) {
-	// 		reset({
-	// 			recoveryStatus: data.recoveryStatus ?? "",
-	// 			medications:
-	// 				data.medications?.map((med) => ({
-	// 					missedDoses: med.missedDosage ?? 0,
-	// 					comments: med.comment ?? "",
-	// 				})) || [],
-	// 		});
-	// 	}
-	// }, [index, data, reset]);
 
 	const MedicationRow = ({ medicine, index, errors, register }) => (
 		<div style={{ display: "flex", gap: "50px", alignItems: "flex-start" }}>
@@ -77,8 +64,8 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 				fullWidth
 				error={!!errors.medications?.[index]?.missedDoses}
 				helperText={errors.medications?.[index]?.missedDoses?.message || ""}
-				{...register(`medications.${index}.missedDoses`)}
-				InputLabelProps={{ shrink: watch(`medications.${index}.missedDoses`) >= 0 }}
+				{...register(`missedMedications.${index}.missedDoses`)}
+				InputLabelProps={{ shrink: watch(`missedMedications.${index}.missedDoses`) >= 0 }}
 			/>
 			<TextField
 				id={`comments-${index}`}
@@ -89,8 +76,8 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 				{...register(`medications.${index}.comments`)}
 				InputLabelProps={{
 					shrink:
-						watch(`medications.${index}.comments`) !== undefined &&
-						watch(`medications.${index}.comments`).length > 0,
+						watch(`missedMedications.${index}.comment`) !== undefined &&
+						watch(`missedMedications.${index}.comment`).length > 0,
 				}}
 			/>
 		</div>
@@ -103,6 +90,7 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 				height: "77vh",
 				overflow: "auto",
 				padding: 4,
+				marginTop: 1,
 			}}>
 			{data ? (
 				<>
@@ -116,7 +104,7 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 							{/* Patient Condition Switch */}
 							<div style={{ display: "flex", alignItems: "center" }}>
 								<Typography variant="subtitle1">Is Patient Alive ?</Typography>
-								<Switch {...register("isPatientAlive")} />
+								<Switch {...register("currentStatus")} />
 							</div>
 
 							{/* Patient Condition Description */}
@@ -126,17 +114,17 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 								placeholder="Enter the condition of the patient in detail"
 								multiline
 								rows={3}
-								error={!!errors.recoveryStatus}
-								helperText={errors.recoveryStatus?.message}
-								{...register("recoveryStatus")}
+								error={!!errors.remarks}
+								helperText={errors.remarks?.message}
+								{...register("remarks")}
 								InputLabelProps={{
 									shrink:
-										watch("recoveryStatus") !== undefined &&
-										watch("recoveryStatus").length > 0,
+										watch("remarks") !== undefined &&
+										watch("remarks").length > 0,
 								}}
 							/>
 
-							{data?.medications.map((medicine, index) => (
+							{data?.medicationDetails.map((medicine, index) => (
 								<MedicationRow
 									key={medicine.id}
 									medicine={medicine}
