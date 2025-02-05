@@ -1,8 +1,22 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
+import axiosInstance from "./axiosInstance";
 
 interface SearchProps {
 	changeSearch: (text: { value: string; label: string }) => void;
+}
+
+interface patientSearch {
+	patientId: number;
+	firstName: string;
+	lastName: string;
+	gender: string;
+	dateOfBirth: string;
+	phone: string;
+	block: string;
+	gp: string;
+	village: string;
+	district: string;
 }
 
 const SearchBox = ({ changeSearch }: SearchProps) => {
@@ -21,17 +35,17 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
 			return;
 		}
 		if (search === lastSearched) return; // Prevent duplicate fetches
-		// try {
-		// 	const response = await axiosInstance.get(`/employees/employee/name/${search}`);
-		// 	const data = response.data.content.map((item) => ({
-		// 		value: item.eid,
-		// 		label: `${item.firstname} ${item.lastname} (${item.eid})`,
-		// 	}));
-		// 	setOptions(data);
-		// 	setLastSearched(search);
-		// } catch (error) {
-		// 	console.error("Error fetching options:", error);
-		// }
+		try {
+			const response = await axiosInstance.get(`/patient/name/${search}`);
+			const data = response.data.map((item: patientSearch) => ({
+				value: item.patientId,
+				label: `${item.firstName} ${item.lastName}`,
+			}));
+			setOptions(data);
+			setLastSearched(search);
+		} catch (error) {
+			console.error("Error fetching options:", error);
+		}
 	};
 
 	// Debouncing the Search for optimisation
@@ -45,7 +59,7 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
 		};
 	}, [inputValue]);
 
-	// This method updates the search for all the 
+	// This method updates the search for all the
 	useEffect(() => {
 		if (selectedOption) changeSearch(selectedOption);
 	}, [selectedOption]);
