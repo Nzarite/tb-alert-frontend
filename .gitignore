@@ -1,0 +1,78 @@
+# Dependency directories
+node_modules/
+.pnp/
+.pnp.js
+package.json
+package-lock.json
+
+# Debug log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Next.js build output
+.next/
+out/
+
+# Build directories
+build/
+dist/
+
+# Cache directories
+.cache/
+.docusaurus/
+server/
+tmp/
+
+# Parcel cache
+.cache/
+.parcel-cache/
+
+# Vite cache
+.vite/
+
+# Storybook build outputs
+.out/
+.storybook/
+
+# Production
+*.prod.*
+
+# IDEs and editor-specific
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Mac system files
+Thumbs.db
+.trash
+
+# Static files
+*.mp4
+*.jpeg
+*.png
+
+# Testing
+coverage/
+*.lcov
+
+# Lint and Formatting
+.eslintcache
+.prettierignore
+
+# Logs
+*.log
+logs/
+debug.log
+yarn-error.log
+
+# AWS Amplify specific
+amplify/
