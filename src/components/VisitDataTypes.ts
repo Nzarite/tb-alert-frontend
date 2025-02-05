@@ -1,25 +1,32 @@
 export interface VisitDataInterface {
 	patient: PatientInterface;
-	followUps: FollowUpsDataInterface[];
+	followUpDetails: FollowUpsDataInterface[];
 }
 
 export interface PatientInterface {
-	id: number;
-	firstname: string;
-	lastname?: string;
+	patientId: number;
+	firstName: string;
+	lastName: string;
+	gender: string;
+	dateOfBirth: string;
+	phone: string;
+	block: string;
+	gp: string;
+	village: string;
+	district: string;
+	currentStatus: string;
 }
 
 export interface FollowUpsDataInterface {
-	id: number;
 	date: string;
-	filled: boolean;
-	recoveryStatus: string | null;
-	medications: MedicationInterface[];
+	followUpStatus: boolean;
+	remarks: string | null;
+	medicationDetails: MedicationInterface[] | [];
 }
 
 export interface MedicationInterface {
 	id: number;
-	nameOfMedicine: string;
-	missedDosage: number;
-	comment: string;
+	medicationName: string;
+	missedDosages: number;
+	comments: string;
 }
