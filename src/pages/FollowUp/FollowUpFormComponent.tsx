@@ -1,10 +1,25 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, Divider, Paper, Stack, Switch, TextField, Typography } from "@mui/material";
+import {
+	Box,
+	Button,
+	Divider,
+	Paper,
+	Stack,
+	Switch,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	TextField,
+	Typography,
+} from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { VisitDataInterface } from "../../components/VisitDataTypes";
+import { MedicationInterface, VisitDataInterface } from "../../components/VisitDataTypes";
 
-interface FollowUpFormComponentProps {
+interface Props {
 	index: number;
 	data: VisitDataInterface | null;
 }
@@ -14,21 +29,19 @@ const schema = z.object({
 	remarks: z.string().min(1, "Description can't be null"),
 	missedMedications: z.array(
 		z.object({
+			medicationName: z.string(),
 			missedDosages: z
 				.string()
 				.min(1, "Please enter a number")
 				.regex(/^\d+$/, { message: "Input must be a valid number" })
 				.transform(Number)
 				.refine((val) => val >= 0, { message: "Missed doses cannot be negative" }),
-
 			comments: z.string().optional(),
 		})
 	),
 });
 
-type FormData = z.infer<typeof schema>;
-
-const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
+const FollowUpFormComponent = ({ index, data }: Props) => {
 	const {
 		register,
 		handleSubmit,
@@ -43,6 +56,7 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 			remarks: data?.followUpDetails[index].remarks ?? "",
 			missedMedications:
 				data?.followUpDetails[index].medicationDetails?.map((med) => ({
+					medicationName: med.medicationName,
 					missedDosages: med.missedDosages ?? 0,
 					comments: med.comments ?? "",
 				})) || [],
@@ -52,45 +66,6 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 	const formSubmitHandler = (data: FormData) => {
 		console.log("Submitted Data: ", data);
 	};
-
-	const MedicationRow = ({ medicine, index, control, errors }) => (
-		<div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
-			<Typography variant="body1" sx={{ marginTop: 2.5 }}>
-				{medicine.medicationName}:
-			</Typography>
-			<Controller
-				name={`missedMedications.${index}.missedDosages`}
-				control={control}
-				defaultValue={medicine.missedDosages ?? ""}
-				render={({ field }) => (
-					<TextField
-						{...field}
-						label="Missed Doses"
-						placeholder="Enter missed doses"
-						fullWidth
-						error={!!errors.missedMedications?.[index]?.missedDosages}
-						helperText={errors.missedMedications?.[index]?.missedDosages?.message}
-					/>
-				)}
-			/>
-			<Controller
-				name={`missedMedications.${index}.comments`}
-				control={control}
-				defaultValue={medicine.comments ?? ""}
-				render={({ field }) => (
-					<TextField
-						{...field}
-						label="Comments"
-						placeholder="Enter comments"
-						multiline
-						fullWidth
-						error={!!errors.missedMedications?.[index]?.comments}
-						helperText={errors.missedMedications?.[index]?.comments?.message}
-					/>
-				)}
-			/>
-		</div>
-	);
 
 	return (
 		<Paper
@@ -103,7 +78,6 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 			}}>
 			{data ? (
 				<>
-					{/* Heading */}
 					<Typography variant="h6" sx={{ mb: 2 }}>
 						Follow Up {index + 1}
 						<Typography variant="subtitle1">
@@ -136,17 +110,106 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 								}}
 							/>
 
-							{data?.followUpDetails[index].medicationDetails.map(
-								(medicine, index) => (
-									<MedicationRow
-										key={medicine.medicationId}
-										medicine={medicine}
-										index={index}
-										errors={errors}
-										control={control}
-									/>
-								)
-							)}
+							{/* Medications Table */}
+							<TableContainer>
+								<Table>
+									<TableHead>
+										<TableRow>
+											<TableCell>Medication Name</TableCell>
+											<TableCell>Missed Doses</TableCell>
+											<TableCell>Comments</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{data?.followUpDetails[index].medicationDetails.length >
+										0 ? (
+											data.followUpDetails[index].medicationDetails.map(
+												(
+													medicine: MedicationInterface,
+													medIndex: number
+												) => (
+													<TableRow key={medicine.medicationId}>
+														<TableCell>
+															<Typography>
+																{medicine.medicationName}
+															</Typography>
+														</TableCell>
+														<TableCell>
+															<Controller
+																name={`missedMedications.${medIndex}.missedDosages`}
+																control={control}
+																defaultValue={
+																	medicine.missedDosages ?? ""
+																}
+																render={({ field }) => (
+																	<TextField
+																		{...field}
+																		type="number"
+																		variant="standard"
+																		fullWidth
+																		error={
+																			!!errors
+																				.missedMedications?.[
+																				medIndex
+																			]?.missedDosages
+																		}
+																		helperText={
+																			errors
+																				.missedMedications?.[
+																				medIndex
+																			]?.missedDosages
+																				?.message
+																		}
+																	/>
+																)}
+															/>
+														</TableCell>
+														<TableCell>
+															<Controller
+																name={`missedMedications.${medIndex}.comments`}
+																control={control}
+																defaultValue={
+																	medicine.comments ?? ""
+																}
+																render={({ field }) => (
+																	<TextField
+																		{...field}
+																		variant="standard"
+																		fullWidth
+																		multiline
+																		error={
+																			!!errors
+																				.missedMedications?.[
+																				medIndex
+																			]?.comments
+																		}
+																		helperText={
+																			errors
+																				.missedMedications?.[
+																				medIndex
+																			]?.comments?.message
+																		}
+																	/>
+																)}
+															/>
+														</TableCell>
+													</TableRow>
+												)
+											)
+										) : (
+											<TableRow>
+												<TableCell colSpan={3} align="center">
+													<Typography
+														variant="body2"
+														color="textSecondary">
+														No Medications Found
+													</Typography>
+												</TableCell>
+											</TableRow>
+										)}
+									</TableBody>
+								</Table>
+							</TableContainer>
 
 							<Divider variant="fullWidth" sx={{ mb: 4 }} />
 
@@ -166,7 +229,7 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 					</Box>
 				</>
 			) : (
-				<Typography>No Follow ups Found</Typography>
+				<Typography>No Follow-ups Found</Typography>
 			)}
 		</Paper>
 	);
