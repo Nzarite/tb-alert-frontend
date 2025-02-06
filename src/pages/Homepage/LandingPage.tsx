@@ -9,7 +9,7 @@ const LandingPage = () => {
         <p className="header-p">Logged in as admin</p>
       </div>
       <div className="module-container">
-        <Link to="/registerPatient" className="module-item">
+        <Link to="/register/patient" className="module-item">
           <div>Register Patient</div>
         </Link>
 
