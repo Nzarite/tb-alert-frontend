@@ -25,7 +25,7 @@ export interface FollowUpsDataInterface {
 }
 
 export interface MedicationInterface {
-	id: number;
+	medicationId: number;
 	medicationName: string;
 	missedDosages: number;
 	comments: string;

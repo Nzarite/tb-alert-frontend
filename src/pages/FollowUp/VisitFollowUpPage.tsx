@@ -1,13 +1,14 @@
 import { Box, Container, Grid, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
+import VisitData from "../../components/Json/visit.json";
 import SearchBox from "../../components/SearchBox";
 import { VisitDataInterface } from "../../components/VisitDataTypes";
 import FollowUpFormComponent from "./FollowUpFormComponent";
 import FollowUpSidebar from "./FollowUpSidebar";
 
 const VisitFollowUpPage = () => {
-	const [data, setData] = useState<VisitDataInterface | null>(null);
+	const [data, setData] = useState<VisitDataInterface | null>(VisitData);
 	const [search, setSearch] = useState<string | null>(null);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -20,32 +21,33 @@ const VisitFollowUpPage = () => {
 			const res = await axiosInstance.get(`/followup/${search}`);
 			setData(res.data);
 			console.log(data);
-
-			// Showing the current(to be filled or last filled) followup initially
-			setSelectedIndex(() => {
-				const today = Date.now();
-
-				if (!data?.followUpDetails?.length) return 0;
-				let index = 0;
-				let fud = Date.parse(data.followUpDetails[0].date);
-
-				for (let i = 0; i < data?.followUpDetails.length; i++) {
-					const followUpDate = Date.parse(data.followUpDetails[i].date);
-					if (followUpDate < today && followUpDate > fud) {
-						fud = followUpDate;
-						index = i;
-					}
-				}
-				return index;
-			});
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
+	const findFollowUpIndex = (data: VisitDataInterface) => {
+		const today = Date.now();
+		if (!data?.followUpDetails?.length) return 0;
+
+		return data.followUpDetails.reduce((bestIndex, followUp, i) => {
+			const followUpDate = Date.parse(followUp.date);
+			return followUpDate < today &&
+				followUpDate > Date.parse(data.followUpDetails[bestIndex].date)
+				? i
+				: bestIndex;
+		}, 0);
+	};
+
+	useEffect(() => {
+		if (data) {
+			setSelectedIndex(findFollowUpIndex(data));
+		}
+	}, [data]);
+
 	useEffect(() => {
 		if (search) getPatientData(search);
-	}, [search]);
+	}, [search, setData]);
 
 	return (
 		<Box
@@ -81,10 +83,7 @@ const VisitFollowUpPage = () => {
 						{/* Search Bar */}
 						<SearchBox changeSearch={(input) => setSearch(input.value)} />
 
-						<FollowUpFormComponent
-							index={selectedIndex + 1}
-							data={data && data.followUpDetails[selectedIndex]}
-						/>
+						<FollowUpFormComponent index={selectedIndex} data={data} />
 					</Grid>
 				</Grid>
 			</Container>

@@ -1,12 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Divider, Paper, Stack, Switch, TextField, Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import { FollowUpsDataInterface } from "../../components/VisitDataTypes";
+import { VisitDataInterface } from "../../components/VisitDataTypes";
 
 interface FollowUpFormComponentProps {
 	index: number;
-	data: FollowUpsDataInterface | null;
+	data: VisitDataInterface | null;
 }
 
 const schema = z.object({
@@ -14,14 +14,14 @@ const schema = z.object({
 	remarks: z.string().min(1, "Description can't be null"),
 	missedMedications: z.array(
 		z.object({
-			missedDoses: z
+			missedDosages: z
 				.string()
 				.min(1, "Please enter a number")
 				.regex(/^\d+$/, { message: "Input must be a valid number" })
 				.transform(Number)
 				.refine((val) => val >= 0, { message: "Missed doses cannot be negative" }),
 
-			comment: z.string().optional(),
+			comments: z.string().optional(),
 		})
 	),
 });
@@ -35,15 +35,16 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 		formState: { errors, isValid },
 		reset,
 		watch,
+		control,
 	} = useForm<FormData>({
 		resolver: zodResolver(schema),
 		mode: "all",
 		defaultValues: {
-			remarks: data?.remarks ?? "",
+			remarks: data?.followUpDetails[index].remarks ?? "",
 			missedMedications:
-				data?.medicationDetails?.map((med) => ({
-					missedDoses: med.missedDosages ?? 0,
-					comment: med.comments ?? "",
+				data?.followUpDetails[index].medicationDetails?.map((med) => ({
+					missedDosages: med.missedDosages ?? 0,
+					comments: med.comments ?? "",
 				})) || [],
 		},
 	});
@@ -52,33 +53,41 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 		console.log("Submitted Data: ", data);
 	};
 
-	const MedicationRow = ({ medicine, index, errors, register }) => (
-		<div style={{ display: "flex", gap: "50px", alignItems: "flex-start" }}>
+	const MedicationRow = ({ medicine, index, control, errors }) => (
+		<div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
 			<Typography variant="body1" sx={{ marginTop: 2.5 }}>
-				{medicine.nameOfMedicine}:
+				{medicine.medicationName}:
 			</Typography>
-			<TextField
-				id={`missedDoses-${index}`}
-				label="Missed Doses"
-				placeholder="Enter no. of doses missed"
-				fullWidth
-				error={!!errors.medications?.[index]?.missedDoses}
-				helperText={errors.medications?.[index]?.missedDoses?.message || ""}
-				{...register(`missedMedications.${index}.missedDoses`)}
-				InputLabelProps={{ shrink: watch(`missedMedications.${index}.missedDoses`) >= 0 }}
+			<Controller
+				name={`missedMedications.${index}.missedDosages`}
+				control={control}
+				defaultValue={medicine.missedDosages ?? ""}
+				render={({ field }) => (
+					<TextField
+						{...field}
+						label="Missed Doses"
+						placeholder="Enter missed doses"
+						fullWidth
+						error={!!errors.missedMedications?.[index]?.missedDosages}
+						helperText={errors.missedMedications?.[index]?.missedDosages?.message}
+					/>
+				)}
 			/>
-			<TextField
-				id={`comments-${index}`}
-				label="Comments"
-				placeholder="Enter Comments"
-				multiline
-				fullWidth
-				{...register(`medications.${index}.comments`)}
-				InputLabelProps={{
-					shrink:
-						watch(`missedMedications.${index}.comment`) !== undefined &&
-						watch(`missedMedications.${index}.comment`).length > 0,
-				}}
+			<Controller
+				name={`missedMedications.${index}.comments`}
+				control={control}
+				defaultValue={medicine.comments ?? ""}
+				render={({ field }) => (
+					<TextField
+						{...field}
+						label="Comments"
+						placeholder="Enter comments"
+						multiline
+						fullWidth
+						error={!!errors.missedMedications?.[index]?.comments}
+						helperText={errors.missedMedications?.[index]?.comments?.message}
+					/>
+				)}
 			/>
 		</div>
 	);
@@ -96,7 +105,10 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 				<>
 					{/* Heading */}
 					<Typography variant="h6" sx={{ mb: 2 }}>
-						Follow Up {index} <Typography variant="subtitle1">{data.date}</Typography>
+						Follow Up {index + 1}
+						<Typography variant="subtitle1">
+							{data.followUpDetails[index].date}
+						</Typography>
 					</Typography>
 					<Divider variant="fullWidth" sx={{ mb: 3 }} />
 					<Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
@@ -124,15 +136,17 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 								}}
 							/>
 
-							{data?.medicationDetails.map((medicine, index) => (
-								<MedicationRow
-									key={medicine.id}
-									medicine={medicine}
-									index={index}
-									errors={errors}
-									register={register}
-								/>
-							))}
+							{data?.followUpDetails[index].medicationDetails.map(
+								(medicine, index) => (
+									<MedicationRow
+										key={medicine.medicationId}
+										medicine={medicine}
+										index={index}
+										errors={errors}
+										control={control}
+									/>
+								)
+							)}
 
 							<Divider variant="fullWidth" sx={{ mb: 4 }} />
 
