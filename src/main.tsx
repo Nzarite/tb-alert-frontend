@@ -1,10 +1,10 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createRoot } from "react-dom/client";
 import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    Route,
-    RouterProvider,
+	createBrowserRouter,
+	createRoutesFromElements,
+	Route,
+	RouterProvider,
 } from "react-router-dom";
 import "./index.css";
 import ErrorPage from "./pages/Error/ErrorPage";
@@ -44,7 +44,7 @@ const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route element={<PageLayout />}>
 			<Route path="/" element={<LandingPage />} />
-			<Route path="/registerPatient" element={<PatientRegistrationPage />} />
+			<Route path="/register/patient" element={<PatientRegistrationPage />} />
 			<Route path="/visit" element={<VisitFollowUpPage />} />
 			<Route
 				path="/register/state-coordinator"
