@@ -17,7 +17,6 @@ import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordina
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 
-
 const theme = createTheme({
     palette: {
         background: {
@@ -40,6 +39,7 @@ const theme = createTheme({
         fontSize: 12,
     },
 });
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<PageLayout />}>
@@ -54,7 +54,9 @@ const router = createBrowserRouter(
 			<Route path="/reports" element={<Reports />} />
       <Route path="*" element={<ErrorPage />} />
       <Route path="settings" element={<Settings />} />
-    </Route>
+            <Route path="/reports" element={<Reports />} />
+            <Route path="settings" element={<Settings />} />
+        </Route>
   )
 );
 
