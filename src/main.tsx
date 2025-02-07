@@ -16,6 +16,10 @@ import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordina
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
+import FollowUps from "./pages/Settings/FollowUps";
+import ModifyStates from "./pages/Settings/ModifyStates";
+import SMSReminders from "./pages/Settings/SMSReminders";
+import SMSTemplates from "./pages/Settings/SMSTemplates";
 
 const theme = createTheme({
 	palette: {
@@ -53,7 +57,13 @@ const router = createBrowserRouter(
 			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
 			<Route path="/reports" element={<Reports />} />
 			<Route path="*" element={<ErrorPage />} />
-			<Route path="settings" element={<Settings />} />
+			<Route path="/settings" >
+			<Route index element={<Settings />} />
+			<Route path="smsReminders" element={<SMSReminders />} />
+			<Route path="smsTemplates" element={<SMSTemplates />} />
+			<Route path="followUps" element={<FollowUps />} />
+			<Route path="modifyStates" element={<ModifyStates />} />
+		</Route>
 			<Route path="/reports" element={<Reports />} />
 		</Route>
 	)
