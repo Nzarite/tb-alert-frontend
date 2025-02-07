@@ -46,8 +46,7 @@ const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route element={<PageLayout />}>
 			<Route path="/" element={<LandingPage />} />
-			<Route path="/registerPatient" element={<PatientRegistrationPage />} />
-			<Route path="/registercaregiver" element={<CaregiverRegistrationPage />} />
+			<Route path="/register/caregiver" element={<CaregiverRegistrationPage />} />
 			<Route path="/register/patient" element={<PatientRegistrationPage />} />
 			<Route path="/visit" element={<VisitFollowUpPage />} />
 			<Route
