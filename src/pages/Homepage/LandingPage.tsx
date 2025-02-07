@@ -13,7 +13,7 @@ const LandingPage = () => {
 					<div>Register Patient</div>
 				</Link>
 
-				<Link to="#" className="module-item">
+				<Link to="/register/caregiver" className="module-item">
 					<div>Register Caregiver</div>
 				</Link>
 

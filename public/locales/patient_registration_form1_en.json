@@ -1,0 +1,44 @@
+{
+    "patientdetailsform": {
+        "firstNameLabel": "First Name1",
+        "lastNameLabel": "Last Name",
+        "districtNameLabel": "Name of the District",
+        "blockNameLabel": "Name of the Block",
+        "gpNameLabel": "Name of the GP",
+        "villageNameLabel": "Name of the Village",
+        "typeOfPwtbLabel": {
+            "label": "Type of PwTB",
+            "options": [
+                { "label": "Identified by Project1", "value": "Identified by Project" },
+                { "label": "Received from NTEP", "value": "Received from NTEP" }
+            ]
+        },
+        "clinicalMicrobiologicalLabel": {
+            "label": "Clinical/Microbiological",
+            "options": [
+                { "label": "Clinical1", "value": "Clinical" },
+                { "label": "Microbiological", "value": "Microbiological" }
+            ]
+        },
+        "nameOfPwtbLabel": "Name of PwTB",
+        "ageLabel": "Age",
+        "contactNumberLabel": "Contact Number",
+        "dateOfDiagnosisLabel": "Date of Diagnosis",
+        "dateOfTreatmentInitiationLabel": "Date of Treatment Initiation",
+        "typeOfTbLabel": {
+            "label": "Type of TB(PTB/EPTB)",
+            "options": [
+                { "label": "PTB", "value": "PTB" },
+                { "label": "EPTB1", "value": "EPTB" }
+            ]
+        },
+        "dsTbDrTbLabel": {
+            "label": "DS-TB/DR-TB",
+            "options": [
+                { "label": "DS-TB", "value": "DS-TB" },
+                { "label": "DR-TB1", "value": "DR-TB" }
+            ]
+        }
+    }
+}
+  
