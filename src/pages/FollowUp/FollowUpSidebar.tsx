@@ -2,7 +2,7 @@ import { Chip, Divider, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { VisitDataInterface } from "../../components/VisitDataTypes";
+import { VisitDataInterface } from "../../components/datatypes/DataTypes";
 import FollowUpStatus from "../../components/Json/FollowUpStatus.json";
 
 interface FollowUpSidebarProps {

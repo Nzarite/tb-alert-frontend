@@ -20,7 +20,7 @@ import {
 import { useState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import { MedicationInterface, VisitDataInterface } from "../../components/VisitDataTypes";
+import { MedicationInterface, VisitDataInterface } from "../../components/datatypes/DataTypes";
 import { RiPencilFill } from "react-icons/ri";
 
 interface Props {
