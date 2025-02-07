@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
 import { useState } from "react";
 import { MdLogout } from "react-icons/md";
 import { RiAccountBoxFill } from "react-icons/ri";
@@ -21,10 +21,11 @@ const Navbar = () => {
             label="Language"
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
+            input={<OutlinedInput sx={{height: "30px"}} /> }
           >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="hin">Hindi</MenuItem>
-            <MenuItem value="tel">Telugu</MenuItem>
+            <MenuItem value="English">English</MenuItem>
+            <MenuItem value="Hindi">Hindi</MenuItem>
+            <MenuItem value="Telugu">Telugu</MenuItem>
           </Select>
         </FormControl>
 

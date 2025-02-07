@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
 
 const Settings = () => {
 
@@ -22,10 +21,7 @@ const Settings = () => {
       gap: 1
     }}
     >
-      <Link to="smsReminders">SMS Reminders</Link>
-      <Link to="smsTemplates">SMS Templates</Link>
-      <Link to="followUps">Follow Ups</Link>
-      <Link to="modifyStates">Add/Remove States</Link>
+      
       
 
     </Box>
