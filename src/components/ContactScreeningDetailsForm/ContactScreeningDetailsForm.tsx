@@ -4,30 +4,90 @@ import { useForm, Controller, useWatch } from "react-hook-form";
 import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { PatientRegistrationData } from "../../pages/PatientRegistrationPage";
+
+export type ContactScreeningData = {
+    contactScreeningDone: boolean;
+    contactScreeningDate: string;
+    availableHhcs: number;
+    screenedHhcs: number;
+    hhcsWithTbSymptoms: number;
+    hhcsReferredForTbTesting: number;
+    hhcsDiagnosedTb: number;
+    hhcsDiagnosedTbOnAtt: number;
+    hhcsUndergoneLBTI: number;
+    eligibleForTpt: number;
+    hhcsInitiatedOnTpt: number;
+}
 
 const contactScreeningDetailsSchema = z.object({
-    
+    ontactScreeningDone: z.boolean(),
+    contactScreeningDate: z.string().optional(),
+    availableHhcs: z.number().optional(),
+    screenedHhcs: z.number().optional(),
+    hhcsWithTbSymptoms: z.number().optional(),
+    hhcsReferredForTbTesting: z.number().optional(),
+    hhcsDiagnosedTb: z.number().optional(),
+    hhcsDiagnosedTbOnAtt: z.number().optional(),
+    hhcsUndergoneLBTI: z.number().optional(),
+    eligibleForTpt: z.number().optional(),
+    hhcsInitiatedOnTpt: z.number().optional(),
 });
 
-const ContactScreeningDetailsForm = ( {language}:any ) => {
+const ContactScreeningDetailsForm = ( {language, data, onSave, onSubmit, onBack}:any ) => {
 
-    const [labels, setLabels] = useState<{ [key: string]: string } | null>(null);
+    interface LabelOption {
+        label: string;
+        options?: { label: string; value: boolean }[];
+    }
+    
+    interface ContactScreeningDetailsFormLabelsData {
+        contactScreeningDoneLabel: LabelOption;
+        contactScreeningDateLabel: string;
+        availableHhcsLabel: string;
+        screenedHhcsLabel: string;
+        hhcsWithTbSymptomsLabel: string;
+        hhcsReferredForTbTestingLabel: string;
+        hhcsDiagnosedTbLabel: string;
+        hhcsDiagnosedTbOnAttLabel: string;
+        hhcsUndergoneLBTILabel: string;
+        eligibleForTptLabel: string;
+        hhcsInitiatedOnTptLabel: string;
+    }    
+
+    const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
+        contactScreeningDoneLabel: { label: "", options: [] },
+        contactScreeningDateLabel: "",
+        availableHhcsLabel: "",
+        screenedHhcsLabel: "",
+        hhcsWithTbSymptomsLabel: "",
+        hhcsReferredForTbTestingLabel: "",
+        hhcsDiagnosedTbLabel: "",
+        hhcsDiagnosedTbOnAttLabel: "",
+        hhcsUndergoneLBTILabel: "",
+        eligibleForTptLabel: "",
+        hhcsInitiatedOnTptLabel: ""
+      });
 
     useEffect(() => {
-        fetch(`/locales/patient_registration_form3_en.json`)
+        fetch(`/locales/patient_registration_form3_${language}.json`)
           .then((response) => response.json())
           .then((data) => setLabels(data.nikshaydetailsform))
           .catch((error) => console.error("Error loading language file:", error));
     }, [language]);
 
-    const {control, handleSubmit, formState: { errors }, setValue,  reset, register} = useForm<PatientRegistrationData>({
-    resolver: zodResolver(
-        contactScreeningDetailsSchema
+    const {control, handleSubmit, formState: { errors }, setValue,  reset, register} = useForm<ContactScreeningData>({
+        defaultValues: data,
+        resolver: zodResolver(
+            contactScreeningDetailsSchema
     ),
     });
 
     const contactScreeningDone = useWatch({ control, name: "contactScreeningDone" });
+
+    const onFormSubmit = (stepData: ContactScreeningData) => {
+        onSave(stepData);
+        onSubmit(stepData); // Submit final data
+      };    
 
     const contactScreeningDetailsFields = [
     // {name: "contactScreeningDone", label: "Contact Screening done (Yes/No)",type: "select",options: ["Yes", "No"]},
@@ -46,9 +106,53 @@ const ContactScreeningDetailsForm = ( {language}:any ) => {
     if (!labels) return <p>Loading...</p>;
 
     return (
-        <>
+        <Box>
+        <Typography variant="h6">Contact Screening Details</Typography>
+        <form onSubmit={handleSubmit(onFormSubmit)}>
         <FormControl fullWidth margin="normal">
-        <InputLabel>{labels.contactScreeningDone}</InputLabel>
+                    <InputLabel>{labels.contactScreeningDoneLabel.label}</InputLabel>
+                    <Controller
+                        name="contactScreeningDone"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                {...field}
+                                onChange={(e) => {
+                                    const value = e.target.value === "true";
+                                    field.onChange(value);
+                                    if (!value) {
+                                        Object.keys(labels).forEach((key) => setValue(key as keyof ContactScreeningData, ""));
+                                    }
+                                }}
+                            >
+                                {labels.contactScreeningDoneLabel.options?.map((option) => (
+                                    <MenuItem key={option.value.toString()} value={option.value.toString()}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        )}
+                    />
+                </FormControl>
+
+                {contactScreeningDone &&
+                    Object.keys(labels).map((key) => {
+                        if (key !== "contactScreeningDoneLabel") {
+                            return (
+                                <TextField
+                                    key={key}
+                                    label={(labels as any)[key]}
+                                    type="number"
+                                    {...register(key as keyof ContactScreeningData)}
+                                    fullWidth
+                                    margin="normal"
+                                />
+                            );
+                        }
+                        return null;
+                    })}
+        {/* <FormControl fullWidth margin="normal">
+        <InputLabel>{labels.contactScreeningDoneLabel.label}</InputLabel>
         <Controller name="contactScreeningDone" control={control} render={({ field }) => (
         <Select 
             {...field}
@@ -56,7 +160,7 @@ const ContactScreeningDetailsForm = ( {language}:any ) => {
             const value = e.target.value === "true";
             field.onChange(value);
             if (!value) {
-                contactScreeningDetailsFields.forEach(field => setValue(field.name as keyof PatientRegistrationData, ""));
+                contactScreeningDetailsFields.forEach(field => setValue(field.name as keyof ContactScreeningData, ""));
             }
             }}
         >
@@ -67,9 +171,19 @@ const ContactScreeningDetailsForm = ( {language}:any ) => {
     </FormControl>
 
     {contactScreeningDone && contactScreeningDetailsFields.map(({ name, type }) => (
-        <TextField key={name} label={labels[name]} type={type} {...register(name as keyof PatientRegistrationData)} fullWidth margin="normal" />
-    ))}
-    </>
+        <TextField key={name} label={labels[name]} type={type} {...register(name as keyof ContactScreeningData)} fullWidth margin="normal" />
+    ))} */}
+
+    <Box mt={3} display="flex" justifyContent="space-between">
+          <Button variant="outlined" color="secondary" onClick={onBack}>
+            Back
+          </Button>
+          <Button type="submit" variant="contained" color="success">
+            Submit
+          </Button>
+        </Box>
+    </form>
+    </Box>
     )
 };
 

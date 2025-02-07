@@ -4,153 +4,261 @@ import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { PatientRegistrationData } from "../../pages/PatientRegistrationPage";
+
+export type NikshayDetailsData = {
+    nikshayId: string;
+    udstDone: boolean;
+    udstTestDate?: string;
+    udstTestResult?: string;
+    enrolledForDbt: boolean;
+    dbtEnrollmentDate?: string;
+    nikshayMitraLinked: boolean;
+    nikshayMitraLinkDate?: string;
+    nikshayMitraName?: string;
+}
 
 const nikshayDetailsSchema = z.object({
-    
+    nikshayId: z.string().min(1, "Nikshay ID is required"),
+    udstDone: z.boolean(),
+    udstTestDate: z.string().optional(),
+    udstTestResult: z.string().optional(),
+    enrolledForDbt: z.boolean(),
+    dbtEnrollmentDate: z.string().optional(),
+    nikshayMitraLinked: z.boolean(),
+    nikshayMitraLinkDate: z.string().optional(),
+    nikshayMitraName: z.string().optional(),
 });
 
-const NikshayDetailsForm = ( {language}:any ) => {
+const NikshayDetailsForm = ( {language, data, onSave, onNext, onBack}:any ) => {
 
-    // const [labels, setLabels] = useState<{ [key: string]: string }>({});
-    const [labels, setLabels] = useState<{ [key: string]: string | { label: string; options: string[] } }>({});
+    interface LabelOption {
+        label: string;
+        options: { label: string; value: any }[];
+    }
+      
+    interface NikshayDetailsFormLabelsData {
+        nikshayIdLabel: string;
+        udstDoneLabel: LabelOption;
+        udstTestDateLabel: string;
+        udstTestResultLabel: LabelOption;
+        enrolledForDbtLabel: LabelOption;
+        dbtEnrollmentDateLabel: string;
+        nikshayMitraLinkedLabel: LabelOption;
+        nikshayMitraLinkDateLabel: string;
+        nikshayMitraNameLabel: string;
+    }
 
+    const [labels, setLabels] = useState<NikshayDetailsFormLabelsData>({
+        nikshayIdLabel: "",
+        udstDoneLabel: { label: "", options: [] },
+        udstTestDateLabel: "",
+        udstTestResultLabel: { label: "", options: [] },
+        enrolledForDbtLabel: { label: "", options: [] },
+        dbtEnrollmentDateLabel: "",
+        nikshayMitraLinkedLabel: { label: "", options: [] },
+        nikshayMitraLinkDateLabel: "",
+        nikshayMitraNameLabel: ""
+    });
 
     useEffect(() => {
-        fetch(`/locales/patient_registration_form2_en.json`)
+        fetch(`/locales/patient_registration_form2_${language}.json`)
           .then((response) => response.json())
-          .then((data) => setLabels(data.nikshaydetailsform))
+          .then((data) => setLabels(data.nikshaydetailsform || {}))
           .catch((error) => console.error("Error loading language file:", error));
-      }, [language]);
+    }, [language]);
 
-    const {control, handleSubmit, formState: { errors }, setValue,  reset, register} = useForm<PatientRegistrationData>({
+    const {control, handleSubmit, formState: { errors }, setValue,  reset, register} = useForm<NikshayDetailsData>({
+        defaultValues: data,
         resolver: zodResolver(
           nikshayDetailsSchema
         ),
     });
 
+    const onSubmit = (stepData: NikshayDetailsData) => {
+        onSave(stepData);
+        onNext();
+    };    
+
     const udstDone = useWatch({ control, name: "udstDone" });
     const enrolledForDbt = useWatch({ control, name: "enrolledForDbt" });
     const nikshayMitraLinked = useWatch({ control, name: "nikshayMitraLinked" });
 
-    const nikshayDetailsFields = [
-        {name: "nikshayId", label: "Nikshay Id",type: "text"},
-        {name: "udstDone", label: "Whether the PwTB done for UDST",type: "select",options: ["Yes", "No"]},
-        {name: "udstTestDate",label: "If Yes, Date of Test Done",type: "date"},
-        {name: "udstTestResult",label: "What is the test result",type: "select",options: ["Rifampicin Resistant", "Rifampicin Sensitive"]},
-        {name: "enrolledForDbt",label: "Whether patient enrolled for DBT",type: "select",options: ["Yes", "No"]},
-        {name: "dbtEnrollmentDate",label: "If Yes, Date",type: "date"},
-        {name: "nikshayMitraLinked",label: "Whether PwTB linked for Nikshay Mitra",type: "select",options: ["Yes", "No"]},
-        {name: "nikshayMitraLinkDate",label: "If Yes, Date of Linkage",type: "date"},
-        {name: "nikshayMitraName",label: "Name of the Nikshay Mitra",type: "text"},
-      ];
+    // const nikshayDetailsFields = [
+    //     {name: "nikshayId", label: "Nikshay Id",type: "text"},
+    //     {name: "udstDone", label: "Whether the PwTB done for UDST",type: "select",options: ["Yes", "No"]},
+    //     {name: "udstTestDate",label: "If Yes, Date of Test Done",type: "date"},
+    //     {name: "udstTestResult",label: "What is the test result",type: "select",options: ["Rifampicin Resistant", "Rifampicin Sensitive"]},
+    //     {name: "enrolledForDbt",label: "Whether patient enrolled for DBT",type: "select",options: ["Yes", "No"]},
+    //     {name: "dbtEnrollmentDate",label: "If Yes, Date",type: "date"},
+    //     {name: "nikshayMitraLinked",label: "Whether PwTB linked for Nikshay Mitra",type: "select",options: ["Yes", "No"]},
+    //     {name: "nikshayMitraLinkDate",label: "If Yes, Date of Linkage",type: "date"},
+    //     {name: "nikshayMitraName",label: "Name of the Nikshay Mitra",type: "text"},
+    //   ];
 
     if (!labels) return <p>Loading...</p>; 
 
     return (
-        <>
-        <TextField label={typeof labels.nikshayId === "string" ? labels.nikshayId : ""} {...register("nikshayId")} error={!!errors.nikshayId} helperText={errors.nikshayId?.message} fullWidth margin="normal" />
+        <Box>
+            <Typography variant="h6">Nikshay Details</Typography>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <TextField 
+                    label={labels.nikshayIdLabel || "Nikshay Id"} 
+                    {...register("nikshayId")} 
+                    error={!!errors.nikshayId} 
+                    helperText={errors.nikshayId?.message} 
+                    fullWidth 
+                    margin="normal" 
+                />
 
-        <FormControl fullWidth margin="normal">
-            <InputLabel>{typeof labels.udstDone === "object" ? labels.udstDone.label : ""}</InputLabel>
-            <Controller name="udstDone" control={control} render={({ field }) => (
-            <Select 
-                {...field}
-                onChange={(e) => {
-                const value = e.target.value === "true";
-                field.onChange(value);
-                if (!value) {
-                    setValue("udstTestDate", "");
-                    setValue("udstTestResult", "");
-                }
-                }}
-            >
-                {typeof labels.udstDone === "object" && labels.udstDone.options.map((option: string) => (
-                    <MenuItem key={option} value={option}>{option}</MenuItem>
-                ))}
-                {/* <MenuItem value={"true"}>Yes</MenuItem>
-                <MenuItem value={"false"}>No</MenuItem> */}
-            </Select>
-            )} />
-        </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <InputLabel>{labels.udstDoneLabel.label}</InputLabel>
+                    <Controller 
+                        name="udstDone" 
+                        control={control} 
+                        render={({ field }) => (
+                            <Select 
+                                {...field}
+                                onChange={(e) => {
+                                const value = e.target.value === "true";
+                                field.onChange(value);
+                                if (!value) {
+                                    setValue("udstTestDate", "");
+                                    setValue("udstTestResult", "");
+                                }
+                                }}
+                            >
+                                {labels.udstDoneLabel.options.map((option) => (
+                                    <MenuItem key={option.value.toString()} value={option.value.toString()}>{option.label}</MenuItem>
+                                ))}
+                            </Select>
+                        )} 
+                    />
+                </FormControl>
 
-        {udstDone && (
-            <>
-            <TextField label={typeof labels.udstTestDate} type="date" InputLabelProps={{ shrink: true }} {...register("udstTestDate")} fullWidth margin="normal" />
-            {/* <TextField label={labels.udstTestResult} {...register("udstTestResult")} fullWidth margin="normal" /> */}
-            <FormControl fullWidth margin="normal">
-            <InputLabel>{labels.udstTestResult.label}</InputLabel>
-            <Controller
-              name="udstTestResult"
-              control={control}
-              render={({ field }) => (
-                <Select {...field}>
-                  {labels.udstTestResult.options.map((option: string) => (
-                    <MenuItem key={option} value={option}>{option}</MenuItem>
-                  ))}
-                </Select>
-              )}
-            />
-          </FormControl>
-            </>
-        )}
+                {udstDone && (
+                    <TextField
+                        label={labels.udstTestDateLabel || "UDST Test Date"}
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                        {...register("udstTestDate")}
+                        fullWidth
+                        margin="normal"
+                    />
+                )}
 
-        <FormControl fullWidth margin="normal">
-            <InputLabel>{labels.enrolledForDbt.label}</InputLabel>
-            <Controller name="enrolledForDbt" control={control} render={({ field }) => (
-            <Select 
-                {...field}
-                onChange={(e) => {
-                const value = e.target.value === "true";
-                field.onChange(value);
-                if (!value) {
-                    setValue("dbtEnrollmentDate", "");
-                }
-                }}
-            >
-                {labels.enrolledForDbt.options.map((option: string) => (
-                    <MenuItem key={option} value={option}>{option}</MenuItem>
-                ))}
-                {/* <MenuItem value={"true"}>Yes</MenuItem>
-                <MenuItem value={"false"}>No</MenuItem> */}
-            </Select>
-            )} />
-        </FormControl>
+                {udstDone && (
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel>{labels.udstTestResultLabel.label}</InputLabel>
+                        <Controller
+                            name="udstTestResult"
+                            control={control}
+                            render={({ field }) => (
+                                <Select {...field}>
+                                    {labels.udstTestResultLabel.options.map((option) => (
+                                        <MenuItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            )}
+                        />
+                    </FormControl>
+                )}
 
-        {enrolledForDbt && (
-            <TextField label={labels.dbtEnrollmentDate} type="date" InputLabelProps={{ shrink: true }} {...register("dbtEnrollmentDate")} fullWidth margin="normal" />
-        )}
+                <FormControl fullWidth margin="normal">
+                    <InputLabel>{labels.enrolledForDbtLabel.label}</InputLabel>
+                    <Controller
+                        name="enrolledForDbt"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                {...field}
+                                onChange={(e) => {
+                                    const value = e.target.value === "true";
+                                    field.onChange(value);
+                                    if (!value) {
+                                        setValue("dbtEnrollmentDate", "");
+                                    }
+                                }}
+                            >
+                                {labels.enrolledForDbtLabel.options.map((option) => (
+                                    <MenuItem key={option.value.toString()} value={option.value.toString()}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        )}
+                    />
+                </FormControl>
 
-        <FormControl fullWidth margin="normal">
-            <InputLabel>{labels.nikshayMitraLinked.label}</InputLabel>
-            <Controller name="nikshayMitraLinked" control={control} render={({ field }) => (
-            <Select 
-                {...field}
-                onChange={(e) => {
-                const value = e.target.value === "true";
-                field.onChange(value);
-                if (!value) {
-                    setValue("nikshayMitraLinkDate", "");
-                    setValue("nikshayMitraName", "");
-                }
-                }}
-            >
-                {labels.nikshayMitraLinked.options.map((option: string) => (
-                    <MenuItem key={option} value={option}>{option}</MenuItem>
-                ))}
-                {/* <MenuItem value={"true"}>Yes</MenuItem>
-                <MenuItem value={"false"}>No</MenuItem> */}
-            </Select>
-            )} />
-        </FormControl>
+                {enrolledForDbt && (
+                    <TextField
+                        label={labels.dbtEnrollmentDateLabel || "DBT Enrollment Date"}
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                        {...register("dbtEnrollmentDate")}
+                        fullWidth
+                        margin="normal"
+                    />
+                )}
 
-        {nikshayMitraLinked && (
-            <>
-            <TextField label={labels.nikshayMitraLinkDate} type="date" InputLabelProps={{ shrink: true }} {...register("nikshayMitraLinkDate")} fullWidth margin="normal" />
-            <TextField label={labels.nikshayMitraName} {...register("nikshayMitraName")} fullWidth margin="normal" />
-            </>
-        )}
-        </>
+                <FormControl fullWidth margin="normal">
+                    <InputLabel>{labels.nikshayMitraLinkedLabel.label}</InputLabel>
+                    <Controller
+                        name="nikshayMitraLinked"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                {...field}
+                                onChange={(e) => {
+                                    const value = e.target.value === "true";
+                                    field.onChange(value);
+                                    if (!value) {
+                                        setValue("nikshayMitraLinkDate", "");
+                                        setValue("nikshayMitraName", "");
+                                    }
+                                }}
+                            >
+                                {labels.nikshayMitraLinkedLabel.options.map((option) => (
+                                    <MenuItem key={option.value.toString()} value={option.value.toString()}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        )}
+                    />
+                </FormControl>
+
+                {nikshayMitraLinked && (
+                    <TextField
+                        label={labels.nikshayMitraLinkDateLabel || "Nikshay Mitra Link Date"}
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                        {...register("nikshayMitraLinkDate")}
+                        fullWidth
+                        margin="normal"
+                    />
+                )}
+
+                {nikshayMitraLinked && (
+                    <TextField
+                        label={labels.nikshayMitraNameLabel || "Nikshay Mitra Name"}
+                        {...register("nikshayMitraName")}
+                        fullWidth
+                        margin="normal"
+                    />
+                )}
+
+                <Box mt={3} display="flex" justifyContent="space-between">
+                <Button variant="outlined" color="secondary" onClick={onBack}>
+                    Back
+                </Button>
+                <Button type="submit" variant="contained" color="primary">
+                    Save and Next
+                </Button>
+                </Box>
+            </form>
+        </Box>
   )
 };
 
