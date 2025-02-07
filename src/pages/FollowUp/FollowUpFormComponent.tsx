@@ -1,35 +1,69 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, Divider, Paper, Stack, Switch, TextField, Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
+import StarIcon from "@mui/icons-material/Star";
+import {
+	Box,
+	Button,
+	Divider,
+	Paper,
+	Rating,
+	Stack,
+	Switch,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	TextField,
+	Typography,
+} from "@mui/material";
+import { useState, useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import { FollowUpsDataInterface } from "../../components/VisitDataTypes";
+import { MedicationInterface, VisitDataInterface } from "../../components/VisitDataTypes";
+import { RiPencilFill } from "react-icons/ri";
 
-interface FollowUpFormComponentProps {
+interface Props {
 	index: number;
-	data: FollowUpsDataInterface | null;
+	data: VisitDataInterface | null;
 }
 
+// Labels for the rating control
+const labels: { [key: number]: string } = {
+	1: "Need Urgent Support",
+	2: "Poor",
+	3: "Ok",
+	4: "Improving",
+	5: "Excellent",
+};
+
+// Updated schema: currentStatus as boolean, patientCondition as number, etc.
 const schema = z.object({
-	currentStatus: z.string(),
+	currentStatus: z.boolean(),
+	patientCondition: z.number(),
 	remarks: z.string().min(1, "Description can't be null"),
 	missedMedications: z.array(
 		z.object({
-			missedDoses: z
+			medicationName: z.string(),
+			missedDosages: z
 				.string()
 				.min(1, "Please enter a number")
 				.regex(/^\d+$/, { message: "Input must be a valid number" })
 				.transform(Number)
 				.refine((val) => val >= 0, { message: "Missed doses cannot be negative" }),
-
-			comment: z.string().optional(),
+			comments: z.string().optional(),
 		})
 	),
 });
 
 type FormData = z.infer<typeof schema>;
 
-const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
+const FollowUpFormComponent = ({ index, data }: Props) => {
+	const [isEditable, setIsEditable] = useState(false); // Add editable state
+	const [hover, setHover] = useState(-1);
+
 	const {
+		control,
 		register,
 		handleSubmit,
 		formState: { errors, isValid },
@@ -39,48 +73,94 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 		resolver: zodResolver(schema),
 		mode: "all",
 		defaultValues: {
-			remarks: data?.remarks ?? "",
+			currentStatus: data?.patient.currentStatus ?? false,
+			patientCondition: data?.followUpDetails[index]?.patientCondition ?? 4,
+			remarks: data?.followUpDetails[index]?.remarks ?? "",
 			missedMedications:
-				data?.medicationDetails?.map((med) => ({
-					missedDoses: med.missedDosages ?? 0,
-					comment: med.comments ?? "",
+				data?.followUpDetails[index]?.medicationDetails?.map((med) => ({
+					medicationName: med.medicationName,
+					missedDosages: med.missedDosages?.toString() ?? "",
+					comments: med.comments ?? "",
 				})) || [],
 		},
 	});
 
-	const formSubmitHandler = (data: FormData) => {
-		console.log("Submitted Data: ", data);
+	// Reset form values when the selected follow-up (index or data) changes.
+	useEffect(() => {
+		if (data) {
+			reset({
+				currentStatus: data.patient.currentStatus ?? false,
+				patientCondition: data.followUpDetails[index]?.patientCondition ?? 3,
+				remarks: data.followUpDetails[index]?.remarks ?? "",
+				missedMedications:
+					data.followUpDetails[index]?.medicationDetails?.map((med) => ({
+						medicationName: med.medicationName,
+						missedDosages: med.missedDosages?.toString() ?? "",
+						comments: med.comments ?? "",
+					})) || [],
+			});
+		}
+	}, [index, data, reset, isEditable]);
+
+	// Helper function for rating labels
+	function getLabelText(value: number) {
+		return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
+	}
+
+	const formSubmitHandler = (formData: FormData) => {
+		console.log("Submitted Data: ", formData);
+		setIsEditable(false);
 	};
 
-	const MedicationRow = ({ medicine, index, errors, register }) => (
-		<div style={{ display: "flex", gap: "50px", alignItems: "flex-start" }}>
-			<Typography variant="body1" sx={{ marginTop: 2.5 }}>
-				{medicine.nameOfMedicine}:
-			</Typography>
-			<TextField
-				id={`missedDoses-${index}`}
-				label="Missed Doses"
-				placeholder="Enter no. of doses missed"
-				fullWidth
-				error={!!errors.medications?.[index]?.missedDoses}
-				helperText={errors.medications?.[index]?.missedDoses?.message || ""}
-				{...register(`missedMedications.${index}.missedDoses`)}
-				InputLabelProps={{ shrink: watch(`missedMedications.${index}.missedDoses`) >= 0 }}
-			/>
-			<TextField
-				id={`comments-${index}`}
-				label="Comments"
-				placeholder="Enter Comments"
-				multiline
-				fullWidth
-				{...register(`medications.${index}.comments`)}
-				InputLabelProps={{
-					shrink:
-						watch(`missedMedications.${index}.comment`) !== undefined &&
-						watch(`missedMedications.${index}.comment`).length > 0,
-				}}
-			/>
-		</div>
+	// MedicationRow component uses Controller for each dynamic field.
+	const MedicationRow = ({
+		medicine,
+		medIndex,
+	}: {
+		medicine: MedicationInterface;
+		medIndex: number;
+	}) => (
+		<TableRow key={medicine.medicationId}>
+			<TableCell>
+				<Typography>{medicine.medicationName}</Typography>
+			</TableCell>
+			<TableCell>
+				<Controller
+					name={`missedMedications.${medIndex}.missedDosages`}
+					control={control}
+					disabled={!isEditable}
+					defaultValue={medicine.missedDosages?.toString() || ""}
+					render={({ field }) => (
+						<TextField
+							{...field}
+							type="number"
+							fullWidth
+							error={!!errors.missedMedications?.[medIndex]?.missedDosages}
+							helperText={
+								errors.missedMedications?.[medIndex]?.missedDosages?.message
+							}
+						/>
+					)}
+				/>
+			</TableCell>
+			<TableCell>
+				<Controller
+					name={`missedMedications.${medIndex}.comments`}
+					control={control}
+					defaultValue={medicine.comments || ""}
+					disabled={!isEditable}
+					render={({ field }) => (
+						<TextField
+							{...field}
+							fullWidth
+							multiline
+							error={!!errors.missedMedications?.[medIndex]?.comments}
+							helperText={errors.missedMedications?.[medIndex]?.comments?.message}
+						/>
+					)}
+				/>
+			</TableCell>
+		</TableRow>
 	);
 
 	return (
@@ -94,18 +174,66 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 			}}>
 			{data ? (
 				<>
-					{/* Heading */}
 					<Typography variant="h6" sx={{ mb: 2 }}>
-						Follow Up {index} <Typography variant="subtitle1">{data.date}</Typography>
+						Follow Up {index + 1}{" "}
+						<RiPencilFill onClick={() => setIsEditable(!isEditable)} />
+						<Typography variant="subtitle1">
+							{data.followUpDetails[index].date}
+						</Typography>
 					</Typography>
 					<Divider variant="fullWidth" sx={{ mb: 3 }} />
 					<Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
 						<Stack spacing={4}>
-							{/* Patient Condition Switch */}
-							<div style={{ display: "flex", alignItems: "center" }}>
-								<Typography variant="subtitle1">Is Patient Alive ?</Typography>
-								<Switch {...register("currentStatus")} />
-							</div>
+							{/* Patient Condition Switch via Controller */}
+							<Controller
+								name="currentStatus"
+								control={control}
+								disabled={!isEditable}
+								render={({ field }) => (
+									<div style={{ display: "flex", alignItems: "center" }}>
+										<Typography variant="subtitle1">
+											Is Patient Alive ?
+										</Typography>
+										<Switch
+											{...field}
+											checked={field.value}
+											onChange={(e) => field.onChange(e.target.checked)}
+										/>
+									</div>
+								)}
+							/>
+
+							{/* Patient Condition (Rating) via Controller */}
+							<Controller
+								name="patientCondition"
+								control={control}
+								render={({ field: { value, onChange } }) => (
+									<div
+										style={{
+											display: "flex",
+											gap: "10px",
+											alignItems: "center",
+										}}>
+										<Rating
+											name="patientCondition"
+											value={value}
+											getLabelText={getLabelText}
+											onChange={(_, newValue) => onChange(newValue)}
+											onChangeActive={(_, newHover) => setHover(newHover)}
+											disabled={!isEditable}
+											emptyIcon={
+												<StarIcon
+													style={{ opacity: 0.55 }}
+													fontSize="inherit"
+												/>
+											}
+										/>
+										{value !== null && (
+											<Box>{labels[hover !== -1 ? hover : value]}</Box>
+										)}
+									</div>
+								)}
+							/>
 
 							{/* Patient Condition Description */}
 							<TextField
@@ -116,6 +244,7 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 								rows={3}
 								error={!!errors.remarks}
 								helperText={errors.remarks?.message}
+								disabled={!isEditable}
 								{...register("remarks")}
 								InputLabelProps={{
 									shrink:
@@ -124,27 +253,56 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 								}}
 							/>
 
-							{data?.medicationDetails.map((medicine, index) => (
-								<MedicationRow
-									key={medicine.id}
-									medicine={medicine}
-									index={index}
-									errors={errors}
-									register={register}
-								/>
-							))}
-
-							<Divider variant="fullWidth" sx={{ mb: 4 }} />
+							{/* Medications Table */}
+							<TableContainer>
+								<Table>
+									<TableHead>
+										<TableRow>
+											<TableCell>Medication Name</TableCell>
+											<TableCell>Missed Doses</TableCell>
+											<TableCell>Comments</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{data?.followUpDetails[index].medicationDetails.length >
+										0 ? (
+											data.followUpDetails[index].medicationDetails.map(
+												(medicine, medIndex) => (
+													<MedicationRow
+														key={medicine.medicationId}
+														medicine={medicine}
+														medIndex={medIndex}
+													/>
+												)
+											)
+										) : (
+											<TableRow>
+												<TableCell colSpan={3} align="center">
+													<Typography
+														variant="body2"
+														color="textSecondary">
+														No Medications Found
+													</Typography>
+												</TableCell>
+											</TableRow>
+										)}
+									</TableBody>
+								</Table>
+							</TableContainer>
 
 							<Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-								<Button variant="outlined" color="primary" onClick={() => reset()}>
+								<Button
+									variant="outlined"
+									color="primary"
+									onClick={() => reset()}
+									disabled={!isEditable}>
 									Cancel
 								</Button>
 								<Button
 									type="submit"
 									variant="contained"
 									color="primary"
-									disabled={!isValid}>
+									disabled={!isValid || !isEditable}>
 									Submit
 								</Button>
 							</Box>
@@ -152,7 +310,7 @@ const FollowUpFormComponent = ({ index, data }: FollowUpFormComponentProps) => {
 					</Box>
 				</>
 			) : (
-				<Typography>No Follow ups Found</Typography>
+				<Typography>No Follow-ups Found</Typography>
 			)}
 		</Paper>
 	);

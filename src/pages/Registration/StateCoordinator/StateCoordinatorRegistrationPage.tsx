@@ -9,7 +9,6 @@ import axiosInstance from "../../../components/axiosInstance";
 const schema = z.object({
 	firstName: z.string().min(1, "First name can't be empty"),
 	lastName: z.string(),
-	// username: z.string().min(1, "Username can't be empty"),
 	gender: z.string().nonempty("Please select a gender"),
 	email: z.string().email("Please enter a valid email"),
 	state: z.string().nonempty("Please select a state"),
@@ -45,13 +44,6 @@ const StateCoordinatorRegistrationPage = () => {
 			name: "lastName",
 			label: "Last Name",
 			placeholder: "Enter Last Name",
-			type: "text",
-			disabled: false,
-		},
-		{
-			name: "username",
-			label: "Username",
-			placeholder: "Enter Username",
 			type: "text",
 			disabled: false,
 		},

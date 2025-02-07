@@ -14,19 +14,20 @@ export interface PatientInterface {
 	gp: string;
 	village: string;
 	district: string;
-	currentStatus: string;
+	currentStatus: boolean;
 }
 
 export interface FollowUpsDataInterface {
 	date: string;
 	followUpStatus: boolean;
 	remarks: string | null;
+	patientCondition: number;
 	medicationDetails: MedicationInterface[] | [];
 }
 
 export interface MedicationInterface {
-	id: number;
+	medicationId: number;
 	medicationName: string;
-	missedDosages: number;
+	missedDosages: string;
 	comments: string;
 }

@@ -1,0 +1,37 @@
+#navbar {
+	background-color: #0b455c;
+	width: 100vw;
+	color: white;
+	padding: 15px;
+	display: flex;
+	justify-content: space-between;
+	position: sticky;
+	z-index: 100;
+}
+
+.navbar-left, .navbar-right{
+	display: flex;
+	flex-direction: row;
+	gap: 30px;
+}
+
+.navbar-left{
+	margin-left: 50px;
+	align-items: center;
+}
+
+.navbar-right{
+	margin-right: 100px;
+	align-items: center;
+}
+
+.navbar-text{
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#language-menu{
+	background-color: white;
+	/* border-radius: 10px; */
+}

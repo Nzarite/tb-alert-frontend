@@ -8,12 +8,15 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import ErrorPage from "./pages/Error/ErrorPage";
+import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 import LandingPage from "./pages/Homepage/LandingPage";
 import PageLayout from "./pages/PageLayout";
+import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
 import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
-import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 
 const theme = createTheme({
 	palette: {
@@ -42,14 +45,18 @@ const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route element={<PageLayout />}>
 			<Route path="/" element={<LandingPage />} />
-			<Route path="/registerPatient" element={<PatientRegistrationPage />} />
+			<Route path="/register/patient" element={<PatientRegistrationPage />} />
 			<Route path="/visit" element={<VisitFollowUpPage />} />
 			<Route
 				path="/register/state-coordinator"
 				element={<StateCoordinatorRegistrationPage />}
 			/>
 			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
+			<Route path="/dashboard/patient" element={<PatientDashboardPage />} />
+			<Route path="/reports" element={<Reports />} />
 			<Route path="*" element={<ErrorPage />} />
+			<Route path="settings" element={<Settings />} />
+			<Route path="/reports" element={<Reports />} />
 		</Route>
 	)
 );
