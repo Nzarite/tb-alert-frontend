@@ -24,7 +24,7 @@ export default function FollowUpSidebar({ selectedIndex, setIndex, data }: Follo
 		const dof = Date.parse(dateOfFollowUp);
 
 		if (today < dof) return "Scheduled";
-		return filled ? "Completed" : "Missed";
+		return filled ? "Captured" : "Missed";
 	};
 
 	const isEditable = (dateOfFollowUp: string) => {
@@ -58,7 +58,6 @@ export default function FollowUpSidebar({ selectedIndex, setIndex, data }: Follo
 						variant="outlined"
 						size="small"
 					/>
-					{/* {isEditable(item.date) && <Pencil />} */}
 				</ListItemButton>
 			))}
 		</List>
