@@ -1,14 +1,13 @@
 import { Box, Container, Grid, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
-import VisitData from "../../components/Json/visit.json";
 import SearchBox from "../../components/SearchBox";
 import { VisitDataInterface } from "../../components/VisitDataTypes";
 import FollowUpFormComponent from "./FollowUpFormComponent";
 import FollowUpSidebar from "./FollowUpSidebar";
 
 const VisitFollowUpPage = () => {
-	const [data, setData] = useState<VisitDataInterface | null>(VisitData);
+	const [data, setData] = useState<VisitDataInterface | null>(null);
 	const [search, setSearch] = useState<string | null>(null);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -57,34 +56,41 @@ const VisitFollowUpPage = () => {
 			}}>
 			<Container maxWidth="xl">
 				<Grid container spacing={{ xs: 2, md: 3 }}>
-					<Grid item xs={12} md={3}>
-						{/* Sidebar */}
-						<Paper
-							variant="outlined"
-							sx={{
-								padding: 2,
-								position: "sticky",
-								top: 16,
-								height: "84vh",
-								overflow: "auto",
-							}}>
-							{data && data.followUpDetails.length > 0 && (
-								<FollowUpSidebar
-									selectedIndex={selectedIndex}
-									setIndex={handleListItemClick}
-									data={data}
-								/>
-							)}
-						</Paper>
-					</Grid>
-
-					{/* Main Content */}
-					<Grid item xs={12} md={9}>
-						{/* Search Bar */}
-						<SearchBox changeSearch={(input) => setSearch(input.value)} />
-
-						<FollowUpFormComponent index={selectedIndex} data={data} />
-					</Grid>
+					{data && (
+						<Grid item xs={12} md={3}>
+							{/* Sidebar */}
+							<Paper
+								variant="outlined"
+								sx={{
+									padding: 2,
+									position: "sticky",
+									top: 16,
+									height: "84vh",
+									overflow: "auto",
+								}}>
+								{data && data.followUpDetails.length > 0 && (
+									<FollowUpSidebar
+										selectedIndex={selectedIndex}
+										setIndex={handleListItemClick}
+										data={data}
+									/>
+								)}
+							</Paper>
+						</Grid>
+					)}
+					{data ? (
+						<Grid item xs={12} md={9}>
+							{/* Search Bar */}
+							<SearchBox changeSearch={(input) => setSearch(input.value)} />
+							<FollowUpFormComponent index={selectedIndex} data={data} />
+						</Grid>
+					) : (
+						<Grid item xs={12}>
+							{/* Search Bar */}
+							<SearchBox changeSearch={(input) => setSearch(input.value)} />
+							<FollowUpFormComponent index={selectedIndex} data={data} />
+						</Grid>
+					)}
 				</Grid>
 			</Container>
 		</Box>

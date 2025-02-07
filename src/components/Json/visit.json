@@ -22,6 +22,7 @@
 					"comments": "no water11111 "
 				}
 			],
+			"patientCondition": 4,
 			"remarks": "avcd",
 			"date": "2025-01-05",
 			"followUpStatus": true
@@ -41,6 +42,7 @@
 					"comments": "no water11111 "
 				}
 			],
+			"patientCondition": 2,
 			"remarks": "",
 			"date": "2025-01-07",
 			"followUpStatus": true

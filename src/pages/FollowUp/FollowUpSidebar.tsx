@@ -2,7 +2,6 @@ import { Chip, Divider, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { Pencil } from "react-bootstrap-icons";
 import { VisitDataInterface } from "../../components/VisitDataTypes";
 
 interface FollowUpSidebarProps {
@@ -59,7 +58,7 @@ export default function FollowUpSidebar({ selectedIndex, setIndex, data }: Follo
 						variant="outlined"
 						size="small"
 					/>
-					{isEditable(item.date) && <Pencil />}
+					{/* {isEditable(item.date) && <Pencil />} */}
 				</ListItemButton>
 			))}
 		</List>
