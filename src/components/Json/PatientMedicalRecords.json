@@ -1,0 +1,9 @@
+{
+	"id": 1,
+	"dateOfDiagnosis": "2024-01-15",
+	"dateOfTreatmentInitiation": "2024-01-20",
+	"typeOfPwtb": "Pulmonary",
+	"typeOfTb": "MDR-TB",
+	"dstbOrDrtb": "DRTB",
+	"patientId": 1
+}

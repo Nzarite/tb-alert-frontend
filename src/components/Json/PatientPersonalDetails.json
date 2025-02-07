@@ -1,0 +1,13 @@
+{
+    "patientId": 1,
+    "firstName": "tanishq",
+    "lastName": "chaurasia",
+    "gender": "M",
+    "dateOfBirth": "1999-01-02",
+    "phone": "123456789",
+    "block": "system block",
+    "gp": "system gp",
+    "village": "heavy village",
+    "district": "bhayankar district",
+    "currentStatus": null
+}
