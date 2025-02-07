@@ -11,6 +11,7 @@ import ErrorPage from "./pages/Error/ErrorPage";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 import LandingPage from "./pages/Homepage/LandingPage";
 import PageLayout from "./pages/PageLayout";
+import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
 import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
@@ -51,6 +52,7 @@ const router = createBrowserRouter(
 				element={<StateCoordinatorRegistrationPage />}
 			/>
 			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
+			<Route path="/dashboard/patient" element={<PatientDashboardPage />} />
 			<Route path="/reports" element={<Reports />} />
 			<Route path="*" element={<ErrorPage />} />
 			<Route path="settings" element={<Settings />} />
