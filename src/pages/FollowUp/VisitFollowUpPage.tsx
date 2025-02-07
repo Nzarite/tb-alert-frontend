@@ -2,8 +2,8 @@ import { Box, Container, Grid, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
 import SearchBox from "../../components/SearchBox";
-import { VisitDataInterface } from "../../components/VisitDataTypes";
-import FollowUpFormComponent from "./FollowUpFormComponent";
+import { VisitDataInterface } from "../../components/datatypes/DataTypes";
+import FollowUpFormComponent from "./FollowUpMain";
 import FollowUpSidebar from "./FollowUpSidebar";
 
 const VisitFollowUpPage = () => {
