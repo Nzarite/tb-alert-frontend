@@ -1,25 +1,37 @@
 {
     "nikshaydetailsform": {
-        "nikshayId": "Nikshay Id1",
-        "udstDone": {
-            "label": "Whether the PwTB done for UDST",
-            "options": ["Yes", "No"]
+        "nikshayIdLabel": "Nikshay Id1",
+        "udstDoneLabel": {
+            "label": "Whether the PwTB done for UDST1",
+            "options": [
+                { "label": "Yes1", "value": true },
+                { "label": "No", "value": false }
+            ]
         },
-        "udstTestDate": "UDST Test Date",
-        "udstTestResult": {
+        "udstTestDateLabel": "UDST Test Date",
+        "udstTestResultLabel": {
             "label": "UDST Test Result",
-            "options": ["Rifampicin Resistant", "Rifampicin Sensitive"]
+            "options": [
+                { "label": "Rifampicin Resistant1", "value": "Rifampicin Resistant" },
+                { "label": "Rifampicin Sensitive", "value": "Rifampicin Sensitive" }
+            ]
         },
-        "enrolledForDbt": {
+        "enrolledForDbtLabel": {
             "label": "Enrolled for DBT",
-            "options": ["Yes", "No"]
+            "options": [
+                { "label": "Yes1", "value": true },
+                { "label": "No", "value": false }
+            ]
         },
-        "dbtEnrollmentDate": "DBT Enrollment Date",
-        "nikshayMitraLinked": {
-            "label":"Nikshay Mitra Linked",
-            "options":["Yes", "No"]
+        "dbtEnrollmentDateLabel": "DBT Enrollment Date",
+        "nikshayMitraLinkedLabel": {
+            "label": "Nikshay Mitra Linked",
+            "options": [
+                { "label": "Yes1", "value": true },
+                { "label": "No", "value": false }
+            ]
         },
-        "nikshayMitraLinkDate": "Nikshay Mitra Link Date",
-        "nikshayMitraName": "Nikshay Mitra Name"
+        "nikshayMitraLinkDateLabel": "Nikshay Mitra Link Date",
+        "nikshayMitraNameLabel": "Nikshay Mitra Name"
     }
 }

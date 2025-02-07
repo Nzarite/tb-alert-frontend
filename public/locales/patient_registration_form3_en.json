@@ -1,15 +1,21 @@
 {
     "nikshaydetailsform": {
-        "contactScreeningDone": "Contact Screening Done1",
-        "contactScreeningDate": "Date of Contact Screening",
-        "availableHhcs": "No of HHCs available",
-        "screenedHhcs": "No of HHCs screened",
-        "hhcsWithTbSymptoms": "No of HHCs found with TB Sympotoms",
-        "hhcsReferredForTbTesting": "No of HHCs found with TB Sympotoms referred for TB testing",
-        "hhcsDiagnosedTb": "No.of HHCs diagnosed TB",
-        "hhcsDiagnosedTbOnAtt": "No of HHCs diagnosed with TB initiated on ATT",
-        "hhcsUndergoneLBTI": "No of HHCs undergone for LTBI test",
-        "eligibleForTpt": "No.of eligible for TPT",
-        "hhcsInitiatedOnTpt": "No of HHCs initiated on TPT"
+        "contactScreeningDoneLabel": {
+            "label": "Contact Screening Done1",
+            "options": [
+                { "label": "Yes1", "value": true },
+                { "label": "No", "value": false }
+            ]
+        },
+        "contactScreeningDateLabel": "Date of Contact Screening",
+        "availableHhcsLabel": "No of HHCs available",
+        "screenedHhcsLabel": "No of HHCs screened",
+        "hhcsWithTbSymptomsLabel": "No of HHCs found with TB Sympotoms",
+        "hhcsReferredForTbTestingLabel": "No of HHCs found with TB Sympotoms referred for TB testing",
+        "hhcsDiagnosedTbLabel": "No.of HHCs diagnosed TB",
+        "hhcsDiagnosedTbOnAttLabel": "No of HHCs diagnosed with TB initiated on ATT",
+        "hhcsUndergoneLBTILabel": "No of HHCs undergone for LTBI test",
+        "eligibleForTptLabel": "No.of eligible for TPT",
+        "hhcsInitiatedOnTptLabel": "No of HHCs initiated on TPT"
     }
 }
