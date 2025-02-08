@@ -18,21 +18,18 @@ export const renderField = (data, item: DashboardFieldsProp, index: number) => {
 const PatientNikshayDetails = () => {
 	const fields = [
 		{ name: "nikshayId", label: "Nikshay ID", size: 12 },
-		{ name: "nikshayMitraName", label: "Nikshay Mitra Name", size: 4 },
-		{ name: "nikshayMitraDate", label: "Nikshay Mitra Date", size: 4 },
-		{ name: "nikshayMitraStatus", label: "Nikshay Mitra Status", size: 4 },
-		{ name: "dateOfUdst", label: "UDST Date", size: 4 },
-		{ name: "udstStatus", label: "UDST Status", size: 4 },
-		{ name: "resultOfUdst", label: "Result", size: 4 },
-		{ name: "dateOfDbt", label: "DBT Date", size: 4 },
-		{ name: "dbtStatus", label: "DBT Status", size: 4 },
+		{ name: "nikshayMitraName", label: "Nikshay Mitra Name", size: 6 },
+		{ name: "nikshayMitraDate", label: "Nikshay Mitra Date", size: 6 },
+		{ name: "nikshayMitraStatus", label: "Nikshay Mitra Status", size: 12 },
+		{ name: "dateOfUdst", label: "UDST Date", size: 6 },
+		{ name: "udstStatus", label: "UDST Status", size: 6 },
+		{ name: "resultOfUdst", label: "Result", size: 12 },
+		{ name: "dateOfDbt", label: "DBT Date", size: 6 },
+		{ name: "dbtStatus", label: "DBT Status", size: 6 },
 	];
 
 	return (
 		<>
-			<Typography variant="h5" sx={{ fontWeight: "bold", marginTop: 1, marginBottom: 2 }}>
-				Nikshay Details
-			</Typography>
 			<Divider sx={{ mb: 4 }} />
 			<Grid container spacing={2} sx={{ padding: "0px 40px" }}>
 				{fields.map((item, index) => renderField(patientData, item, index))}

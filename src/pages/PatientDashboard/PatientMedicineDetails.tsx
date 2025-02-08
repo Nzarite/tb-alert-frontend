@@ -13,12 +13,9 @@ import patientData from "../../components/Json/PatientMedicineDetails.json";
 const PatientMedicineDetails = () => {
 	return (
 		<>
-			<Typography variant="h5" sx={{ fontWeight: "bold", marginTop: 1, marginBottom: 2 }}>
-				Medicines
-			</Typography>
 			<Divider sx={{ mb: 4 }} />
 
-			<TableContainer sx={{ padding: "0px 40px" }}>
+			<TableContainer>
 				<Table>
 					<TableHead>
 						<TableRow>
