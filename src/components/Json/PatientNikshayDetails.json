@@ -1,0 +1,13 @@
+{
+    "nikshayId": "NIK12345",
+    "udstStatus": true,
+    "dateOfUdst": "2025-01-31",
+    "resultOfUdst": "Negative",
+    "dbtStatus": false,
+    "dateOfDbt": "2025-01-25",
+    "nikshayMitraStatus": "Active",
+    "nikshayMitraDate": "2025-01-30",
+    "nikshayMitraName": "John Doe",
+    "patientId": 1
+  }
+  

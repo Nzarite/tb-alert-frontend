@@ -1,6 +1,6 @@
 import { selectionListDataTypes } from "./PatientDashboardPage";
 import PatientMedicalDetails from "./PatientMedicalDetails";
-import PatientMedicationDetails from "./PatientMedicationDetails";
+import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
 
@@ -19,9 +19,9 @@ const PatientDashboardMain = ({ selectionList, selectionIndex }: PatientDashboar
 			case "Nikshay Details":
 				return <PatientNikshayDetails />;
 			case "Medications":
-				return <PatientMedicationDetails />;
+				return <PatientMedicineDetails />;
 			default:
-				null;
+				return null;
 		}
 	};
 

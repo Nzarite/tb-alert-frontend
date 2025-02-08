@@ -44,5 +44,23 @@ export interface PatientMedicalInterface {
 export interface DashboardFieldsProp {
 	name: string;
 	label: string;
-	size: string;
+	size: number;
+}
+
+export interface PatientNikshayInterface {
+	nikshayId: string;
+	nikshayMitraName: string;
+	nikshayMitraDate: string;
+	nikshayMitraStatus: string;
+	dateOfDbt: string;
+	dbtStatus: boolean;
+	dateOfUdst: string;
+	udstStatus: boolean;
+	resultOfUdst: string;
+	patientId: number;
+}
+
+export interface PatientMedicineInterface {
+	medicationName: string;
+	frequency: number;
 }
