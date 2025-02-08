@@ -21,12 +21,12 @@ const PatientDashboardPage = () => {
 					icon: <MdMobileFriendly style={{ fontSize: "20px" }} />,
 				},
 				{
-					title: "Medicine Details",
+					title: "Medicines",
 					component: <PatientMedicineDetails />,
 					icon: <MdVaccines style={{ fontSize: "20px" }} />,
 				},
 				{
-					title: "Medical Details",
+					title: "Medical Report",
 					component: <PatientMedicalDetails />,
 					icon: <MdLocalHospital style={{ fontSize: "25px" }} />,
 				},
@@ -50,7 +50,7 @@ const PatientDashboardPage = () => {
 									{section.title}
 								</Typography>
 							</Box>
-							<RiPencilLine />
+							<RiPencilLine style={{ fontSize: "20px" }} />
 						</Box>
 						{section.component}
 					</Paper>
