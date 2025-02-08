@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import "./styles.css";
+import { useAuth } from "react-oidc-context";
 
 const LandingPage = () => {
+  const auth = useAuth();
+  const access_token = auth.user?.access_token || "";
+
   return (
     <div className="landing-container">
       <div className="header-text">

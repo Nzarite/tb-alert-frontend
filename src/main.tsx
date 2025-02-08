@@ -16,28 +16,40 @@ import Settings from "./pages/Settings";
 import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
+import PrivateRoute from "./components/PrivateRoute";
+
+import { AuthProvider } from "react-oidc-context";
+
+const oidcConfig = {
+  authority: "http://localhost:8081/realms/tb-alert",
+  client_id: "tb-alert-frontend",
+  redirect_uri: "http://localhost:5173",
+  onSigninCallback: () => {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  },
+};
 
 const theme = createTheme({
-    palette: {
-        background: {
-            default: "#fafafa",
-        },
-        primary: {
-            main: "#0B455C",
-        },
+  palette: {
+    background: {
+      default: "#fafafa",
     },
-    components: {
-        MuiPaper: {
-            styleOverrides: {
-                root: {
-                    borderRadius: 12,
-                },
-            },
+    primary: {
+      main: "#0B455C",
+    },
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
         },
+      },
     },
-    typography: {
-        fontSize: 12,
-    },
+  },
+  typography: {
+    fontSize: 12,
+  },
 });
 
 const router = createBrowserRouter(
@@ -47,21 +59,26 @@ const router = createBrowserRouter(
       <Route path="/registerPatient" element={<PatientRegistrationPage />} />
       <Route path="/visit" element={<VisitFollowUpPage />} />
       <Route
-				path="/register/state-coordinator"
-				element={<StateCoordinatorRegistrationPage />}
-			/>
-			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
-			<Route path="/reports" element={<Reports />} />
+        path="/register/state-coordinator"
+        element={<StateCoordinatorRegistrationPage />}
+      />
+      <Route
+        path="/register/telecommunicator"
+        element={<TeleCommunicatorRegistration />}
+      />
+      <Route path="/reports" element={<Reports />} />
+      <Route path="/settings" element={<Settings />} />
       <Route path="*" element={<ErrorPage />} />
-      <Route path="settings" element={<Settings />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="settings" element={<Settings />} />
-        </Route>
+    </Route>
   )
 );
 
 createRoot(document.getElementById("root")!).render(
-	<ThemeProvider theme={theme}>
-		<RouterProvider router={router} />
-	</ThemeProvider>
+  <AuthProvider {...oidcConfig}>
+    <ThemeProvider theme={theme}>
+      <PrivateRoute>
+        <RouterProvider router={router} />
+      </PrivateRoute>
+    </ThemeProvider>
+  </AuthProvider>
 );

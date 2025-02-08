@@ -4,64 +4,64 @@ import axios from "axios";
 // import { store } from "../store/store";
 
 const axiosInstance = axios.create({
-	baseURL: "http://localhost:8081",
-	timeout: 10000,
+  baseURL: "http://localhost:8080",
+  timeout: 10000,
 });
 
 // let isRefreshing = false;
 
 axiosInstance.interceptors.request.use(
-	async (config) => {
-		try {
-			// This is done so that if the token is deleted here, it is deleted from redux as well.
-			// Otherwise redux state would still have it upon deletion (till new access token is generated) which would be gone upon refresh.
-			// So for making it easy, it is fetched from localstorage.
-			// let accessToken = localStorage.getItem("access-token");
+  async (config) => {
+    try {
+      // This is done so that if the token is deleted here, it is deleted from redux as well.
+      // Otherwise redux state would still have it upon deletion (till new access token is generated) which would be gone upon refresh.
+      // So for making it easy, it is fetched from localstorage.
+      // let accessToken = localStorage.getItem("access-token");
 
-			// if (accessToken) {
-			// 	const accessTokenExpiry = jwtDecode(accessToken).exp * 1000;
+      // if (accessToken) {
+      // 	const accessTokenExpiry = jwtDecode(accessToken).exp * 1000;
 
-			// 	if (accessTokenExpiry < Date.now()) {
-			// 		if (!isRefreshing) {
-			// 			isRefreshing = true;
+      // 	if (accessTokenExpiry < Date.now()) {
+      // 		if (!isRefreshing) {
+      // 			isRefreshing = true;
 
-			// 			const rs = await getNewAccessAndRefreshToken();
-			// 			const newAccessToken = rs.data.accessToken;
+      // 			const rs = await getNewAccessAndRefreshToken();
+      // 			const newAccessToken = rs.data.accessToken;
 
-			// 			store.dispatch(updateTokens({ accessToken: newAccessToken }));
-			// 			localStorage.setItem("access-token", newAccessToken);
+      // 			store.dispatch(updateTokens({ accessToken: newAccessToken }));
+      // 			localStorage.setItem("access-token", newAccessToken);
 
-			// 			isRefreshing = false;
+      // 			isRefreshing = false;
 
-			// 			config.headers.Authorization = `Bearer ${newAccessToken}`;
-			// 		}
-			// 	} else {
-			// 		config.headers.Authorization = `Bearer ${accessToken}`;
-			// 	}
-			// } else {
-			// 	console.warn("No accessToken found in localStorage");
-			// }
+      // 			config.headers.Authorization = `Bearer ${newAccessToken}`;
+      // 		}
+      // 	} else {
+      // 		config.headers.Authorization = `Bearer ${accessToken}`;
+      // 	}
+      // } else {
+      // 	console.warn("No accessToken found in localStorage");
+      // }
 
-			return config;
-		} catch (error) {
-			// store.dispatch(deleteTokens());
-			return Promise.reject(error);
-		}
-	},
-	(error) => {
-		return Promise.reject(error);
-	}
+      return config;
+    } catch (error) {
+      // store.dispatch(deleteTokens());
+      return Promise.reject(error);
+    }
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 axiosInstance.interceptors.response.use(
-	(response) => {
-		return response;
-	},
-	(error) => {
-		// if (error.response.status === 403 || error.response.status === 401)
-		// 	store.dispatch(deleteTokens());
-		return Promise.reject(error);
-	}
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // if (error.response.status === 403 || error.response.status === 401)
+    // 	store.dispatch(deleteTokens());
+    return Promise.reject(error);
+  }
 );
 
 // async function getNewAccessAndRefreshToken() {
