@@ -1,42 +1,61 @@
-import { Grid, Paper } from "@mui/material";
-import { useState } from "react";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { MdLocalHospital, MdMobileFriendly, MdPerson, MdVaccines } from "react-icons/md";
-import PatientDashboardMain from "./PatientDashboardMain";
-import PatientDashboardSidebar from "./PatientDashboardSidebar";
-
-export interface selectionListDataTypes {
-	name: string;
-	icon: React.ReactNode;
-}
-
-const sidebarSelectionModes = [
-	{ name: "Personal Records", icon: <MdPerson /> },
-	{ name: "Medical Records", icon: <MdLocalHospital /> },
-	{ name: "Nikshay Details", icon: <MdMobileFriendly /> },
-	{ name: "Medications", icon: <MdVaccines /> },
-];
+import { RiPencilLine } from "react-icons/ri";
+import PatientMedicalDetails from "./PatientMedicalDetails";
+import PatientMedicineDetails from "./PatientMedicineDetails";
+import PatientNikshayDetails from "./PatientNikshayDetails";
+import PatientPersonalDetails from "./PatientPersonalDetails";
 
 const PatientDashboardPage = () => {
-	const [selectedIndex, setSelectedIndex] = useState(0);
 	return (
-		<Grid container padding={1}>
-			<Grid item lg={3} sx={{ height: "84vh", padding: 1 }}>
-				<Paper sx={{ padding: 2 }}>
-					<PatientDashboardSidebar
-						selectionList={sidebarSelectionModes}
-						selectionIndex={selectedIndex}
-						changeSelection={(input) => setSelectedIndex(input)}
-					/>
-				</Paper>
-			</Grid>
-			<Grid item lg={9} sx={{ height: "84vh", padding: 1 }}>
-				<Paper sx={{ height: "100%", padding: 2, overflow: "auto" }}>
-					<PatientDashboardMain
-						selectionList={sidebarSelectionModes}
-						selectionIndex={selectedIndex}
-					/>
-				</Paper>
-			</Grid>
+		<Grid container spacing={2} sx={{ p: 2 }}>
+			{[
+				{
+					title: "Personal Details",
+					component: <PatientPersonalDetails />,
+					icon: <MdPerson style={{ fontSize: "25px" }} />,
+				},
+				{
+					title: "Nikshay Details",
+					component: <PatientNikshayDetails />,
+					icon: <MdMobileFriendly style={{ fontSize: "20px" }} />,
+				},
+				{
+					title: "Medicine Details",
+					component: <PatientMedicineDetails />,
+					icon: <MdVaccines style={{ fontSize: "20px" }} />,
+				},
+				{
+					title: "Medical Details",
+					component: <PatientMedicalDetails />,
+					icon: <MdLocalHospital style={{ fontSize: "25px" }} />,
+				},
+			].map((section, index) => (
+				<Grid item xs={12} sm={6} key={index}>
+					<Paper
+						sx={{
+							p: 3,
+							borderRadius: 3,
+							height: "100%",
+							backgroundColor: "#fdfdfd",
+							overflowY: "auto",
+						}}>
+						<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+							<Box sx={{ display: "flex", gap: 1 }}>
+								{section.icon}
+								<Typography
+									variant="h6"
+									fontWeight="bold"
+									sx={{ mb: 2, color: "#1976d2" }}>
+									{section.title}
+								</Typography>
+							</Box>
+							<RiPencilLine />
+						</Box>
+						{section.component}
+					</Paper>
+				</Grid>
+			))}
 		</Grid>
 	);
 };

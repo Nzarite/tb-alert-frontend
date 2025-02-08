@@ -1,4 +1,4 @@
-import { Divider, Grid, Typography } from "@mui/material";
+import { Divider, Grid } from "@mui/material";
 import patientData from "../../components/Json/PatientPersonalDetails.json";
 import { renderField } from "./PatientNikshayDetails";
 
@@ -19,9 +19,6 @@ const PatientPersonalDetails = () => {
 
 	return (
 		<>
-			<Typography variant="h5" sx={{ fontWeight: "bold", marginTop: 1, marginBottom: 2 }}>
-				Personal Details
-			</Typography>
 			<Divider sx={{ mb: 4 }} />
 			<Grid container spacing={3} sx={{ padding: "0px 40px" }}>
 				{fields.map((item, index) => renderField(patientData, item, index))}
