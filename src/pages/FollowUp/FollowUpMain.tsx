@@ -310,7 +310,7 @@ const FollowUpFormComponent = ({ index, data }: Props) => {
 					</Box>
 				</>
 			) : (
-				<Typography>No Follow-ups Found</Typography>
+				<Typography align="center">Please Search for a Patient</Typography>
 			)}
 		</Paper>
 	);
