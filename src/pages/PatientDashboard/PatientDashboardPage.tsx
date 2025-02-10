@@ -52,9 +52,7 @@ const PatientDashboardPage = () => {
 					<Paper
 						sx={{
 							p: 3,
-							borderRadius: 3,
 							height: "100%",
-							backgroundColor: "#fdfdfd",
 							overflowY: "auto",
 						}}>
 						<Box sx={{ display: "flex", justifyContent: "space-between" }}>

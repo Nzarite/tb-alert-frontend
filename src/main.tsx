@@ -34,7 +34,9 @@ const theme = createTheme({
 		MuiPaper: {
 			styleOverrides: {
 				root: {
-					borderRadius: 12,
+					borderRadius: 0,
+					boxShadow: "none",
+					border: "1px solid lightGray",
 				},
 			},
 		},
