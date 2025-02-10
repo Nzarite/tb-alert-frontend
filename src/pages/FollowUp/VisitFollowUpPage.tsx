@@ -5,10 +5,14 @@ import SearchBox from "../../components/SearchBox";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
 import FollowUpFormComponent from "./FollowUpMain";
 import FollowUpSidebar from "./FollowUpSidebar";
+import { useLocation } from "react-router-dom";
 
 const VisitFollowUpPage = () => {
+	const location = useLocation();
+	const initialState = location.state?.prop || null;
+	const [search, setSearch] = useState<string | null>(initialState);
+	
 	const [data, setData] = useState<VisitDataInterface | null>(null);
-	const [search, setSearch] = useState<string | null>(null);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	const handleListItemClick = (index: number) => {
