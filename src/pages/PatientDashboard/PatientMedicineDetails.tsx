@@ -8,9 +8,22 @@ import {
 	TableRow,
 	Typography,
 } from "@mui/material";
-import patientData from "../../components/Json/PatientMedicineDetails.json";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../components/axiosInstance";
 
 const PatientMedicineDetails = () => {
+	const [patientData, setPatientData] = useState(null);
+
+	useEffect(() => {
+		const id = 1;
+		const getData = async () => {
+			const res = await axiosInstance.get(`patientmedication/${id}`);
+			setPatientData(res.data);
+		};
+
+		getData();
+	}, []);
+
 	return (
 		<>
 			<Divider sx={{ mb: 4 }} />
@@ -32,7 +45,7 @@ const PatientMedicineDetails = () => {
 							patientData.map((medicine, index) => (
 								<TableRow key={index}>
 									<TableCell>
-										<Typography>{medicine.medicationName}</Typography>
+										<Typography>{medicine.medication}</Typography>
 									</TableCell>
 									<TableCell>
 										<Typography>{medicine.frequency}</Typography>

@@ -1,8 +1,11 @@
-import { Divider, Grid } from "@mui/material";
+import { Divider, Grid, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../components/axiosInstance";
 import { renderField } from "./PatientNikshayDetails";
-import patientData from "../../components/Json/PatientContactScreeningDetails.json";
 
 const PatientContactScreeningDetails = () => {
+	const [patientData, setPatientData] = useState(null);
+
 	const fields = [
 		{ name: "contactScreeningDone", label: "Contact Screen Status", size: 6 },
 		{ name: "dateOfContactScreening", label: "Date of Contact Screening", size: 6 },
@@ -21,12 +24,28 @@ const PatientContactScreeningDetails = () => {
 		{ name: "noOfHHCsInitiatedTPT", label: "No. of HHCs who initiated TPT", size: 6 },
 	];
 
+	useEffect(() => {
+		const id = 1;
+		const getData = async () => {
+			const res = await axiosInstance.get(`contact-screening/${id}`);
+			setPatientData(res.data);
+		};
+
+		getData();
+	}, []);
+
 	return (
 		<>
 			<Divider sx={{ mb: 4 }} />
-			<Grid container spacing={3} sx={{ padding: "0px 40px" }}>
-				{fields.map((item, index) => renderField(patientData, item, index))}
-			</Grid>
+			{patientData ? (
+				<Grid container spacing={3} sx={{ padding: "0px 40px" }}>
+					{fields.map((item, index) => renderField(patientData, item, index))}
+				</Grid>
+			) : (
+				<Typography align="center" variant="body2" color="textSecondary">
+					Unable to fetch data
+				</Typography>
+			)}
 		</>
 	);
 };
