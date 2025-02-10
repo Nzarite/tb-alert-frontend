@@ -1,6 +1,13 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { MdLocalHospital, MdMobileFriendly, MdPerson, MdVaccines } from "react-icons/md";
+import {
+	MdAssessment,
+	MdLocalHospital,
+	MdMobileFriendly,
+	MdPerson,
+	MdVaccines,
+} from "react-icons/md";
 import { RiPencilLine } from "react-icons/ri";
+import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
 import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
@@ -13,25 +20,35 @@ const PatientDashboardPage = () => {
 				{
 					title: "Personal Details",
 					component: <PatientPersonalDetails />,
-					icon: <MdPerson style={{ fontSize: "25px" }} />,
+					icon: <MdPerson style={{ fontSize: "24px" }} />,
+					size: 6,
 				},
 				{
 					title: "Nikshay Details",
 					component: <PatientNikshayDetails />,
 					icon: <MdMobileFriendly style={{ fontSize: "20px" }} />,
-				},
-				{
-					title: "Medicines",
-					component: <PatientMedicineDetails />,
-					icon: <MdVaccines style={{ fontSize: "20px" }} />,
+					size: 6,
 				},
 				{
 					title: "Medical Report",
 					component: <PatientMedicalDetails />,
 					icon: <MdLocalHospital style={{ fontSize: "25px" }} />,
+					size: 6,
+				},
+				{
+					title: "Medicines",
+					component: <PatientMedicineDetails />,
+					icon: <MdVaccines style={{ fontSize: "20px" }} />,
+					size: 6,
+				},
+				{
+					title: "Contact Screening",
+					component: <PatientContactScreeningDetails />,
+					icon: <MdAssessment style={{ fontSize: "22px" }}/>,
+					size: 12,
 				},
 			].map((section, index) => (
-				<Grid item xs={12} sm={6} key={index}>
+				<Grid item xs={12} sm={section.size} key={index}>
 					<Paper
 						sx={{
 							p: 3,

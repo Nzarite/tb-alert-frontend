@@ -3,13 +3,19 @@ import { DashboardFieldsProp } from "../../components/datatypes/DataTypes";
 import patientData from "../../components/Json/PatientNikshayDetails.json";
 
 export const renderField = (data, item: DashboardFieldsProp, index: number) => {
+	const fieldValue = data[item.name];
+	const displayValue =
+		fieldValue !== null && fieldValue !== undefined && fieldValue !== "" ? fieldValue : "N/A";
+
 	return (
 		<Grid item xs={item.size} key={index}>
 			<Typography variant="subtitle2" fontWeight="bold" sx={{ color: "gray" }}>
 				{item.label.toUpperCase()}:
 			</Typography>
 			<Typography variant="body1" sx={{ fontWeight: "medium", color: "#333" }}>
-				{data[item.name] !== null ? data[item.name] : "N/A"}
+				{typeof displayValue === "string" || typeof displayValue === "number"
+					? displayValue
+					: "N/A"}
 			</Typography>
 		</Grid>
 	);
