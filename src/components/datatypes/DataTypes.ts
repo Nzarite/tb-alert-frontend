@@ -64,3 +64,17 @@ export interface PatientMedicineInterface {
 	medicationName: string;
 	frequency: number;
 }
+
+export interface PatientContactScreeningInterface {
+	contactScreeningDone: boolean;
+	dateOfContactScreening: string;
+	noOfHHCsAvailable: string;
+	noOfHHCsScreened: string;
+	noOfHHCsWithTBSymptoms: string;
+	noOfHHCsReferredTBTesting: string;
+	noOfHHCsDiagnosedTB: string;
+	noOfHHCsTBInitiatedATT: string;
+	noOfHHCsUndergoneLTBITest: string;
+	noOfEligibleForTPT: string;
+	noOfHHCsInitiatedTPT: string;
+}

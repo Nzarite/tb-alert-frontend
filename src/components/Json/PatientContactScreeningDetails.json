@@ -1,0 +1,13 @@
+{
+	"contactScreeningDone": true,
+	"dateOfContactScreening": "",
+	"noOfHHCsAvailable": "",
+	"noOfHHCsScreened": "",
+	"noOfHHCsWithTBSymptoms": "",
+	"noOfHHCsReferredTBTesting": "",
+	"noOfHHCsDiagnosedTB": "",
+	"noOfHHCsTBInitiatedATT": "",
+	"noOfHHCsUndergoneLTBITest": "",
+	"noOfEligibleForTPT": "",
+	"noOfHHCsInitiatedTPT": ""
+}
