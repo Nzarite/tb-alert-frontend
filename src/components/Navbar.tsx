@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const [language, setLanguage] = useState("English");
+  const [language, setLanguage] = useState("en");
   return (
     <div id="navbar">
       <div className="navbar-left">
@@ -23,9 +23,9 @@ const Navbar = () => {
             onChange={(e) => setLanguage(e.target.value)}
             input={<OutlinedInput sx={{height: "30px"}} /> }
           >
-            <MenuItem value="English">English</MenuItem>
-            <MenuItem value="Hindi">Hindi</MenuItem>
-            <MenuItem value="Telugu">Telugu</MenuItem>
+            <MenuItem value="en">English</MenuItem>
+            <MenuItem value="hi">Hindi</MenuItem>
+            <MenuItem value="te">Telugu</MenuItem>
           </Select>
         </FormControl>
 

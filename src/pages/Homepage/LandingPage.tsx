@@ -5,56 +5,53 @@ import { MdDashboard } from "react-icons/md";
 import { TbReportMedical } from "react-icons/tb";
 import { IoIosSettings } from "react-icons/io";
 import { AiFillSchedule } from "react-icons/ai";
+import { Box, Typography } from "@mui/material";
 
 const LandingPage = () => {
   return (
-    <div className="landing-container">
-      {/* <div className="header-text">
-        <h1 className="header-h1">Home</h1>
-        <p className="header-p">Logged in as admin</p>
-      </div> */}
-      <div className="module-container">
+    <Box className="landing-container">
+      <Box className="module-container">
         <Link to="/register/patient" className="module-item">
-          <FaUser size={30}/>
-          <div>Register <br /> Patient</div>
+          <FaUser className="icon" size={35}/>
+          <Box>Register <br /> Patient</Box>
         </Link>
 
         <Link to="#" className="module-item">
-          <FaUser size={30}/>
-          <div>Register <br /> Caregiver</div>
+          <FaUser className="icon" size={35}/>
+          <Box>Register <br /> Caregiver</Box>
         </Link>
 
         <Link to="/visit" className="module-item">
-          <AiFillSchedule size={40}/>
-          <div>Follow-ups</div>
+          <AiFillSchedule className="icon" size={35}/>
+          <Box>Follow-ups</Box>
         </Link>
 
         <Link to="#" className="module-item">
-          <MdDashboard size={30}/>
-          <div>Patient <br /> Dashboard</div>
+          <MdDashboard className="icon" size={35}/>
+          <Box>Patient <br /> Dashboard</Box>
         </Link>
 
         <Link to="/reports" className="module-item">
-        <TbReportMedical size={40}/>
-          <div>Reports</div>
+        <TbReportMedical className="icon" size={35}/>
+          <Box>Reports</Box>
         </Link>
 
         <Link to="/settings" className="module-item">
-          <IoIosSettings size={40} /> 
-          <div>Settings</div>
+          <IoIosSettings className="icon" size={35} /> 
+          <Box>Settings</Box>
         </Link>
 
         <Link to="/register/state-coordinator" className="module-item">
-          <FaUser size={25}/>
-          <div>Register <br /> State <br />Coordinator</div>
+          <FaUser className="icon" size={35}/>
+          <Box>Register <br /> State <br />Coordinator</Box>
         </Link>
 
         <Link to="/register/telecommunicator" className="module-item">
-          <FaUser size={25}/>
-          <div>Register <br /> Tele <br /> Communicator</div>
+          <FaUser className="icon" size={35}/>
+          <Box>Register <br /> Tele <br /> Communicator</Box>
         </Link>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

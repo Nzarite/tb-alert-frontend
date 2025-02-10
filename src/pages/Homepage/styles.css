@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
-    background-color: #eeeeee;
+    background-color: whitesmoke;
 }
 
 .landing-container {
@@ -22,43 +22,55 @@ body {
 }
 
 .module-container {
-    margin: auto 30%;
+    margin:auto 30%;
     min-width: 0;
-    display: grid;
-    grid-template-columns: repeat(3, min-content);
+    /* display: grid;
+    grid-template-columns: repeat(3, min-content); */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     padding-left: 0;
     gap: 20px;
 }
 
 .module-item {
+    font-weight: bold;
+    flex: 0 0 30%;
+    max-height: 12vw;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     aspect-ratio: 1/1;
     border: 1px solid lightgrey;
-    background-color: whitesmoke;
+    background-color:#f9f9f9;
     color:darkslategrey;
     padding: 20px;
     text-align: center;
     text-decoration: none;
-    border-radius: 2px;
+    border-radius: 15px;
     align-items: center;
 }
 
-@media(max-width: 1000px){
+@media(max-width: 1110px){
+    .module-container{
+        margin: auto 25%;
+    }
+}
+
+@media(max-width: 890px){
     .module-container{
         margin: auto 20%;
     }
-}
-
-@media(max-width: 800px){
-    .module-container{
-        margin: auto 10%;
+    .module-item{
+        max-height: 20vw;
     }
 }
 
-@media(max-width: 650px){
+@media(max-width: 750px){
     .module-container{
-        margin: auto 5%;
+        margin: auto 10%;
+    }
+    .icon{
+        si
     }
 }
