@@ -167,7 +167,7 @@ const FollowUpFormComponent = ({ index, data }: Props) => {
 		<Paper
 			variant="outlined"
 			sx={{
-				height: "77vh",
+				height: "71vh",
 				overflow: "auto",
 				padding: 4,
 				marginTop: 1,
@@ -310,7 +310,7 @@ const FollowUpFormComponent = ({ index, data }: Props) => {
 					</Box>
 				</>
 			) : (
-				<Typography>No Follow-ups Found</Typography>
+				<Typography sx={{ textAlign: "center" }}>Please Search for a patient...</Typography>
 			)}
 		</Paper>
 	);
