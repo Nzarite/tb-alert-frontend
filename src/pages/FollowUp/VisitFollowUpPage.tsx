@@ -63,9 +63,7 @@ const VisitFollowUpPage = () => {
 								variant="outlined"
 								sx={{
 									padding: 2,
-									position: "sticky",
-									top: 16,
-									height: "84vh",
+									height: "78vh",
 									overflow: "auto",
 								}}>
 								{data && data.followUpDetails.length > 0 && (
