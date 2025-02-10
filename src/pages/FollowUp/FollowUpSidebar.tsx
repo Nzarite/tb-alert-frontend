@@ -2,8 +2,8 @@ import { Chip, Divider, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { Pencil } from "react-bootstrap-icons";
-import { VisitDataInterface } from "../../components/VisitDataTypes";
+import { VisitDataInterface } from "../../components/datatypes/DataTypes";
+import FollowUpStatus from "../../components/Json/FollowUpStatus.json";
 
 interface FollowUpSidebarProps {
 	selectedIndex: number;
@@ -24,8 +24,8 @@ export default function FollowUpSidebar({ selectedIndex, setIndex, data }: Follo
 		const today = Date.now();
 		const dof = Date.parse(dateOfFollowUp);
 
-		if (today < dof) return "Scheduled";
-		return filled ? "Completed" : "Missed";
+		if (today < dof) return FollowUpStatus.Scheduled;
+		return filled ? FollowUpStatus.Captured : FollowUpStatus.Missed;
 	};
 
 	const isEditable = (dateOfFollowUp: string) => {
@@ -59,7 +59,6 @@ export default function FollowUpSidebar({ selectedIndex, setIndex, data }: Follo
 						variant="outlined"
 						size="small"
 					/>
-					{isEditable(item.date) && <Pencil />}
 				</ListItemButton>
 			))}
 		</List>

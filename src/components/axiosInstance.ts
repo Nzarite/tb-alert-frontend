@@ -2,10 +2,12 @@ import axios from "axios";
 // import { jwtDecode } from "jwt-decode";
 // import { deleteTokens, updateTokens } from "../store/jwtSlice";
 // import { store } from "../store/store";
+const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || "http://localhost";
+const SERVER_PORT = import.meta.env.VITE_SERVER_PORT || "8080";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
-  timeout: 10000,
+	baseURL: `${SERVER_BASE_URL}:${SERVER_PORT}`,
+	timeout: 10000,
 });
 
 // let isRefreshing = false;

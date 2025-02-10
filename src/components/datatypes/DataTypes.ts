@@ -14,19 +14,35 @@ export interface PatientInterface {
 	gp: string;
 	village: string;
 	district: string;
-	currentStatus: string;
+	currentStatus: boolean;
 }
 
 export interface FollowUpsDataInterface {
 	date: string;
 	followUpStatus: boolean;
 	remarks: string | null;
+	patientCondition: number;
 	medicationDetails: MedicationInterface[] | [];
 }
 
 export interface MedicationInterface {
-	id: number;
+	medicationId: number;
 	medicationName: string;
-	missedDosages: number;
+	missedDosages: string;
 	comments: string;
+}
+
+export interface PatientMedicalInterface {
+	dateOfDiagnosis: string;
+	dateOfTreatmentInitiation: string;
+	typeOfPwtb: string;
+	typeOfTb: string;
+	dstbOrDrtb: string;
+	patientId: string;
+}
+
+export interface DashboardFieldsProp {
+	name: string;
+	label: string;
+	size: string;
 }
