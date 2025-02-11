@@ -15,6 +15,8 @@ export interface PatientInterface {
 	village: string;
 	district: string;
 	currentStatus: boolean;
+	cured: boolean;
+	aliveOrDead: boolean;
 }
 
 export interface FollowUpsDataInterface {

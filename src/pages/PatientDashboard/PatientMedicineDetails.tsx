@@ -45,7 +45,7 @@ const PatientMedicineDetails = () => {
 							patientData.map((medicine, index) => (
 								<TableRow key={index}>
 									<TableCell>
-										<Typography>{medicine.medication}</Typography>
+										<Typography>{medicine.medicationName}</Typography>
 									</TableCell>
 									<TableCell>
 										<Typography>{medicine.frequency}</Typography>
