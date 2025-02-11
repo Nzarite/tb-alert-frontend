@@ -8,39 +8,28 @@ body {
 .landing-container {
     display: flex;
     flex-direction: column;
-    gap: 50px;
-    text-align: left;
-    padding: 5%;
-}
-
-.header-text {
-    margin: 0 30vw;
-}
-
-.header-p{
-    color: gray;
+    align-items: center;
+    margin: 50px;
+    padding: 30px;
 }
 
 .module-container {
-    margin:auto 30%;
-    min-width: 0;
-    /* display: grid;
-    grid-template-columns: repeat(3, min-content); */
     display: flex;
     flex-wrap: wrap;
+    max-width: 500px;
     justify-content: center;
-    padding-left: 0;
     gap: 20px;
 }
 
 .module-item {
-    font-weight: bold;
-    flex: 0 0 30%;
-    max-height: 12vw;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    aspect-ratio: 1/1;
+    flex-shrink: 0;
+    align-items: center;
+    height: 150px;
+    width: 150px;
+    gap: 25px;
+    font-weight: bold;
     border: 1px solid lightgrey;
     background-color:#f9f9f9;
     color:darkslategrey;
@@ -48,29 +37,15 @@ body {
     text-align: center;
     text-decoration: none;
     border-radius: 15px;
-    align-items: center;
 }
 
-@media(max-width: 1110px){
-    .module-container{
-        margin: auto 25%;
-    }
+.icon{
+    height: 30px;
+    width: 30px;
 }
 
-@media(max-width: 890px){
-    .module-container{
-        margin: auto 20%;
-    }
-    .module-item{
-        max-height: 20vw;
-    }
-}
-
-@media(max-width: 750px){
-    .module-container{
-        margin: auto 10%;
-    }
-    .icon{
-        si
+@media(max-width: 450px){
+    .app-logo{
+        display: none;
     }
 }

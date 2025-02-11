@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
+import { Box, FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
 import { useState } from "react";
 import { MdLogout } from "react-icons/md";
 import { RiAccountBoxFill } from "react-icons/ri";
@@ -8,13 +8,13 @@ import "./Navbar.css";
 const Navbar = () => {
   const [language, setLanguage] = useState("en");
   return (
-    <div id="navbar">
-      <div className="navbar-left">
-        <Link to="/" className="navbar-text">
+    <Box id="navbar">
+      <Box className="navbar-left">
+        <Link to="/" className="navbar-text app-logo">
           TB Alert
         </Link>
-      </div>
-      <div className="navbar-right">
+      </Box>
+      <Box className="navbar-right">
         <FormControl id="language-menu">
           <Select
             labelId="language-type-label"
@@ -35,8 +35,8 @@ const Navbar = () => {
         <Link to="#" className="navbar-text">
           <MdLogout title="Log Out" size={25} />
         </Link>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
