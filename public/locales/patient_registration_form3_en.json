@@ -1,21 +1,37 @@
 {
-    "nikshaydetailsform": {
-        "contactScreeningDoneLabel": {
-            "label": "Contact Screening Done1",
-            "options": [
-                { "label": "Yes1", "value": true },
-                { "label": "No", "value": false }
-            ]
-        },
-        "contactScreeningDateLabel": "Date of Contact Screening",
-        "availableHhcsLabel": "No of HHCs available",
-        "screenedHhcsLabel": "No of HHCs screened",
-        "hhcsWithTbSymptomsLabel": "No of HHCs found with TB Sympotoms",
-        "hhcsReferredForTbTestingLabel": "No of HHCs found with TB Sympotoms referred for TB testing",
-        "hhcsDiagnosedTbLabel": "No.of HHCs diagnosed TB",
-        "hhcsDiagnosedTbOnAttLabel": "No of HHCs diagnosed with TB initiated on ATT",
-        "hhcsUndergoneLBTILabel": "No of HHCs undergone for LTBI test",
-        "eligibleForTptLabel": "No.of eligible for TPT",
-        "hhcsInitiatedOnTptLabel": "No of HHCs initiated on TPT"
-    }
+  "nikshaydetailsform": {
+    "nikshayIdLabel": "Nikshay Id1",
+    "udstStatusLabel": {
+      "label": "Whether the PwTB done for UDST1",
+      "options": [
+        { "label": "Yes1", "value": true },
+        { "label": "No", "value": false }
+      ]
+    },
+    "dateOfUdstLabel": "UDST Test Date",
+    "resultOfUdstLabel": {
+      "label": "UDST Test Result",
+      "options": [
+        { "label": "Rifampicin Resistant1", "value": "Rifampicin Resistant" },
+        { "label": "Rifampicin Sensitive", "value": "Rifampicin Sensitive" }
+      ]
+    },
+    "dbtStatusLabel": {
+      "label": "Enrolled for DBT",
+      "options": [
+        { "label": "Yes1", "value": true },
+        { "label": "No", "value": false }
+      ]
+    },
+    "dateOfDbtLabel": "DBT Enrollment Date",
+    "nikshayMitraStatusLabel": {
+      "label": "Nikshay Mitra Linked",
+      "options": [
+        { "label": "Yes1", "value": true },
+        { "label": "No", "value": false }
+      ]
+    },
+    "nikshayMitraDateLabel": "Nikshay Mitra Link Date",
+    "nikshayMitraNameLabel": "Nikshay Mitra Name"
+  }
 }

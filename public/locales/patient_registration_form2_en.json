@@ -1,37 +1,35 @@
 {
-    "nikshaydetailsform": {
-        "nikshayIdLabel": "Nikshay Id1",
-        "udstDoneLabel": {
-            "label": "Whether the PwTB done for UDST1",
-            "options": [
-                { "label": "Yes1", "value": true },
-                { "label": "No", "value": false }
-            ]
-        },
-        "udstTestDateLabel": "UDST Test Date",
-        "udstTestResultLabel": {
-            "label": "UDST Test Result",
-            "options": [
-                { "label": "Rifampicin Resistant1", "value": "Rifampicin Resistant" },
-                { "label": "Rifampicin Sensitive", "value": "Rifampicin Sensitive" }
-            ]
-        },
-        "enrolledForDbtLabel": {
-            "label": "Enrolled for DBT",
-            "options": [
-                { "label": "Yes1", "value": true },
-                { "label": "No", "value": false }
-            ]
-        },
-        "dbtEnrollmentDateLabel": "DBT Enrollment Date",
-        "nikshayMitraLinkedLabel": {
-            "label": "Nikshay Mitra Linked",
-            "options": [
-                { "label": "Yes1", "value": true },
-                { "label": "No", "value": false }
-            ]
-        },
-        "nikshayMitraLinkDateLabel": "Nikshay Mitra Link Date",
-        "nikshayMitraNameLabel": "Nikshay Mitra Name"
+  "tbdetailsform": {
+    "nameOfPwtbLabel": "Name of PwTB",
+    "typeOfPwtbLabel": {
+      "label": "Type of PwTB",
+      "options": [
+        { "label": "Identified by Project1", "value": "Identified by Project" },
+        { "label": "Received from NTEP", "value": "Received from NTEP" }
+      ]
+    },
+    "clinicalOrMicrobiologicalLabel": {
+      "label": "Clinical/Microbiological",
+      "options": [
+        { "label": "Clinical1", "value": "Clinical" },
+        { "label": "Microbiological", "value": "Microbiological" }
+      ]
+    },
+    "dateOfDiagnosisLabel": "Date of Diagnosis",
+    "dateOfTreatmentInitiationLabel": "Date of Treatment Initiation",
+    "typeOfTbLabel": {
+      "label": "Type of TB(PTB/EPTB)",
+      "options": [
+        { "label": "PTB", "value": "PTB" },
+        { "label": "EPTB1", "value": "EPTB" }
+      ]
+    },
+    "dstbOrDrtbLabel": {
+      "label": "DS-TB/DR-TB",
+      "options": [
+        { "label": "DS-TB", "value": "DS-TB" },
+        { "label": "DR-TB1", "value": "DR-TB" }
+      ]
     }
+  }
 }

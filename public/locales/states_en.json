@@ -1,0 +1,10 @@
+{
+    "states": {
+        "label": "Name of the state",
+        "options": [
+            { "label": "Telangana", "value": "TG" },
+            { "label": "Uttar Pradesh", "value": "UP" },
+            { "label": "Bihar", "value": "BR" }
+        ]
+    } 
+}

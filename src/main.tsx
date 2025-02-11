@@ -15,6 +15,7 @@ import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage"
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
 import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
+import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 
@@ -40,7 +41,6 @@ const theme = createTheme({
 		fontSize: 12,
 	},
 });
-import CaregiverRegistrationPage from "./pages/CaregiverRegistrationPage";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
