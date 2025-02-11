@@ -51,7 +51,7 @@ function Reports() {
         marginTop: "50px",
       }}
     >
-      <Typography variant="h5">View Patient Records</Typography>
+      <Typography variant="h5">Reports</Typography>
       <Box
         component="form"
         sx={{
