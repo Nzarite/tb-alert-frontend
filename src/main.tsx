@@ -1,10 +1,10 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createRoot } from "react-dom/client";
 import {
-	createBrowserRouter,
-	createRoutesFromElements,
-	Route,
-	RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
 } from "react-router-dom";
 import "./index.css";
 import ErrorPage from "./pages/Error/ErrorPage";
@@ -31,48 +31,53 @@ const oidcConfig = {
 };
 
 const theme = createTheme({
-	palette: {
-		background: {
-			default: "#fafafa",
-		},
-		primary: {
-			main: "#0B455C",
-		},
-	},
-	components: {
-		MuiPaper: {
-			styleOverrides: {
-				root: {
-					borderRadius: 12,
-				},
-			},
-		},
-	},
-	typography: {
-		fontSize: 12,
-	},
+  palette: {
+    background: {
+      default: "#fafafa",
+    },
+    primary: {
+      main: "#0B455C",
+    },
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+        },
+      },
+    },
+  },
+  typography: {
+    fontSize: 12,
+  },
 });
 import CaregiverRegistrationPage from "./pages/CaregiverRegistrationPage";
 
 const router = createBrowserRouter(
-	createRoutesFromElements(
-		<Route element={<PageLayout />}>
-			<Route path="/" element={<LandingPage />} />
-			<Route path="/register/caregiver" element={<CaregiverRegistrationPage />} />
-			<Route path="/register/patient" element={<PatientRegistrationPage />} />
-			<Route path="/visit" element={<VisitFollowUpPage />} />
-			<Route
-				path="/register/state-coordinator"
-				element={<StateCoordinatorRegistrationPage />}
-			/>
-			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
-			<Route path="/dashboard/patient" element={<PatientDashboardPage />} />
-			<Route path="/reports" element={<Reports />} />
-			<Route path="*" element={<ErrorPage />} />
-			<Route path="settings" element={<Settings />} />
-			<Route path="/reports" element={<Reports />} />
-		</Route>
-	)
+  createRoutesFromElements(
+    <Route element={<PageLayout />}>
+      <Route path="/" element={<LandingPage />} />
+      <Route
+        path="/register/caregiver"
+        element={<CaregiverRegistrationPage />}
+      />
+      <Route path="/register/patient" element={<PatientRegistrationPage />} />
+      <Route path="/visit" element={<VisitFollowUpPage />} />
+      <Route
+        path="/register/state-coordinator"
+        element={<StateCoordinatorRegistrationPage />}
+      />
+      <Route
+        path="/register/telecommunicator"
+        element={<TeleCommunicatorRegistration />}
+      />
+      <Route path="/dashboard/patient" element={<PatientDashboardPage />} />
+      <Route path="/reports" element={<Reports />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="*" element={<ErrorPage />} />
+    </Route>
+  )
 );
 
 createRoot(document.getElementById("root")!).render(
