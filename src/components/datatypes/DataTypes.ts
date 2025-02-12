@@ -15,6 +15,8 @@ export interface PatientInterface {
 	village: string;
 	district: string;
 	currentStatus: boolean;
+	cured: boolean;
+	aliveOrDead: boolean;
 }
 
 export interface FollowUpsDataInterface {
@@ -44,5 +46,37 @@ export interface PatientMedicalInterface {
 export interface DashboardFieldsProp {
 	name: string;
 	label: string;
-	size: string;
+	size: number;
+}
+
+export interface PatientNikshayInterface {
+	nikshayId: string;
+	nikshayMitraName: string;
+	nikshayMitraDate: string;
+	nikshayMitraStatus: string;
+	dateOfDbt: string;
+	dbtStatus: boolean;
+	dateOfUdst: string;
+	udstStatus: boolean;
+	resultOfUdst: string;
+	patientId: number;
+}
+
+export interface PatientMedicineInterface {
+	medicationName: string;
+	frequency: number;
+}
+
+export interface PatientContactScreeningInterface {
+	contactScreeningDone: boolean;
+	dateOfContactScreening: string;
+	noOfHHCsAvailable: string;
+	noOfHHCsScreened: string;
+	noOfHHCsWithTBSymptoms: string;
+	noOfHHCsReferredTBTesting: string;
+	noOfHHCsDiagnosedTB: string;
+	noOfHHCsTBInitiatedATT: string;
+	noOfHHCsUndergoneLTBITest: string;
+	noOfEligibleForTPT: string;
+	noOfHHCsInitiatedTPT: string;
 }
