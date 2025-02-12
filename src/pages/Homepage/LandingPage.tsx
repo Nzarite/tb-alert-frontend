@@ -16,7 +16,7 @@ const LandingPage = () => {
           <Box>Register Patient</Box>
         </Link>
 
-        <Link to="#" className="module-item">
+        <Link to="register/caregiver" className="module-item">
           <FaUser className="icon"/>
           <Box>Register Caregiver</Box>
         </Link>
@@ -26,7 +26,7 @@ const LandingPage = () => {
           <Box>Follow-ups</Box>
         </Link>
 
-        <Link to="#" className="module-item">
+        <Link to="dashboard/patient" className="module-item">
           <MdDashboard className="icon"/>
           <Box>Patient Dashboard</Box>
         </Link>
