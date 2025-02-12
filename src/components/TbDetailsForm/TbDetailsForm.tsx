@@ -200,7 +200,7 @@ const TbDetailsForm = ({ language, data, onSave, onNext, onBack }: any) => {
         )}
 
         <Box mt={3} display="flex" justifyContent="space-between">
-          <Button variant="outlined" color="secondary" onClick={onBack}>
+          <Button variant="outlined" color="secondary" onClick={onBack} disabled>
             Back
           </Button>
           <Button type="submit" variant="contained" color="primary">

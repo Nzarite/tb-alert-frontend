@@ -56,18 +56,60 @@ const PatientRegistrationPage = () => {
   console.log(activeStep);
 
   const handleSave = async (stepData: any) => {
-    if (activeStep === 0) {
-      setFormData({ ...formData, patientDetails: stepData });
-      console.log("Patient Details Saved:", stepData);
-    } else if (activeStep === 1) {
-      setFormData({ ...formData, tbDetails: stepData });
-      console.log("TB Details Saved:", stepData);
-    } else if (activeStep === 2) {
-      setFormData({ ...formData, nikshayDetails: stepData });
-      console.log("Nikshay Details Saved:", stepData);
-    } else if (activeStep === 3) {
-      setFormData({ ...formData, contactScreeningDetails: stepData });
-      console.log("Contact Screening Details Saved:", stepData);
+    // if (activeStep === 0) {
+    //   setFormData({ ...formData, patientDetails: stepData });
+    //   console.log("Patient Details Saved:", stepData);
+    // } else if (activeStep === 1) {
+    //   setFormData({ ...formData, tbDetails: stepData });
+    //   console.log("TB Details Saved:", stepData);
+    // } else if (activeStep === 2) {
+    //   setFormData({ ...formData, nikshayDetails: stepData });
+    //   console.log("Nikshay Details Saved:", stepData);
+    // } else if (activeStep === 3) {
+    //   setFormData({ ...formData, contactScreeningDetails: stepData });
+    //   console.log("Contact Screening Details Saved:", stepData);
+    // }
+
+    try {
+      let response;
+
+      if (activeStep === 0) {
+        response = await axiosInstance.post("/patient/register", stepData);
+        setPatientId(response.data.patientId);
+        setFormData({ ...formData, patientDetails: stepData });
+      } else if (activeStep === 1) {
+        if (!patientId) {
+          throw new Error("Patient ID not found. Please complete step 1.");
+        }
+        response = await axiosInstance.post("/tbdetails/register", {
+          ...stepData,
+          patientId,
+        });
+        setFormData({ ...formData, tbDetails: stepData });
+      } else if (activeStep === 2) {
+        if (!formData.tbDetails) {
+          throw new Error("TB Details not found. Please complete step 2.");
+        }
+        response = await axiosInstance.post("/nikshaymitra/register", {
+          ...stepData,
+          patientId,
+        });
+        setFormData({ ...formData, nikshayDetails: stepData });
+      } else if (activeStep === 3) {
+        if (!formData.nikshayDetails) {
+          throw new Error("Nikshay Details not found. Please complete step 3.");
+        }
+        response = await axiosInstance.post("/contactscreening/save", {
+          ...stepData,
+          patientId,
+        });
+        setFormData({ ...formData, contactScreeningDetails: stepData });
+        navigate("/dashboard/patient");
+      }
+      setActiveStep(activeStep + 1);
+    } catch (error: any) {
+      console.error("Error saving data:", error);
+      alert(`Error: ${error.response?.data?.message || error.message}`);
     }
   };
 

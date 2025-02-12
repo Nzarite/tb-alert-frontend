@@ -192,7 +192,7 @@ const ContactScreeningDetailsForm = ({
         )}
 
         <Box mt={3} display="flex" justifyContent="space-between">
-          <Button variant="outlined" color="secondary" onClick={onBack}>
+          <Button variant="outlined" color="secondary" onClick={onBack} disabled>
             Back
           </Button>
           <Button type="submit" variant="contained" color="success">
