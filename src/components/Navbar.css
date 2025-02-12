@@ -1,6 +1,6 @@
 #navbar {
 	background-color: #0b455c;
-	width: 100vw;
+	width: 100%;
 	color: white;
 	padding: 15px;
 	display: flex;
@@ -10,18 +10,19 @@
 }
 
 .navbar-left, .navbar-right{
+	min-width: 0;
 	display: flex;
 	flex-direction: row;
 	gap: 30px;
 }
 
 .navbar-left{
-	margin-left: 50px;
+	margin-left: 10%;
 	align-items: center;
 }
 
 .navbar-right{
-	margin-right: 100px;
+	margin-right: 10%;
 	align-items: center;
 }
 
@@ -33,5 +34,6 @@
 
 #language-menu{
 	background-color: white;
-	/* border-radius: 10px; */
 }
+
+

@@ -31,3 +31,18 @@ export interface MedicationInterface {
 	missedDosages: string;
 	comments: string;
 }
+
+export interface PatientMedicalInterface {
+	dateOfDiagnosis: string;
+	dateOfTreatmentInitiation: string;
+	typeOfPwtb: string;
+	typeOfTb: string;
+	dstbOrDrtb: string;
+	patientId: string;
+}
+
+export interface DashboardFieldsProp {
+	name: string;
+	label: string;
+	size: string;
+}
