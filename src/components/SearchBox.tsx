@@ -27,29 +27,29 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
 		null
 	);
 
-	// This method fetches options for the drop down menu
-	const fetchOptions = async (search: string) => {
-		if (!search) {
-			setOptions([]);
-			setLastSearched("");
-			return;
-		}
-		if (search === lastSearched) return; // Prevent duplicate fetches
-		try {
-			const response = await axiosInstance.get(`/patient/name/${search}`);
-			const data = response.data.map((item: patientSearch) => ({
-				value: item.patientId,
-				label: `${item.firstName} ${item.lastName}`,
-			}));
-			setOptions(data);
-			setLastSearched(search);
-		} catch (error) {
-			console.error("Error fetching options:", error);
-		}
-	};
-
 	// Debouncing the Search for optimisation
 	useEffect(() => {
+		// This method fetches options for the drop down menu
+		const fetchOptions = async (search: string) => {
+			if (!search) {
+				setOptions([]);
+				setLastSearched("");
+				return;
+			}
+			if (search === lastSearched) return; // Prevent duplicate fetches
+			try {
+				const response = await axiosInstance.get(`/patient/name/${search}`);
+				const data = response.data.map((item: patientSearch) => ({
+					value: item.patientId,
+					label: `${item.firstName} ${item.lastName}`,
+				}));
+				setOptions(data);
+				setLastSearched(search);
+			} catch (error) {
+				console.error("Error fetching options:", error);
+			}
+		};
+
 		const debounceSearch = setTimeout(() => {
 			fetchOptions(inputValue.trim());
 		}, 300);
@@ -57,12 +57,12 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
 		return () => {
 			clearTimeout(debounceSearch);
 		};
-	}, [inputValue]);
+	}, [inputValue, lastSearched]);
 
 	// This method updates the search for all the
 	useEffect(() => {
 		if (selectedOption) changeSearch(selectedOption);
-	}, [selectedOption]);
+	}, [changeSearch, selectedOption]);
 
 	return (
 		<Select

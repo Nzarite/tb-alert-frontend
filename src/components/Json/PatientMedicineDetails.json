@@ -1,0 +1,19 @@
+[
+    {
+        "medicationName": "Paracetamol",
+        "frequency": 4
+    },
+    {
+        "medicationName": "Crocin",
+        "frequency": 3
+    },
+    {
+        "medicationName": "Silicia",
+        "frequency": 5
+    },
+    {
+        "medicationName": "Baryta Carb",
+        "frequency": 3
+    }
+
+]

@@ -11,23 +11,23 @@ interface FollowUpSidebarProps {
 	data: VisitDataInterface;
 }
 
+export const getStatusColor = (dateOfFollowUp: string, filled: boolean) => {
+	const today = Date.now();
+	const dof = Date.parse(dateOfFollowUp);
+
+	if (today < dof) return "warning";
+	return filled ? "success" : "error";
+};
+
+export const getStatusName = (dateOfFollowUp: string, filled: boolean) => {
+	const today = Date.now();
+	const dof = Date.parse(dateOfFollowUp);
+
+	if (today < dof) return FollowUpStatus.Scheduled;
+	return filled ? FollowUpStatus.Captured : FollowUpStatus.Missed;
+};
+
 export default function FollowUpSidebar({ selectedIndex, setIndex, data }: FollowUpSidebarProps) {
-	const getStatusColor = (dateOfFollowUp: string, filled: boolean) => {
-		const today = Date.now();
-		const dof = Date.parse(dateOfFollowUp);
-
-		if (today < dof) return "warning";
-		return filled ? "success" : "error";
-	};
-
-	const getStatusName = (dateOfFollowUp: string, filled: boolean) => {
-		const today = Date.now();
-		const dof = Date.parse(dateOfFollowUp);
-
-		if (today < dof) return FollowUpStatus.Scheduled;
-		return filled ? FollowUpStatus.Captured : FollowUpStatus.Missed;
-	};
-
 	const isEditable = (dateOfFollowUp: string) => {
 		const today = Date.now();
 		const dof = Date.parse(dateOfFollowUp);
