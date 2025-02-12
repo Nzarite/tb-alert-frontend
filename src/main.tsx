@@ -1,5 +1,6 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -7,6 +8,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import "./index.css";
+import CaregiverRegistrationPage from "./pages/CaregiverRegistrationPage";
 import ErrorPage from "./pages/Error/ErrorPage";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 import LandingPage from "./pages/Homepage/LandingPage";
@@ -29,30 +31,32 @@ const oidcConfig = {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
 };
+import { store } from "./redux/store";
 
 const theme = createTheme({
-  palette: {
-    background: {
-      default: "#fafafa",
-    },
-    primary: {
-      main: "#0B455C",
-    },
-  },
-  components: {
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-        },
-      },
-    },
-  },
-  typography: {
-    fontSize: 12,
-  },
+	palette: {
+		background: {
+			default: "#fafafa",
+		},
+		primary: {
+			main: "#0B455C",
+		},
+	},
+	components: {
+		MuiPaper: {
+			styleOverrides: {
+				root: {
+					borderRadius: 0,
+					boxShadow: "none",
+					border: "1px solid lightGray",
+				},
+			},
+		},
+	},
+	typography: {
+		fontSize: 12,
+	},
 });
-import CaregiverRegistrationPage from "./pages/CaregiverRegistrationPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(

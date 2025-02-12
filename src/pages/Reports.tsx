@@ -15,7 +15,7 @@ import * as XLSX from "xlsx";
 function Reports() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [reportType, setReportType] = useState("");
+  const [reportType, setReportType] = useState("treated-and-cured");
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -51,7 +51,7 @@ function Reports() {
         marginTop: "50px",
       }}
     >
-      <Typography variant="h5">View Patient Records</Typography>
+      <Typography variant="h5">Reports</Typography>
       <Box
         component="form"
         sx={{
@@ -87,9 +87,9 @@ function Reports() {
             label="Report Type"
             onChange={(e) => setReportType(e.target.value)}
           >
-            <MenuItem>Still Under Treatment</MenuItem>
-            <MenuItem>Treated And Cured</MenuItem>
-            <MenuItem>Died During Treatment</MenuItem>
+            <MenuItem value="still-under-treatment">Still Under Treatment</MenuItem>
+            <MenuItem value="treated-and-cured">Treated And Cured</MenuItem>
+            <MenuItem value="died-during-treatment">Died During Treatment</MenuItem>
           </Select>
         </FormControl>
         <Button

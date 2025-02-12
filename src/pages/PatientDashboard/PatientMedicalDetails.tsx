@@ -1,55 +1,40 @@
 import { Divider, Grid, Typography } from "@mui/material";
-import PatientMedicationData from "../../components/Json/PatientMedicalRecords.json";
-import { DashboardFieldsProp } from "../../components/datatypes/DataTypes";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../components/axiosInstance";
+import { renderField } from "./PatientNikshayDetails";
 
 const PatientMedicalDetails = () => {
+	const [patientData, setPatientData] = useState(null);
 	const fields = [
-		{ name: "dateOfDiagnosis", label: "Date of Diagnosis", size: "small" },
-		{ name: "dateOfTreatmentInitiation", label: "Date of Treatment Initiation", size: "small" },
-		{ name: "typeOfPwtb", label: "Type of PwTB", size: "small" },
-		{ name: "typeOfTb", label: "Type of TB", size: "small" },
-		{ name: "dstbOrDrtb", label: "DSTB/DRTB", size: "small" },
+		{ name: "dateOfDiagnosis", label: "Date of Diagnosis", size: 6 },
+		{ name: "dateOfTreatmentInitiation", label: "Date of Treatment Initiation", size: 6 },
+		{ name: "typeOfPwtb", label: "Type of PwTB", size: 6 },
+		{ name: "typeOfTb", label: "Type of TB", size: 6 },
+		{ name: "dstbOrDrtb", label: "DSTB/DRTB", size: 6 },
 	];
 
-	const renderField = (item: DashboardFieldsProp, index: number) => {
-		if (item.size === "small") {
-			return (
-				<Grid item xs={6} key={index}>
-					<Typography variant="body1" fontWeight="bold">
-						{item.label.toUpperCase()}:
-					</Typography>
-					<Typography variant="body1">
-						{PatientMedicationData[item.name] !== null
-							? PatientMedicationData[item.name]
-							: "N/A"}
-					</Typography>
-				</Grid>
-			);
-		} else {
-			return (
-				<Grid item xs={12} key={index}>
-					<Typography variant="body1" fontWeight="bold">
-						{item.label.toUpperCase()}:
-					</Typography>
-					<Typography variant="body1">
-						{PatientMedicationData[item.name] !== null
-							? PatientMedicationData[item.name]
-							: "N/A"}
-					</Typography>
-				</Grid>
-			);
-		}
-	};
+	useEffect(() => {
+		const id = 1;
+		const getData = async () => {
+			const res = await axiosInstance.get(`tbdetails/${id}`);
+			setPatientData(res.data);
+		};
+
+		getData();
+	}, []);
 
 	return (
 		<>
-			<Typography variant="h5" sx={{ marginTop: 1, marginBottom: 2 }}>
-				Medical Details
-			</Typography>
 			<Divider sx={{ mb: 4 }} />
-			<Grid container spacing={2} sx={{ padding: "0px 40px" }}>
-				{fields.map((item, index) => renderField(item, index))}
-			</Grid>
+			{patientData ? (
+				<Grid container spacing={3} sx={{ padding: "0px 40px" }}>
+					{fields.map((item, index) => renderField(patientData, item, index))}
+				</Grid>
+			) : (
+				<Typography align="center" variant="body2" color="textSecondary">
+					Unable to fetch data
+				</Typography>
+			)}
 		</>
 	);
 };

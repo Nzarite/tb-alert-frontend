@@ -17,7 +17,11 @@
     "@mui/material": "^6.4.2",
     "@mui/styled-engine-sc": "^6.4.2",
     "@mui/x-date-pickers": "^7.25.0",
+<<<<<<< HEAD
     "antd": "^5.23.4",
+=======
+    "@reduxjs/toolkit": "^2.5.1",
+>>>>>>> e5abaefd2bff6f63f3950ed587057630c6a98ebc
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",

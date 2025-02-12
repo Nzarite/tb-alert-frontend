@@ -2,43 +2,50 @@ body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
-    background-color: #eeeeee;
+    background-color: whitesmoke;
 }
 
 .landing-container {
     display: flex;
     flex-direction: column;
-    text-align: left;
-    padding: 20px 50px;
-    margin-left: 100px;
-}
-
-.header-text {
-    margin: 30px;
-}
-
-.header-p{
-    color: gray;
+    align-items: center;
+    margin: 50px;
+    padding: 30px;
 }
 
 .module-container {
     display: flex;
-    margin-left: 20px;
-    padding-left: 0;
-    gap: 50px;
+    flex-wrap: wrap;
+    max-width: 500px;
+    justify-content: center;
+    gap: 20px;
 }
 
 .module-item {
     display: flex;
-    border: 1px solid lightgrey;
-    background-color: whitesmoke;
-    height: 100px;
-    width: 100px;
-    color:darkslategrey;
+    flex-direction: column;
+    flex-shrink: 0;
+    align-items: center;
+    height: 150px;
+    width: 150px;
+    gap: 25px;
     font-weight: bold;
+    border: 1px solid lightgrey;
+    background-color:#f9f9f9;
+    color:darkslategrey;
     padding: 20px;
     text-align: center;
     text-decoration: none;
-    border-radius: 2px;
-    align-items: center;
+    border-radius: 15px;
+}
+
+.icon{
+    height: 30px;
+    width: 30px;
+}
+
+@media(max-width: 450px){
+    .app-logo{
+        display: none;
+    }
 }

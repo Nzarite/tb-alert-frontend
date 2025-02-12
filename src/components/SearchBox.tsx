@@ -63,21 +63,19 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
     }
   };
 
-  // Debouncing the Search for optimisation
-  useEffect(() => {
-    const debounceSearch = setTimeout(() => {
-      fetchOptions(inputValue.trim());
-    }, 300);
+		const debounceSearch = setTimeout(() => {
+			fetchOptions(inputValue.trim());
+		}, 300);
 
-    return () => {
-      clearTimeout(debounceSearch);
-    };
-  }, [inputValue]);
+		return () => {
+			clearTimeout(debounceSearch);
+		};
+	}, [inputValue, lastSearched]);
 
-  // This method updates the search for all the
-  useEffect(() => {
-    if (selectedOption) changeSearch(selectedOption);
-  }, [selectedOption]);
+	// This method updates the search for all the
+	useEffect(() => {
+		if (selectedOption) changeSearch(selectedOption);
+	}, [changeSearch, selectedOption]);
 
   return (
     <Select
