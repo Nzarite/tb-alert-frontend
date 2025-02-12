@@ -8,7 +8,6 @@ import {
 	RouterProvider,
 } from "react-router-dom";
 import "./index.css";
-import CaregiverRegistrationPage from "./pages/CaregiverRegistrationPage";
 import ErrorPage from "./pages/Error/ErrorPage";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 import LandingPage from "./pages/Homepage/LandingPage";
