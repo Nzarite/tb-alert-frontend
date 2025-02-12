@@ -9,49 +9,53 @@ import { Box } from "@mui/material";
 import { useAuth } from "react-oidc-context";
 
 const LandingPage = () => {
-	const auth = useAuth();
-	console.log(auth);
-	
+  const auth = useAuth();
+  console.log(auth);
+  console.log(auth.user?.profile);
+
   return (
     <Box className="landing-container">
       <Box className="module-container">
         <Link to="/register/patient" className="module-item">
-          <FaUser className="icon"/>
+          <FaUser className="icon" />
           <Box>Register Patient</Box>
         </Link>
 
         <Link to="register/caregiver" className="module-item">
-          <FaUser className="icon"/>
+          <FaUser className="icon" />
           <Box>Register Caregiver</Box>
         </Link>
 
         <Link to="/visit" className="module-item">
-          <AiFillSchedule className="icon"/>
+          <AiFillSchedule className="icon" />
           <Box>Follow-ups</Box>
         </Link>
 
         <Link to="dashboard/patient" className="module-item">
-          <MdDashboard className="icon"/>
+          <MdDashboard className="icon" />
           <Box>Patient Dashboard</Box>
         </Link>
 
         <Link to="/reports" className="module-item">
-        <TbReportMedical className="icon"/>
+          <TbReportMedical className="icon" />
           <Box>Reports</Box>
         </Link>
 
         <Link to="/settings" className="module-item">
-          <IoIosSettings className="icon" /> 
+          <IoIosSettings className="icon" />
           <Box>Settings</Box>
         </Link>
 
         <Link to="/register/state-coordinator" className="module-item">
-          <FaUser className="icon"/>
-          <Box>Register State <br />Coordinator</Box>
+          <FaUser className="icon" />
+          <Box>
+            Register State <br />
+            Coordinator
+          </Box>
         </Link>
 
         <Link to="/register/telecommunicator" className="module-item">
-          <FaUser className="icon"/>
+          <FaUser className="icon" />
           <Box>Register Tele Communicator</Box>
         </Link>
       </Box>

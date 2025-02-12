@@ -20,6 +20,7 @@ import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import PrivateRoute from "./components/PrivateRoute";
+import { store } from "./redux/store";
 
 import { AuthProvider } from "react-oidc-context";
 
@@ -31,7 +32,6 @@ const oidcConfig = {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
 };
-import { store } from "./redux/store";
 
 const theme = createTheme({
 	palette: {
