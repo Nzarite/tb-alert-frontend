@@ -82,7 +82,7 @@ const PatientFollowUpDetails = () => {
 							<TableRow>
 								<TableCell colSpan={4} align="center">
 									<Typography variant="body2" color="textSecondary">
-										No Medications Found
+										No Follow Ups Found
 									</Typography>
 								</TableCell>
 							</TableRow>
