@@ -31,7 +31,7 @@ const Navbar = () => {
           </Select>
         </FormControl>
 
-        <Link to="#" className="navbar-text">
+        <Link to="/profile" className="navbar-text">
           <RiAccountBoxFill title="Profile" size={25} />
         </Link>
         <Link to="#" className="navbar-text">
