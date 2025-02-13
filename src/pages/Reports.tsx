@@ -1,107 +1,73 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { saveAs } from "file-saver";
-import { useState } from "react";
-import * as XLSX from "xlsx";
+import React, { useState } from "react";
+import axiosInstance from "../components/axiosInstance";
 
-function Reports() {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [reportType, setReportType] = useState("treated-and-cured");
+const Reports: React.FC = () => {
+    const [age, setAge] = useState("");
+    const [gender, setGender] = useState("");
 
-  const today = new Date().toISOString().split("T")[0];
+    const handleUpdateFile = async () => {
+        try {
+            const filters = {
+                age: age ? parseInt(age) : 0,
+                gender: gender || null,
+            };
 
-  const handleDownload = () => {
-    const data = [
-      { id: 1, description: "Sample item 1", date: startDate },
-      { id: 2, description: "Sample item 2", date: endDate },
-    ];
+            await axiosInstance.post("/report/patient/filter", filters);
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+            console.log("Report file updated successfully in the backend.");
+            alert("Patient report updated in local storage.");
+        } catch (error) {
+            console.error("Error updating report:", error);
+        }
+    };
 
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    const formattedStartDate = startDate.replace(/-/g, "");
-    const formattedEndDate = endDate.replace(/-/g, "");
-    saveAs(
-      blob,
-      `report_${reportType}_${formattedStartDate}_${formattedEndDate}.xlsx`
+    return (
+        <div className="container d-flex justify-content-center align-items-center vh-100">
+            <div className="card shadow-lg p-4 w-50 border-0 rounded-4">
+                <h2 className="text-center mb-4 fw-bold text-primary">Update Patient Report</h2>
+                <div className="row">
+                    {/* Age Input */}
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className="fw-bold">Age:</label>
+                            <input
+                                type="number"
+                                className="form-control form-control-lg rounded-3 shadow-sm"
+                                value={age}
+                                onChange={(e) => setAge(e.target.value)}
+                                placeholder="Enter Age"
+                                min="0"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Gender Dropdown */}
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className="fw-bold">Gender:</label>
+                            <select
+                                className="form-control form-control-lg rounded-3 shadow-sm"
+                                value={gender}
+                                onChange={(e) => setGender(e.target.value)}
+                            >
+                                <option value="">All</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="col-12 text-center mt-4">
+                        <button className="btn btn-primary px-4 py-2 rounded-pill shadow-lg fw-bold" onClick={handleUpdateFile}>
+                            Update Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
-  };
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        marginTop: "50px",
-      }}
-    >
-      <Typography variant="h5">Reports</Typography>
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-          width: "300px",
-          margin: "0 auto",
-          mt: 10,
-        }}
-      >
-        <TextField
-          label="Start Date"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          inputProps={{max: endDate || today}}
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <TextField
-          label="End Date"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          inputProps={{min: startDate, max: today }}
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-        <FormControl fullWidth>
-          <InputLabel id="report-type-label">Report Type</InputLabel>
-          <Select
-            labelId="report-type-label"
-            value={reportType}
-            label="Report Type"
-            onChange={(e) => setReportType(e.target.value)}
-          >
-            <MenuItem value="still-under-treatment">Still Under Treatment</MenuItem>
-            <MenuItem value="treated-and-cured">Treated And Cured</MenuItem>
-            <MenuItem value="died-during-treatment">Died During Treatment</MenuItem>
-          </Select>
-        </FormControl>
-        <Button
-          variant="contained"
-          onClick={handleDownload}
-          disabled={!startDate || !endDate || !reportType}
-        >
-          Download Report
-        </Button>
-      </Box>
-    </Box>
-  );
-}
+};
 
 export default Reports;
