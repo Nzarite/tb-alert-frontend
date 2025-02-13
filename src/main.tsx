@@ -32,6 +32,10 @@ const oidcConfig = {
   },
 };
 import { store } from "./redux/store";
+import ProtectedRoute from "./components/Authorization/ProtectedRoute";
+import Unauthorized from "./pages/Unauthorized/UnauthorizedPage";
+import UnauthorizedPage from "./pages/Unauthorized/UnauthorizedPage";
+import UserProfile from "./pages/UserProfile";
 
 const theme = createTheme({
 	palette: {
@@ -61,30 +65,39 @@ const theme = createTheme({
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<PageLayout />}>
+      {/* Routes accessible by all logged in users */}
       <Route path="/" element={<LandingPage />} />
-      <Route
-        path="/register/caregiver"
-        element={<CaregiverRegistrationPage />}
-      />
+
       <Route path="/register/patient" element={<PatientRegistrationPage />} />
+
+      <Route path="/register/caregiver" element={<CaregiverRegistrationPage />} />
+      
       <Route path="/visit" element={<VisitFollowUpPage />} />
-      <Route
-        path="/register/state-coordinator"
-        element={<StateCoordinatorRegistrationPage />}
-      />
-      <Route
-        path="/register/telecommunicator"
-        element={<TeleCommunicatorRegistration />}
-      />
+
       <Route path="/dashboard/patient" element={<PatientDashboardPage />} />
+
       <Route path="/reports" element={<Reports />} />
-      <Route path="/settings" element={<Settings />} />
+
       <Route path="*" element={<ErrorPage />} />
+
+      <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
+      <Route path="profile" element={<UserProfile />} />
+
+      <Route element = {<ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />}>
+        <Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
+        <Route path="/register/state-coordinator" element={<StateCoordinatorRegistrationPage />} />
+        <Route path="/settings" element={<Settings />} />
+      </Route>
     </Route>
   )
 );
 
 createRoot(document.getElementById("root")!).render(
+  <Provider store={store}>
   <AuthProvider {...oidcConfig}>
     <ThemeProvider theme={theme}>
       <PrivateRoute>
@@ -92,4 +105,5 @@ createRoot(document.getElementById("root")!).render(
       </PrivateRoute>
     </ThemeProvider>
   </AuthProvider>
+  </Provider> 
 );

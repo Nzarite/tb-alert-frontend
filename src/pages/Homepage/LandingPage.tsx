@@ -1,59 +1,61 @@
-import { Link } from "react-router-dom";
-import "./styles.css";
-import { FaUser } from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
-import { TbReportMedical } from "react-icons/tb";
-import { IoIosSettings } from "react-icons/io";
-import { AiFillSchedule } from "react-icons/ai";
 import { Box } from "@mui/material";
+import { useEffect } from "react";
 import { useAuth } from "react-oidc-context";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { Role } from "../../components/Authorization/Roles/Types";
+import { tiles } from "../../components/Tiles";
+import { RootState } from "../../redux/store";
+import { setUserProfile } from "../../redux/userSlice";
+import "./styles.css";
 
 const LandingPage = () => {
-	const auth = useAuth();
-	console.log(auth);
-	
+  const auth = useAuth();
+  console.log(auth);
+  const user = auth?.user;
+  const profile = user?.profile;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (profile) {
+      const userProfile = {
+        exp: profile.exp,
+        iat: profile.iat,
+        iss: profile.iss,
+        aud: profile.aud,
+        sub: profile.sub,
+        typ: profile.typ as string,
+        sid: profile.sid,
+        client_roles: profile.client_roles as object,
+        email_verified: profile.email_verified,
+        name: profile.name,
+        preferred_username: profile.preferred_username,
+        given_name: profile.given_name,
+        family_name: profile.family_name,
+        email: profile.email,
+      };
+      dispatch(setUserProfile(userProfile));
+    }
+  }, []);
+
+  const state = useSelector((state: RootState) => state);
+  console.log("Redux State:", state);
+
+  const userRoles: Role[] = (auth?.user?.profile?.client_roles || []) as Role[];
+
+  const accessibleTiles = tiles.filter((tile) =>
+    tile.allowedRoles.some((role) => userRoles.includes(role))
+  );
+
   return (
     <Box className="landing-container">
       <Box className="module-container">
-        <Link to="/register/patient" className="module-item">
-          <FaUser className="icon"/>
-          <Box>Register Patient</Box>
-        </Link>
-
-        <Link to="register/caregiver" className="module-item">
-          <FaUser className="icon"/>
-          <Box>Register Caregiver</Box>
-        </Link>
-
-        <Link to="/visit" className="module-item">
-          <AiFillSchedule className="icon"/>
-          <Box>Follow-ups</Box>
-        </Link>
-
-        <Link to="dashboard/patient" className="module-item">
-          <MdDashboard className="icon"/>
-          <Box>Patient Dashboard</Box>
-        </Link>
-
-        <Link to="/reports" className="module-item">
-        <TbReportMedical className="icon"/>
-          <Box>Reports</Box>
-        </Link>
-
-        <Link to="/settings" className="module-item">
-          <IoIosSettings className="icon" /> 
-          <Box>Settings</Box>
-        </Link>
-
-        <Link to="/register/state-coordinator" className="module-item">
-          <FaUser className="icon"/>
-          <Box>Register State <br />Coordinator</Box>
-        </Link>
-
-        <Link to="/register/telecommunicator" className="module-item">
-          <FaUser className="icon"/>
-          <Box>Register Tele Communicator</Box>
-        </Link>
+        {accessibleTiles.map(({ path, label, Icon }) => (
+          <Link key={path} to={path} className="module-item">
+            <Icon className="icon" />
+            <Box>{label}</Box>
+          </Link>
+        ))}
       </Box>
     </Box>
   );
