@@ -93,7 +93,7 @@ const NikshayDetailsForm = ({
   language,
   data,
   onSave,
-  onNext,
+  // onNext,
   onBack,
   functionality,
 }: any) => {
@@ -167,9 +167,9 @@ const NikshayDetailsForm = ({
 
   const onSubmit = (stepData: NikshayDetailsData) => {
     onSave(stepData);
-    if (functionality !== "editdetails") {
-      onNext();
-    }
+    // if (functionality !== "editdetails") {
+    //   onNext();
+    // }
   };
 
   const udstStatus = useWatch({ control, name: "udstStatus" });

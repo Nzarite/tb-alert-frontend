@@ -26,7 +26,7 @@ export type PatientDetailsData = {
   firstName: string;
   lastName: string;
   gender: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
   dateOfBirth: string;
   createdBy: string;
@@ -43,7 +43,7 @@ const patientDetailsSchema = z.object({
   gender: z.enum(["M", "F"], {
     errorMap: () => ({ message: "Gender is required" }),
   }),
-  phone: z
+  phoneNumber: z
     .string()
     .regex(/^\d+$/, "Contact number must contain only numbers")
     .min(10, "Contact number must be at least 10 digits")
@@ -64,7 +64,7 @@ const PatientDetailsForm = ({
   language,
   data,
   onSave,
-  onNext,
+  // onNext,
   functionality,
 }: any) => {
   interface LabelOption {
@@ -80,7 +80,7 @@ const PatientDetailsForm = ({
     firstNameLabel: string;
     lastNameLabel: string;
     genderLabel: LabelOption;
-    phoneLabel: string;
+    phoneNumberLabel: string;
     emailLabel: string;
     dateOfBirthLabel: string;
     createdByLabel: string;
@@ -94,7 +94,7 @@ const PatientDetailsForm = ({
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
-    phoneLabel: "",
+    phoneNumberLabel: "",
     emailLabel: "",
     dateOfBirthLabel: "",
     createdByLabel: "",
@@ -140,9 +140,9 @@ const PatientDetailsForm = ({
 
   const onSubmit = (stepData: PatientDetailsData) => {
     onSave(stepData);
-    if (functionality !== "editdetails") {
-      onNext();
-    }
+    // if (functionality !== "editdetails") {
+    //   onNext();
+    // }
   };
 
   const formFields: {
@@ -159,7 +159,7 @@ const PatientDetailsForm = ({
       label: labels.genderLabel.label,
       options: labels.genderLabel.options,
     },
-    { name: "phone", type: "text", label: labels.phoneLabel },
+    { name: "phoneNumber", type: "text", label: labels.phoneNumberLabel },
     { name: "email", type: "text", label: labels.emailLabel },
     { name: "dateOfBirth", type: "date", label: labels.dateOfBirthLabel },
     { name: "createdBy", type: "text", label: labels.createdByLabel },
