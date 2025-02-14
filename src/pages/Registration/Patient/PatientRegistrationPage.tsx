@@ -46,10 +46,10 @@ const PatientRegistrationPage = () => {
     contactScreeningDetails: {} as ContactScreeningData,
   });
 
-  // const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("en");
 
-  const language = useSelector((state: any) => state.language);
-  console.log(language);
+  // const language = useSelector((state: any) => state.language);
+  // console.log(language);
 
   const { handleSubmit } = useForm();
 

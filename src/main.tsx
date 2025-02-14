@@ -23,6 +23,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import { store } from "./redux/store";
 
 import { AuthProvider } from "react-oidc-context";
+import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 
 const oidcConfig = {
   authority: "http://localhost:8081/realms/tb-alert",
@@ -32,53 +33,60 @@ const oidcConfig = {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
 };
-import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 
 const theme = createTheme({
-	palette: {
-		background: {
-			default: "#fafafa",
-		},
-		primary: {
-			main: "#0B455C",
-		},
-	},
-	components: {
-		MuiPaper: {
-			styleOverrides: {
-				root: {
-					borderRadius: 0,
-					boxShadow: "none",
-					border: "1px solid lightGray",
-				},
-			},
-		},
-	},
-	typography: {
-		fontSize: 12,
-	},
+  palette: {
+    background: {
+      default: "#fafafa",
+    },
+    primary: {
+      main: "#0B455C",
+    },
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
+          boxShadow: "none",
+          border: "1px solid lightGray",
+        },
+      },
+    },
+  },
+  typography: {
+    fontSize: 12,
+  },
 });
 
 const router = createBrowserRouter(
-	createRoutesFromElements(
-		<Route element={<PageLayout />}>
-			<Route path="/" element={<LandingPage />} />
-			<Route path="/register/caregiver" element={<CaregiverRegistrationPage />} />
-			<Route path="/register/patient" element={<PatientRegistrationPage />} />
-			<Route path="/visit" element={<VisitFollowUpPage />} />
-			<Route
-				path="/register/state-coordinator"
-				element={<StateCoordinatorRegistrationPage />}
-			/>
-			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
-			<Route path="/dashboard/patient" element={<PatientSearchPage />} />
-			<Route path="/dashboard/patient/:patientId" element={<PatientDashboardPage />} />
-			<Route path="/reports" element={<Reports />} />
-			<Route path="*" element={<ErrorPage />} />
-			<Route path="/settings" element={<Settings />} />
-			<Route path="/reports" element={<Reports />} />
-		</Route>
-	)
+  createRoutesFromElements(
+    <Route element={<PageLayout />}>
+      <Route path="/" element={<LandingPage />} />
+      <Route
+        path="/register/caregiver"
+        element={<CaregiverRegistrationPage />}
+      />
+      <Route path="/register/patient" element={<PatientRegistrationPage />} />
+      <Route path="/visit" element={<VisitFollowUpPage />} />
+      <Route
+        path="/register/state-coordinator"
+        element={<StateCoordinatorRegistrationPage />}
+      />
+      <Route
+        path="/register/telecommunicator"
+        element={<TeleCommunicatorRegistration />}
+      />
+      <Route path="/dashboard/patient" element={<PatientSearchPage />} />
+      <Route
+        path="/dashboard/patient/:patientId"
+        element={<PatientDashboardPage />}
+      />
+      <Route path="/reports" element={<Reports />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="*" element={<ErrorPage />} />
+    </Route>
+  )
 );
 
 createRoot(document.getElementById("root")!).render(

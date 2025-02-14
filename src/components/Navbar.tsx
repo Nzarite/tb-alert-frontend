@@ -9,6 +9,7 @@ import { useAuth } from "react-oidc-context";
 const Navbar = () => {
   const auth = useAuth();
   const [language, setLanguage] = useState("en");
+  
   return (
     <Box id="navbar">
       <Box className="navbar-left">
