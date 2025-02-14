@@ -1,73 +1,147 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { 
+  Container,
+  Grid,
+  Paper,
+  Stepper,
+  Step,
+  StepLabel,
+  Typography,
+  Button,
+  TextField,
+  MenuItem,
+  Box
+} from "@mui/material";
 import axiosInstance from "../components/axiosInstance";
 
-const Reports: React.FC = () => {
-    const [age, setAge] = useState("");
-    const [gender, setGender] = useState("");
+const steps = ["Report Filters"];
 
-    const handleUpdateFile = async () => {
-        try {
-            const filters = {
-                age: age ? parseInt(age) : 0,
-                gender: gender || null,
-            };
+const Reports = () => {
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-            await axiosInstance.post("/report/patient/filter", filters);
+  const handleUpdateFile = async () => {
+    try {
+      const filters = {
+        age: age ? parseInt(age) : 0,
+        gender: gender || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+      };
 
-            console.log("Report file updated successfully in the backend.");
-            alert("Patient report updated in local storage.");
-        } catch (error) {
-            console.error("Error updating report:", error);
-        }
-    };
+      await axiosInstance.post("/report/patient/filter", filters);
+      console.log("Report file updated successfully in the backend.");
+      alert("Patient report updated in local storage.");
+    } catch (error) {
+      console.error("Error updating report:", error);
+    }
+  };
 
-    return (
-        <div className="container d-flex justify-content-center align-items-center vh-100">
-            <div className="card shadow-lg p-4 w-50 border-0 rounded-4">
-                <h2 className="text-center mb-4 fw-bold text-primary">Update Patient Report</h2>
-                <div className="row">
-                    {/* Age Input */}
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label className="fw-bold">Age:</label>
-                            <input
-                                type="number"
-                                className="form-control form-control-lg rounded-3 shadow-sm"
-                                value={age}
-                                onChange={(e) => setAge(e.target.value)}
-                                placeholder="Enter Age"
-                                min="0"
-                            />
-                        </div>
-                    </div>
+  return (
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+      <Grid container spacing={3}>
+        {/* Left Column - Stepper */}
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ p: 3, height: "100%" }}>
+            <Typography variant="h5" gutterBottom>
+              Report Generation
+            </Typography>
+            <Stepper activeStep={0} orientation="vertical">
+              {steps.map((label, index) => (
+                <Step key={index}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Paper>
+        </Grid>
 
-                    {/* Gender Dropdown */}
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label className="fw-bold">Gender:</label>
-                            <select
-                                className="form-control form-control-lg rounded-3 shadow-sm"
-                                value={gender}
-                                onChange={(e) => setGender(e.target.value)}
-                            >
-                                <option value="">All</option>
-                                <option value="M">Male</option>
-                                <option value="F">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                    </div>
+        {/* Right Column - Form */}
+        <Grid item xs={12} md={8}>
+          <Paper sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+              Set Report Filters
+            </Typography>
+            
+            <Grid container spacing={3}>
+              {/* Age Input */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Age"
+                  type="number"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ min: 0 }}
+                />
+              </Grid>
 
-                    {/* Submit Button */}
-                    <div className="col-12 text-center mt-4">
-                        <button className="btn btn-primary px-4 py-2 rounded-pill shadow-lg fw-bold" onClick={handleUpdateFile}>
-                            Update Report
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+              {/* Gender Dropdown */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  select
+                  label="Gender"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="M">Male</MenuItem>
+                  <MenuItem value="F">Female</MenuItem>
+                </TextField>
+              </Grid>
+
+              {/* Start Date */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Start Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  variant="outlined"
+                />
+              </Grid>
+
+              {/* End Date */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="End Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  variant="outlined"
+                />
+              </Grid>
+
+              {/* Submit Button */}
+              <Grid item xs={12}>
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleUpdateFile}
+                    sx={{ mt: 2 }}
+                    size="large"
+                  >
+                    Generate Report
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Container>
+  );
 };
 
 export default Reports;
