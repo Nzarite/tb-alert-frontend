@@ -14,13 +14,12 @@ import axiosInstance from "../../components/axiosInstance";
 import { FollowUpsDataInterface } from "../../components/datatypes/DataTypes";
 import { getStatusColor, getStatusName } from "../FollowUp/FollowUpSidebar";
 
-const PatientFollowUpDetails = () => {
+const PatientFollowUpDetails = (patientId:any) => {
 	const [patientData, setPatientData] = useState(null);
 
 	useEffect(() => {
-		const id = 1;
 		const getData = async () => {
-			const res = await axiosInstance.get(`followup/${id}`);
+			const res = await axiosInstance.get(`followup/${patientId.patientId}`);
 			setPatientData(res.data.followUpDetails);
 		};
 
