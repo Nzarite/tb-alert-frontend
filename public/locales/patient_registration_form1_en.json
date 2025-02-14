@@ -1,6 +1,6 @@
 {
   "patientdetailsform": {
-    "firstNameLabel": "First Name1",
+    "firstNameLabel": "First Name",
     "lastNameLabel": "Last Name",
     "genderLabel": {
       "label": "Gender",
@@ -10,7 +10,9 @@
       ]
     },
     "phoneLabel": "Contact Number",
+    "emailLabel": "Email of the Patient",
     "dateOfBirthLabel": "Date of Birth",
+    "createdByLabel": "Email of the person registering Patient",
     "districtLabel": "Name of the District",
     "villageLabel": "Name of the Village",
     "blockLabel": "Name of the Block",

@@ -51,7 +51,14 @@ const tbDetailsSchema = z.object({
   }),
 });
 
-const TbDetailsForm = ({ language, data, onSave, onNext, onBack }: any) => {
+const TbDetailsForm = ({
+  language,
+  data,
+  onSave,
+  onNext,
+  onBack,
+  functionality,
+}: any) => {
   interface LabelOption {
     label: string;
     options: { label: string; value: any }[];
@@ -92,13 +99,23 @@ const TbDetailsForm = ({ language, data, onSave, onNext, onBack }: any) => {
     reset,
     register,
   } = useForm<TbDetailsData>({
-    defaultValues: data,
+    defaultValues: data || {},
     resolver: zodResolver(tbDetailsSchema),
   });
 
+  useEffect(() => {
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        setValue(key as keyof TbDetailsData, data[key]);
+      });
+    }
+  }, [data, setValue]);
+
   const onSubmit = (stepData: TbDetailsData) => {
-    onSave(stepData); // Save the data to the parent component
-    onNext(); // Move to next step
+    onSave(stepData);
+    if (functionality !== "editdetails") {
+      onNext();
+    }
   };
 
   const formFields: {
@@ -161,29 +178,57 @@ const TbDetailsForm = ({ language, data, onSave, onNext, onBack }: any) => {
               variant="outlined"
               fullWidth
               margin="normal"
+              slotProps={{ inputLabel: { shrink: true } }}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             />
           ) : field.type === "select" ? (
-            <TextField
+            <Controller
               key={field.name}
-              {...register(field.name)}
-              select
-              label={field.label}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              error={!!errors[field.name]}
-              helperText={errors[field.name]?.message}
-            >
-              {field.options?.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+              name={field.name}
+              control={control}
+              defaultValue={data ? data[field.name] : ""}
+              render={({ field: { onChange, value } }) => (
+                <TextField
+                  select
+                  label={field.label}
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  InputLabelProps={{ shrink: true }}
+                  error={!!errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                  value={value || ""} // Ensure controlled value
+                  onChange={onChange}
+                >
+                  {field.options?.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
           ) : (
-            // **Date Picker Field**
+            // <TextField
+            //   key={field.name}
+            //   {...register(field.name)}
+            //   select
+            //   label={field.label}
+            //   variant="outlined"
+            //   fullWidth
+            //   margin="normal"
+            //   defaultValue={data?.name || ""}
+            //   slotProps={{ inputLabel: { shrink: true } }}
+            //   error={!!errors[field.name]}
+            //   helperText={errors[field.name]?.message}
+            // >
+            //   {field.options?.map((option) => (
+            //     <MenuItem key={option.value} value={option.value}>
+            //       {option.label}
+            //     </MenuItem>
+            //   ))}
+            // </TextField>
             <TextField
               key={field.name}
               {...register(field.name)}
@@ -192,7 +237,7 @@ const TbDetailsForm = ({ language, data, onSave, onNext, onBack }: any) => {
               variant="outlined"
               fullWidth
               margin="normal"
-              InputLabelProps={{ shrink: true }} // Keeps label above date picker
+              slotProps={{ inputLabel: { shrink: true } }}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             />
@@ -200,12 +245,26 @@ const TbDetailsForm = ({ language, data, onSave, onNext, onBack }: any) => {
         )}
 
         <Box mt={3} display="flex" justifyContent="space-between">
-          <Button variant="outlined" color="secondary" onClick={onBack} disabled>
-            Back
-          </Button>
-          <Button type="submit" variant="contained" color="primary">
-            Save and Next
-          </Button>
+          {functionality === "register" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onBack}
+              disabled
+            >
+              Back
+            </Button>
+          )}
+          {functionality === "register" && (
+            <Button type="submit" variant="contained" color="primary">
+              Save and Next
+            </Button>
+          )}
+          {functionality === "editdetails" && (
+            <Button type="submit" variant="contained" color="primary">
+              Update
+            </Button>
+          )}
         </Box>
       </form>
     </Box>

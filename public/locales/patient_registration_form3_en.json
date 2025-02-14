@@ -1,10 +1,10 @@
 {
   "nikshaydetailsform": {
-    "nikshayIdLabel": "Nikshay Id1",
+    "nikshayIdLabel": "Nikshay Id",
     "udstStatusLabel": {
       "label": "Whether the PwTB done for UDST1",
       "options": [
-        { "label": "Yes1", "value": true },
+        { "label": "Yes", "value": true },
         { "label": "No", "value": false }
       ]
     },
@@ -12,14 +12,14 @@
     "resultOfUdstLabel": {
       "label": "UDST Test Result",
       "options": [
-        { "label": "Rifampicin Resistant1", "value": "Rifampicin Resistant" },
+        { "label": "Rifampicin Resistant", "value": "Rifampicin Resistant" },
         { "label": "Rifampicin Sensitive", "value": "Rifampicin Sensitive" }
       ]
     },
     "dbtStatusLabel": {
       "label": "Enrolled for DBT",
       "options": [
-        { "label": "Yes1", "value": true },
+        { "label": "Yes", "value": true },
         { "label": "No", "value": false }
       ]
     },
@@ -27,7 +27,7 @@
     "nikshayMitraStatusLabel": {
       "label": "Nikshay Mitra Linked",
       "options": [
-        { "label": "Yes1", "value": true },
+        { "label": "Yes", "value": true },
         { "label": "No", "value": false }
       ]
     },

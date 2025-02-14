@@ -27,8 +27,10 @@ export type PatientDetailsData = {
   lastName: string;
   gender: string;
   phone: string;
+  email: string;
   dateOfBirth: string;
-  stateName: string;
+  createdBy: string;
+  state: string;
   district: string;
   village: string;
   block: string;
@@ -46,17 +48,25 @@ const patientDetailsSchema = z.object({
     .regex(/^\d+$/, "Contact number must contain only numbers")
     .min(10, "Contact number must be at least 10 digits")
     .max(15, "Contact number can't exceed 15 digits"),
+  email: z.string().email("Please enter a valid email"),
   dateOfBirth: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Invalid date format",
   }),
-  stateName: z.string().min(1, "State Name is required"),
+  createdBy: z.string().email("Please enter a valid email"),
+  state: z.string().min(1, "State Name is required"),
   district: z.string().min(1, "District Name is required"),
   village: z.string().min(1, "Village Name is required"),
   block: z.string().min(1, "Block Name is required"),
   gp: z.string().min(1, "GP Name is required"),
 });
 
-const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
+const PatientDetailsForm = ({
+  language,
+  data,
+  onSave,
+  onNext,
+  functionality,
+}: any) => {
   interface LabelOption {
     label: string;
     options: { label: string; value: any }[];
@@ -71,7 +81,9 @@ const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
     lastNameLabel: string;
     genderLabel: LabelOption;
     phoneLabel: string;
+    emailLabel: string;
     dateOfBirthLabel: string;
+    createdByLabel: string;
     districtLabel: string;
     villageLabel: string;
     blockLabel: string;
@@ -83,7 +95,9 @@ const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
     phoneLabel: "",
+    emailLabel: "",
     dateOfBirthLabel: "",
+    createdByLabel: "",
     districtLabel: "",
     villageLabel: "",
     blockLabel: "",
@@ -112,13 +126,23 @@ const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
     reset,
     register,
   } = useForm<PatientDetailsData>({
-    defaultValues: data,
+    defaultValues: data || {},
     resolver: zodResolver(patientDetailsSchema),
   });
 
+  useEffect(() => {
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        setValue(key as keyof PatientDetailsData, data[key]);
+      });
+    }
+  }, [data, setValue]);
+
   const onSubmit = (stepData: PatientDetailsData) => {
-    onSave(stepData); // Save the data to the parent component
-    onNext(); // Move to next step
+    onSave(stepData);
+    if (functionality !== "editdetails") {
+      onNext();
+    }
   };
 
   const formFields: {
@@ -136,9 +160,11 @@ const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
       options: labels.genderLabel.options,
     },
     { name: "phone", type: "text", label: labels.phoneLabel },
+    { name: "email", type: "text", label: labels.emailLabel },
     { name: "dateOfBirth", type: "date", label: labels.dateOfBirthLabel },
+    { name: "createdBy", type: "text", label: labels.createdByLabel },
     {
-      name: "stateName",
+      name: "state",
       type: "select",
       label: state.states.label,
       options: state.states.options,
@@ -149,7 +175,7 @@ const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
     { name: "gp", type: "text", label: labels.gpLabel },
   ];
 
-  if (!labels) return <p>Loading...</p>;
+  if (!labels || !state.states) return <p>Loading...</p>;
 
   return (
     <Box>
@@ -165,9 +191,7 @@ const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
               variant="outlined"
               fullWidth
               margin="normal"
-              InputLabelProps={
-                field.type === "date" ? { shrink: true } : undefined
-              }
+              slotProps={{ inputLabel: { shrink: true } }}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             />
@@ -180,6 +204,8 @@ const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
               variant="outlined"
               fullWidth
               margin="normal"
+              defaultValue={data?.name || ""}
+              slotProps={{ inputLabel: { shrink: true } }}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             >
@@ -199,6 +225,7 @@ const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
               <Controller
                 name={field.name}
                 control={control}
+                defaultValue={data?.name || ""}
                 rules={{ required: `${field.label} is required` }}
                 render={({ field: radioField }) => (
                   <RadioGroup {...radioField} row>
@@ -216,11 +243,17 @@ const PatientDetailsForm = ({ language, data, onSave, onNext }: any) => {
             </FormControl>
           ) : null
         )}
-
         <Box mt={3}>
-          <Button type="submit" variant="contained" color="primary">
-            Save and Next
-          </Button>
+          {functionality === "register" && (
+            <Button type="submit" variant="contained" color="primary">
+              Save and Next
+            </Button>
+          )}
+          {functionality === "editdetails" && (
+            <Button type="submit" variant="contained" color="primary">
+              Update
+            </Button>
+          )}
         </Box>
       </form>
     </Box>

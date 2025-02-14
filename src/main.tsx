@@ -20,6 +20,7 @@ import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverR
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import { store } from "./redux/store";
+import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 
 const theme = createTheme({
 	palette: {
@@ -58,7 +59,8 @@ const router = createBrowserRouter(
 				element={<StateCoordinatorRegistrationPage />}
 			/>
 			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
-			<Route path="/dashboard/patient" element={<PatientDashboardPage />} />
+			<Route path="/dashboard/patient" element={<PatientSearchPage />} />
+			<Route path="/dashboard/patient/:patientId" element={<PatientDashboardPage />} />
 			<Route path="/reports" element={<Reports />} />
 			<Route path="*" element={<ErrorPage />} />
 			<Route path="/settings" element={<Settings />} />

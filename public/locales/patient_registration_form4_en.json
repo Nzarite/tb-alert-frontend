@@ -3,7 +3,7 @@
     "contactScreeningDoneLabel": {
       "label": "Contact Screening Done1",
       "options": [
-        { "label": "Yes1", "value": true },
+        { "label": "Yes", "value": true },
         { "label": "No", "value": false }
       ]
     },

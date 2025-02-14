@@ -6,7 +6,9 @@ import { DashboardFieldsProp } from "../../components/datatypes/DataTypes";
 export const renderField = (data, item: DashboardFieldsProp, index: number) => {
 	const fieldValue = data[item.name];
 	const displayValue =
-		fieldValue !== null && fieldValue !== undefined && fieldValue !== "" ? fieldValue : "N/A";
+	fieldValue === true ? "Yes" :
+	fieldValue === false ? "No" :
+	fieldValue !== null && fieldValue !== undefined && fieldValue !== "" ? fieldValue : "N/A";
 
 	return (
 		<Grid item xs={item.size} key={index}>
@@ -22,7 +24,7 @@ export const renderField = (data, item: DashboardFieldsProp, index: number) => {
 	);
 };
 
-const PatientNikshayDetails = () => {
+const PatientNikshayDetails = (patientId:any) => {
 	const [patientData, setPatientData] = useState(null);
 
 	const fields = [
@@ -38,9 +40,8 @@ const PatientNikshayDetails = () => {
 	];
 
 	useEffect(() => {
-		const id = 1;
 		const getData = async () => {
-			const res = await axiosInstance.get(`nikshaymitra/${id}`);
+			const res = await axiosInstance.get(`nikshaymitra/${patientId.patientId}`);
 			setPatientData(res.data);
 		};
 

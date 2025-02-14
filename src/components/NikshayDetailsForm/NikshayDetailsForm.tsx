@@ -95,6 +95,7 @@ const NikshayDetailsForm = ({
   onSave,
   onNext,
   onBack,
+  functionality,
 }: any) => {
   interface LabelOption {
     label: string;
@@ -137,21 +138,52 @@ const NikshayDetailsForm = ({
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
     reset,
     register,
   } = useForm<NikshayDetailsData>({
-    defaultValues: data,
+    defaultValues: data || {},
     resolver: zodResolver(nikshayDetailsSchema),
   });
 
+  useEffect(() => {
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        setValue(key as keyof NikshayDetailsData, data[key]);
+      });
+    }
+  }, [data, setValue]);
+
+  // useEffect(() => {
+  //   if (data) {
+  //     reset({
+  //       ...data,
+  //       udstStatus: !!data.udstStatus, // Ensure boolean values are correct
+  //       dbtStatus: !!data.dbtStatus,
+  //       nikshayMitraStatus: !!data.nikshayMitraStatus,
+  //     });
+  //   }
+  // }, [data, reset]);
+
   const onSubmit = (stepData: NikshayDetailsData) => {
     onSave(stepData);
-    onNext();
+    if (functionality !== "editdetails") {
+      onNext();
+    }
   };
 
   const udstStatus = useWatch({ control, name: "udstStatus" });
   const dbtStatus = useWatch({ control, name: "dbtStatus" });
   const nikshayMitraStatus = useWatch({ control, name: "nikshayMitraStatus" });
+  // const [hiddenFieldsData, setHiddenFieldsData] = useState<
+  //   Partial<NikshayDetailsData>
+  // >({
+  //   dateOfUdst: "",
+  //   resultOfUdst: "",
+  //   dateOfDbt: "",
+  //   nikshayMitraDate: "",
+  //   nikshayMitraName: "",
+  // });
 
   if (!labels) return <p>Loading...</p>;
 
@@ -162,6 +194,7 @@ const NikshayDetailsForm = ({
         <TextField
           label={labels.nikshayIdLabel || "Nikshay Id"}
           {...register("nikshayId")}
+          slotProps={{ inputLabel: { shrink: true } }}
           error={!!errors.nikshayId}
           helperText={errors.nikshayId?.message}
           fullWidth
@@ -176,6 +209,7 @@ const NikshayDetailsForm = ({
             render={({ field }) => (
               <Select
                 {...field}
+                value={field.value ?? ""}
                 onChange={(e) => {
                   const value = e.target.value === "true";
                   field.onChange(value);
@@ -183,6 +217,18 @@ const NikshayDetailsForm = ({
                     setValue("dateOfUdst", "");
                     setValue("resultOfUdst", "");
                   }
+                  // if (!value) {
+                  //   setHiddenFieldsData((prev) => ({
+                  //     ...prev,
+                  //     dateOfUdst: getValues("dateOfUdst") || "",
+                  //     resultOfUdst: getValues("resultOfUdst") || "",
+                  //   }));
+                  //   setValue("dateOfUdst", undefined);
+                  //   setValue("resultOfUdst", undefined);
+                  // } else {
+                  //   setValue("dateOfUdst", hiddenFieldsData.dateOfUdst || "");
+                  //   setValue("resultOfUdst", hiddenFieldsData.resultOfUdst || "");
+                  // }
                 }}
               >
                 {labels.udstStatusLabel.options.map((option) => (
@@ -205,7 +251,7 @@ const NikshayDetailsForm = ({
           <TextField
             label={labels.dateOfUdstLabel || "UDST Test Date"}
             type="date"
-            InputLabelProps={{ shrink: true }}
+            slotProps={{ inputLabel: { shrink: true } }}
             {...register("dateOfUdst")}
             error={!!errors.dateOfUdst}
             helperText={errors.dateOfUdst?.message}
@@ -244,12 +290,22 @@ const NikshayDetailsForm = ({
             render={({ field }) => (
               <Select
                 {...field}
+                value={field.value ?? ""}
                 onChange={(e) => {
                   const value = e.target.value === "true";
                   field.onChange(value);
                   if (!value) {
                     setValue("dateOfDbt", "");
                   }
+                  // if (!value) {
+                  //   setHiddenFieldsData((prev) => ({
+                  //     ...prev,
+                  //     dateOfDbt: getValues("dateOfDbt"),
+                  //   }));
+                  //   setValue("dateOfDbt", "");
+                  // } else {
+                  //   setValue("dateOfDbt", hiddenFieldsData.dateOfDbt || "");
+                  // }
                 }}
               >
                 {labels.dbtStatusLabel.options.map((option) => (
@@ -272,7 +328,7 @@ const NikshayDetailsForm = ({
           <TextField
             label={labels.dateOfDbtLabel || "DBT Enrollment Date"}
             type="date"
-            InputLabelProps={{ shrink: true }}
+            slotProps={{ inputLabel: { shrink: true } }}
             {...register("dateOfDbt")}
             error={!!errors.dateOfDbt}
             helperText={errors.dateOfDbt?.message}
@@ -293,6 +349,7 @@ const NikshayDetailsForm = ({
             render={({ field }) => (
               <Select
                 {...field}
+                value={field.value ?? ""}
                 onChange={(e) => {
                   const value = e.target.value === "true";
                   field.onChange(value);
@@ -300,6 +357,24 @@ const NikshayDetailsForm = ({
                     setValue("nikshayMitraDate", "");
                     setValue("nikshayMitraName", "");
                   }
+                  // if (!value) {
+                  //   setHiddenFieldsData((prev) => ({
+                  //     ...prev,
+                  //     nikshayMitraDate: getValues("nikshayMitraDate"),
+                  //     nikshayMitraName: getValues("nikshayMitraName"),
+                  //   }));
+                  //   setValue("nikshayMitraDate", "");
+                  //   setValue("nikshayMitraName", "");
+                  // } else {
+                  //   setValue(
+                  //     "nikshayMitraDate",
+                  //     hiddenFieldsData.nikshayMitraDate || ""
+                  //   );
+                  //   setValue(
+                  //     "nikshayMitraName",
+                  //     hiddenFieldsData.nikshayMitraName || ""
+                  //   );
+                  // }
                 }}
               >
                 {labels.nikshayMitraStatusLabel.options.map((option) => (
@@ -322,7 +397,7 @@ const NikshayDetailsForm = ({
           <TextField
             label={labels.nikshayMitraDateLabel || "Nikshay Mitra Link Date"}
             type="date"
-            InputLabelProps={{ shrink: true }}
+            slotProps={{ inputLabel: { shrink: true } }}
             {...register("nikshayMitraDate")}
             error={!!errors.nikshayMitraDate}
             helperText={errors.nikshayMitraDate?.message}
@@ -335,6 +410,7 @@ const NikshayDetailsForm = ({
           <TextField
             label={labels.nikshayMitraNameLabel || "Nikshay Mitra Name"}
             {...register("nikshayMitraName")}
+            slotProps={{ inputLabel: { shrink: true } }}
             error={!!errors.nikshayMitraName}
             helperText={errors.nikshayMitraName?.message}
             fullWidth
@@ -343,12 +419,26 @@ const NikshayDetailsForm = ({
         )}
 
         <Box mt={3} display="flex" justifyContent="space-between">
-          <Button variant="outlined" color="secondary" onClick={onBack} disabled>
-            Back
-          </Button>
-          <Button type="submit" variant="contained" color="primary">
-            Save and Next
-          </Button>
+          {functionality === "register" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onBack}
+              disabled
+            >
+              Back
+            </Button>
+          )}
+          {functionality === "register" && (
+            <Button type="submit" variant="contained" color="primary">
+              Save and Next
+            </Button>
+          )}
+          {functionality === "editdetails" && (
+            <Button type="submit" variant="contained" color="primary">
+              Update
+            </Button>
+          )}
         </Box>
       </form>
     </Box>

@@ -50,6 +50,7 @@ const ContactScreeningDetailsForm = ({
   onSave,
   onSubmit,
   onBack,
+  functionality,
 }: any) => {
   interface LabelOption {
     label: string;
@@ -99,10 +100,18 @@ const ContactScreeningDetailsForm = ({
     reset,
     register,
   } = useForm<ContactScreeningData>({
-    defaultValues: data,
+    defaultValues: data || {},
     resolver: zodResolver(contactScreeningDetailsSchema),
     shouldUnregister: true,
   });
+
+  useEffect(() => {
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        setValue(key as keyof ContactScreeningData, data[key]);
+      });
+    }
+  }, [data, setValue]);
 
   const contactScreeningDone = useWatch({
     control,
@@ -139,6 +148,7 @@ const ContactScreeningDetailsForm = ({
             render={({ field }) => (
               <Select
                 {...field}
+                value={field.value ?? ""}
                 onChange={(e) => {
                   const value = e.target.value === "true";
                   field.onChange(value);
@@ -172,7 +182,7 @@ const ContactScreeningDetailsForm = ({
               variant="outlined"
               fullWidth
               margin="normal"
-              InputLabelProps={{ shrink: true }}
+              slotProps={{ inputLabel: { shrink: true } }}
               error={!!errors.dateOfContactScreening}
               helperText={errors.dateOfContactScreening?.message}
             />
@@ -184,6 +194,7 @@ const ContactScreeningDetailsForm = ({
                 {...register(fieldName, { valueAsNumber: true })}
                 fullWidth
                 margin="normal"
+                slotProps={{ inputLabel: { shrink: true } }}
                 error={!!errors[fieldName]}
                 helperText={errors[fieldName]?.message}
               />
@@ -192,12 +203,26 @@ const ContactScreeningDetailsForm = ({
         )}
 
         <Box mt={3} display="flex" justifyContent="space-between">
-          <Button variant="outlined" color="secondary" onClick={onBack} disabled>
-            Back
-          </Button>
-          <Button type="submit" variant="contained" color="success">
-            Submit
-          </Button>
+          {functionality === "register" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onBack}
+              disabled
+            >
+              Back
+            </Button>
+          )}
+          {functionality === "register" && (
+            <Button type="submit" variant="contained" color="primary">
+              Save and Next
+            </Button>
+          )}
+          {functionality === "editdetails" && (
+            <Button type="submit" variant="contained" color="primary">
+              Update
+            </Button>
+          )}
         </Box>
       </form>
     </Box>

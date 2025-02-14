@@ -21,6 +21,7 @@ import { TbDetailsData } from "../../../components/TbDetailsForm/TbDetailsForm";
 import { NikshayDetailsData } from "../../../components/NikshayDetailsForm/NikshayDetailsForm";
 import { ContactScreeningData } from "../../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
+import { useSelector } from "react-redux";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -45,7 +46,10 @@ const PatientRegistrationPage = () => {
     contactScreeningDetails: {} as ContactScreeningData,
   });
 
-  const [language, setLanguage] = useState("en");
+  // const [language, setLanguage] = useState("en");
+
+  const language = useSelector((state: any) => state.language);
+  console.log(language);
 
   const { handleSubmit } = useForm();
 
@@ -75,8 +79,11 @@ const PatientRegistrationPage = () => {
 
       if (activeStep === 0) {
         response = await axiosInstance.post("/patient/register", stepData);
-        setPatientId(response.data.patientId);
-        setFormData({ ...formData, patientDetails: stepData });
+        if (response.status === 200 || 201 || 202) {
+          setPatientId(response.data.patientId);
+          setFormData({ ...formData, patientDetails: stepData });
+          setActiveStep(activeStep + 1);
+        }
       } else if (activeStep === 1) {
         if (!patientId) {
           throw new Error("Patient ID not found. Please complete step 1.");
@@ -85,7 +92,10 @@ const PatientRegistrationPage = () => {
           ...stepData,
           patientId,
         });
-        setFormData({ ...formData, tbDetails: stepData });
+        if (response.status === 200 || 201 || 202) {
+          setFormData({ ...formData, tbDetails: stepData });
+          setActiveStep(activeStep + 1);
+        }
       } else if (activeStep === 2) {
         if (!formData.tbDetails) {
           throw new Error("TB Details not found. Please complete step 2.");
@@ -94,7 +104,10 @@ const PatientRegistrationPage = () => {
           ...stepData,
           patientId,
         });
-        setFormData({ ...formData, nikshayDetails: stepData });
+        if (response.status === 200 || 201 || 202) {
+          setFormData({ ...formData, nikshayDetails: stepData });
+          setActiveStep(activeStep + 1);
+        }
       } else if (activeStep === 3) {
         if (!formData.nikshayDetails) {
           throw new Error("Nikshay Details not found. Please complete step 3.");
@@ -103,10 +116,11 @@ const PatientRegistrationPage = () => {
           ...stepData,
           patientId,
         });
-        setFormData({ ...formData, contactScreeningDetails: stepData });
-        navigate("/dashboard/patient");
+        if (response.status === 200 || 201 || 202) {
+          setFormData({ ...formData, contactScreeningDetails: stepData });
+          navigate(`/dashboard/patient/${patientId}`);
+        }
       }
-      setActiveStep(activeStep + 1);
     } catch (error: any) {
       console.error("Error saving data:", error);
       alert(`Error: ${error.response?.data?.message || error.message}`);
@@ -146,13 +160,13 @@ const PatientRegistrationPage = () => {
 
           <Grid item xs={8}>
             <Paper sx={{ p: 3 }}>
-              {/* <form onSubmit={handleSubmit(onSubmit)} noValidate> */}
               {activeStep === 0 && (
                 <PatientDetailsForm
                   language={language}
                   data={formData.patientDetails}
                   onSave={handleSave}
                   onNext={handleNext}
+                  functionality="register"
                 />
               )}
               {activeStep === 1 && (
@@ -162,6 +176,7 @@ const PatientRegistrationPage = () => {
                   onSave={handleSave}
                   onNext={handleNext}
                   onBack={handleBack}
+                  functionality="register"
                 />
               )}
               {activeStep === 2 && (
@@ -171,6 +186,7 @@ const PatientRegistrationPage = () => {
                   onSave={handleSave}
                   onNext={handleNext}
                   onBack={handleBack}
+                  functionality="register"
                 />
               )}
               {activeStep === 3 && (
@@ -180,6 +196,7 @@ const PatientRegistrationPage = () => {
                   onSave={handleSave}
                   onSubmit={handleSubmit(onSubmit)}
                   onBack={handleBack}
+                  functionality="register"
                 />
               )}
             </Paper>
