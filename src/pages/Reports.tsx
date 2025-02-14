@@ -10,7 +10,9 @@ import {
   Button,
   TextField,
   MenuItem,
-  Box
+  Box,
+  FormControlLabel,
+  Switch
 } from "@mui/material";
 import axiosInstance from "../components/axiosInstance";
 
@@ -21,6 +23,8 @@ const Reports = () => {
   const [gender, setGender] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [currentStatus, setCurrentStatus] = useState("");
+  const [cured, setCured] = useState(false);
 
   const handleUpdateFile = async () => {
     try {
@@ -29,6 +33,8 @@ const Reports = () => {
         gender: gender || null,
         startDate: startDate || null,
         endDate: endDate || null,
+        currentStatus: currentStatus || null,
+        cured: cured
       };
 
       await axiosInstance.post("/report/patient/filter", filters);
@@ -93,6 +99,7 @@ const Reports = () => {
                 >
                   <MenuItem value="M">Male</MenuItem>
                   <MenuItem value="F">Female</MenuItem>
+                  <MenuItem value="Other">Other</MenuItem>
                 </TextField>
               </Grid>
 
@@ -119,6 +126,36 @@ const Reports = () => {
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   variant="outlined"
+                />
+              </Grid>
+
+              {/* Current Status Dropdown */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  select
+                  label="Current Status"
+                  value={currentStatus}
+                  onChange={(e) => setCurrentStatus(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="dead">Deceased</MenuItem>
+                  <MenuItem value="alive">Under Treatment</MenuItem>
+                </TextField>
+              </Grid>
+
+              {/* Cured Toggle Switch */}
+              <Grid item xs={12} sm={6} display="flex" alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={cured}
+                      onChange={(e) => setCured(e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label="Cured"
                 />
               </Grid>
 
