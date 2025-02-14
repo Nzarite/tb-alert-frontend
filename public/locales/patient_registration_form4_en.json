@@ -1,0 +1,21 @@
+{
+  "nikshaydetailsform": {
+    "contactScreeningDoneLabel": {
+      "label": "Contact Screening Done1",
+      "options": [
+        { "label": "Yes", "value": true },
+        { "label": "No", "value": false }
+      ]
+    },
+    "dateOfContactScreeningLabel": "Date of Contact Screening",
+    "noOfHHCsAvailableLabel": "No of HHCs available",
+    "noOfHHCsScreenedLabel": "No of HHCs screened",
+    "noOfHHCsWithTBSymptomsLabel": "No of HHCs found with TB Sympotoms",
+    "noOfHHCsReferredTBTestingLabel": "No of HHCs found with TB Sympotoms referred for TB testing",
+    "noOfHHCsDiagnosedTBLabel": "No.of HHCs diagnosed TB",
+    "noOfHHCsTBInitiatedATTLabel": "No of HHCs diagnosed with TB initiated on ATT",
+    "noOfHHCsUndergoneLTBITestLabel": "No of HHCs undergone for LTBI test",
+    "noOfEligibleForTPTLabel": "No.of eligible for TPT",
+    "noOfHHCsInitiatedTPTLabel": "No of HHCs initiated on TPT"
+  }
+}
