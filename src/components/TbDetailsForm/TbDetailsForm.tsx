@@ -55,7 +55,7 @@ const TbDetailsForm = ({
   language,
   data,
   onSave,
-  onNext,
+  // onNext,
   onBack,
   functionality,
 }: any) => {
@@ -113,9 +113,9 @@ const TbDetailsForm = ({
 
   const onSubmit = (stepData: TbDetailsData) => {
     onSave(stepData);
-    if (functionality !== "editdetails") {
-      onNext();
-    }
+    // if (functionality !== "editdetails") {
+    //   onNext();
+    // }
   };
 
   const formFields: {

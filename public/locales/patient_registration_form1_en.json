@@ -9,7 +9,7 @@
         { "label": "Female", "value": "F" }
       ]
     },
-    "phoneLabel": "Contact Number",
+    "phoneNumberLabel": "Contact Number",
     "emailLabel": "Email of the Patient",
     "dateOfBirthLabel": "Date of Birth",
     "createdByLabel": "Email of the person registering Patient",

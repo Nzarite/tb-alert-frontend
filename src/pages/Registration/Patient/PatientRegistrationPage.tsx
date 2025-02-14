@@ -131,13 +131,13 @@ const PatientRegistrationPage = () => {
     setActiveStep(activeStep - 1);
   };
 
-  const handleNext = () => {
-    if (activeStep < steps.length - 1) {
-      setActiveStep(activeStep + 1);
-    } else {
-      console.log("Final Data Submitted:", formData);
-    }
-  };
+  // const handleNext = () => {
+  //   if (activeStep < steps.length - 1) {
+  //     setActiveStep(activeStep + 1);
+  //   } else {
+  //     console.log("Final Data Submitted:", formData);
+  //   }
+  // };
 
   return (
     <>
@@ -165,7 +165,7 @@ const PatientRegistrationPage = () => {
                   language={language}
                   data={formData.patientDetails}
                   onSave={handleSave}
-                  onNext={handleNext}
+                  // onNext={handleNext}
                   functionality="register"
                 />
               )}
@@ -174,7 +174,7 @@ const PatientRegistrationPage = () => {
                   language={language}
                   data={formData.tbDetails}
                   onSave={handleSave}
-                  onNext={handleNext}
+                  // onNext={handleNext}
                   onBack={handleBack}
                   functionality="register"
                 />
@@ -184,7 +184,7 @@ const PatientRegistrationPage = () => {
                   language={language}
                   data={formData.nikshayDetails}
                   onSave={handleSave}
-                  onNext={handleNext}
+                  // onNext={handleNext}
                   onBack={handleBack}
                   functionality="register"
                 />
