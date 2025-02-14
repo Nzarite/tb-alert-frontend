@@ -99,7 +99,6 @@ const Reports = () => {
                 >
                   <MenuItem value="M">Male</MenuItem>
                   <MenuItem value="F">Female</MenuItem>
-                  <MenuItem value="Other">Other</MenuItem>
                 </TextField>
               </Grid>
 
