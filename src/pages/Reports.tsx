@@ -19,6 +19,7 @@ import axiosInstance from "../components/axiosInstance";
 const steps = ["Report Filters"];
 
 const Reports = () => {
+  const [currentRole,setCurrentRole]=useState<String>("patient");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -54,13 +55,20 @@ const Reports = () => {
             <Typography variant="h5" gutterBottom>
               Report Generation
             </Typography>
-            <Stepper activeStep={0} orientation="vertical">
-              {steps.map((label, index) => (
-                <Step key={index}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+            <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  select
+                  label="Role"
+                  value={currentRole}
+                  onChange={(e) => setCurrentRole(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="patient">Patient</MenuItem>
+                  <MenuItem value="telecaller">TeleCaller</MenuItem>
+                </TextField>
+              </Grid>
           </Paper>
         </Grid>
 
@@ -129,12 +137,13 @@ const Reports = () => {
               </Grid>
 
               {/* Current Status Dropdown */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{display:currentRole==="patient"?"block":"none"}}>
                 <TextField
                   fullWidth
                   select
                   label="Current Status"
                   value={currentStatus}
+                  hidden={true}
                   onChange={(e) => setCurrentStatus(e.target.value)}
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
@@ -145,7 +154,7 @@ const Reports = () => {
               </Grid>
 
               {/* Cured Toggle Switch */}
-              <Grid item xs={12} sm={6} display="flex" alignItems="center">
+              <Grid item xs={12} sm={6} display="flex" alignItems="center" sx={{display:currentRole==="patient"?"block":"none"}}>
                 <FormControlLabel
                   control={
                     <Switch
