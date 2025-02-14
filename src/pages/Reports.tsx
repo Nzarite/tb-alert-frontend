@@ -3,9 +3,6 @@ import {
   Container,
   Grid,
   Paper,
-  Stepper,
-  Step,
-  StepLabel,
   Typography,
   Button,
   TextField,
@@ -16,20 +13,19 @@ import {
 } from "@mui/material";
 import axiosInstance from "../components/axiosInstance";
 
-const steps = ["Report Filters"];
-
 const Reports = () => {
-  const [currentRole,setCurrentRole]=useState<String>("patient");
+  const [currentRole, setCurrentRole] = useState("patient");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentStatus, setCurrentStatus] = useState("");
-  const [cured, setCured] = useState(false);
+  const [cured, setCured] = useState(null);
 
-  const handleUpdateFile = async () => {
+  const handleDownloadReport = async (endpoint, filename) => {
     try {
-      const filters = {
+
+      let filters = {
         age: age ? parseInt(age) : 0,
         gender: gender || null,
         startDate: startDate || null,
@@ -38,49 +34,63 @@ const Reports = () => {
         cured: cured
       };
 
-      await axiosInstance.post("/report/patient/filter", filters);
-      console.log("Report file updated successfully in the backend.");
-      alert("Patient report updated in local storage.");
+      if(filename==="All_Patient_Reports.xlsx")
+      {
+        filters={
+          age:0,
+          gender:null,
+          startDate:null,
+          endDate:null,
+          currentStatus:null,
+          cured:null
+        }
+      }
+
+      const response = await axiosInstance.post(endpoint, filters, {
+        responseType: "blob", 
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     } catch (error) {
-      console.error("Error updating report:", error);
+      console.error("Error downloading report:", error);
     }
   };
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
-        {/* Left Column - Stepper */}
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 3, height: "100%" }}>
             <Typography variant="h5" gutterBottom>
               Report Generation
             </Typography>
-            <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label="Role"
-                  value={currentRole}
-                  onChange={(e) => setCurrentRole(e.target.value)}
-                  variant="outlined"
-                  InputLabelProps={{ shrink: true }}
-                >
-                  <MenuItem value="patient">Patient</MenuItem>
-                  <MenuItem value="telecaller">TeleCaller</MenuItem>
-                </TextField>
-              </Grid>
+            <TextField
+              fullWidth
+              select
+              label="Role"
+              value={currentRole}
+              onChange={(e) => setCurrentRole(e.target.value)}
+              variant="outlined"
+              InputLabelProps={{ shrink: true }}
+            >
+              <MenuItem value="patient">Patient</MenuItem>
+              <MenuItem value="telecaller">TeleCaller</MenuItem>
+            </TextField>
           </Paper>
         </Grid>
 
-        {/* Right Column - Form */}
         <Grid item xs={12} md={8}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
               Set Report Filters
             </Typography>
-            
             <Grid container spacing={3}>
-              {/* Age Input */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -93,8 +103,6 @@ const Reports = () => {
                   inputProps={{ min: 0 }}
                 />
               </Grid>
-
-              {/* Gender Dropdown */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -109,8 +117,6 @@ const Reports = () => {
                   <MenuItem value="F">Female</MenuItem>
                 </TextField>
               </Grid>
-
-              {/* Start Date */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -122,8 +128,6 @@ const Reports = () => {
                   variant="outlined"
                 />
               </Grid>
-
-              {/* End Date */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -135,15 +139,12 @@ const Reports = () => {
                   variant="outlined"
                 />
               </Grid>
-
-              {/* Current Status Dropdown */}
-              <Grid item xs={12} sm={6} sx={{display:currentRole==="patient"?"block":"none"}}>
+              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
                 <TextField
                   fullWidth
                   select
                   label="Current Status"
                   value={currentStatus}
-                  hidden={true}
                   onChange={(e) => setCurrentStatus(e.target.value)}
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
@@ -152,9 +153,7 @@ const Reports = () => {
                   <MenuItem value="alive">Under Treatment</MenuItem>
                 </TextField>
               </Grid>
-
-              {/* Cured Toggle Switch */}
-              <Grid item xs={12} sm={6} display="flex" alignItems="center" sx={{display:currentRole==="patient"?"block":"none"}}>
+              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -166,18 +165,23 @@ const Reports = () => {
                   label="Cured"
                 />
               </Grid>
-
-              {/* Submit Button */}
               <Grid item xs={12}>
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleUpdateFile}
-                    sx={{ mt: 2 }}
+                    onClick={() => handleDownloadReport("/report/patient/filter", "Patient_Report.xlsx")}
                     size="large"
                   >
-                    Generate Report
+                    Download Report
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleDownloadReport("/report/patient/filter", "All_Patient_Reports.xlsx")}
+                    size="large"
+                  >
+                    Download All Reports
                   </Button>
                 </Box>
               </Grid>
