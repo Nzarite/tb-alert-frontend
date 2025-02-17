@@ -10,12 +10,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Button } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "../components/axiosInstance";
 import {
-  addSetting,
   setSettings,
   settingType,
   updateSettings,
@@ -29,12 +27,6 @@ const Settings = () => {
 
   const [editKey, setEditKey] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
-  const [adding, setAdding] = useState(false);
-  const [newSetting, setNewSetting] = useState({
-    keyName: "",
-    value: "",
-    type: "",
-  });
 
   useEffect(() => {
     axiosInstance
@@ -47,9 +39,9 @@ const Settings = () => {
 
   const toSnakeCase = (str: string): string => {
     return str
-      .replace(/\s+/g, "_") // Replace spaces with underscores
-      .replace(/([a-z])([A-Z])/g, "$1_$2") // Handle camelCase
-      .toLowerCase(); // Convert to lowercase
+      .replace(/\s+/g, "_")
+      .replace(/([a-z])([A-Z])/g, "$1_$2")
+      .toLowerCase();
   };
 
   const groupedSettings = settings.reduce((acc, setting) => {
@@ -86,21 +78,6 @@ const Settings = () => {
 
   const handleCancelClick = () => {
     setEditKey(null);
-  };
-
-  const handleSaveNewSetting = () => {
-    if (
-      !newSetting?.keyName.trim() ||
-      !newSetting.value.trim() ||
-      !newSetting?.type.trim()
-    )
-      return;
-
-    newSetting.keyName = toSnakeCase(newSetting.keyName);
-    axiosInstance.post("/setting", newSetting).then(() => {
-      setAdding(false);
-      dispatch(addSetting(newSetting));
-    });
   };
 
   return (
@@ -173,48 +150,6 @@ const Settings = () => {
           </List>
         ))}
       </Box>
-
-      <Button color="green" onClick={() => setAdding(true)}>
-        Add another setting
-      </Button>
-      {adding ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "30vw",
-            gap: "10px",
-          }}
-        >
-          <TextField
-            value={newSetting?.keyName}
-            onChange={(e) =>
-              setNewSetting({ ...newSetting, keyName: e.target.value })
-            }
-            placeholder="Name"
-          ></TextField>
-
-          <TextField
-            value={newSetting?.value}
-            onChange={(e) =>
-              setNewSetting({ ...newSetting, value: e.target.value })
-            }
-            placeholder="Value"
-          ></TextField>
-
-          <TextField
-            value={newSetting?.type}
-            onChange={(e) =>
-              setNewSetting({ ...newSetting, type: e.target.value })
-            }
-            placeholder="Category"
-          ></TextField>
-
-          <Button onClick={() => handleSaveNewSetting()}>Add</Button>
-        </Box>
-      ) : (
-        ""
-      )}
     </Box>
   );
 };
