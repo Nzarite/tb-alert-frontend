@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface settingType {
-  key: string;
+  keyName: string;
   value: string;
   type: string;
 }
@@ -11,34 +11,34 @@ interface settingsState {
 }
 
 const initialState: settingsState = {
-    settings: [
-        { key: "sms_reminder_before", value: "1 hour", type: "schedule" },
-        { key: "patient_registration_template", value: "Template 3", type: "sms" },
-        { key: "dstb_followups", value: "1", type: "schedule" },
-        { key: "drtb_followups", value: "2", type: "schedule" },
-    ]
+    settings: []
 }
 
 export const settingsSlice = createSlice({
-    name: "settings", 
+    name: "admin", 
     initialState,
     reducers: {
         setSettings: (state, action: PayloadAction<settingType[]>) => {
             state.settings  = action.payload;
+            
         },
 
-        updateSettings: (state, action: PayloadAction<{key: string; value: string}>) => {
-            const {key, value} = action.payload;
-            const setting = state.settings.find(s => s.key==key);
+        addSetting: (state, action: PayloadAction<settingType>) => {
+            state.settings.push(action.payload);
+        },
 
-            if(setting){
-                setting.value=value;
-            }
+        updateSettings: (state, action: PayloadAction<{keyName: string; newValue: string}>) => {
+            const {keyName, newValue} = action.payload;
+           state.settings = state.settings.map(setting => {
+                return setting.keyName==keyName ?
+                {...setting, value: newValue} :
+                setting;
+           })
         }
     }
 })
 
-export const {setSettings, updateSettings} = settingsSlice.actions;
+export const {setSettings, updateSettings, addSetting} = settingsSlice.actions;
 export default settingsSlice.reducer;
 
 

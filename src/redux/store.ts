@@ -8,7 +8,7 @@ export const store = configureStore({
 	reducer: {
 		language: langReducer,
 		user: userReducer,
-		settings: settingsReducer
+		admin: settingsReducer
 	},
 	middleware: (getDefaultMiddleware) => 
 		getDefaultMiddleware().concat(logger), 
