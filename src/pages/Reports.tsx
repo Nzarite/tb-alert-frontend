@@ -1,107 +1,196 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { saveAs } from "file-saver";
 import { useState } from "react";
-import * as XLSX from "xlsx";
+import { 
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  Button,
+  TextField,
+  MenuItem,
+  Box,
+  FormControlLabel,
+  Switch
+} from "@mui/material";
+import axiosInstance from "../components/axiosInstance";
 
-function Reports() {
+const Reports = () => {
+  const [currentRole, setCurrentRole] = useState("patient");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [reportType, setReportType] = useState("treated-and-cured");
+  const [currentStatus, setCurrentStatus] = useState("");
+  const [cured, setCured] = useState(null);
 
-  const today = new Date().toISOString().split("T")[0];
+  const handleDownloadReport = async (endpoint, filename) => {
+    try {
 
-  const handleDownload = () => {
-    const data = [
-      { id: 1, description: "Sample item 1", date: startDate },
-      { id: 2, description: "Sample item 2", date: endDate },
-    ];
+      let filters = {
+        age: age ? parseInt(age) : 0,
+        gender: gender || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+        currentStatus: currentStatus || null,
+        cured: cured
+      };
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+      if(filename==="All_Patient_Reports.xlsx")
+      {
+        filters={
+          age:0,
+          gender:null,
+          startDate:null,
+          endDate:null,
+          currentStatus:null,
+          cured:null
+        }
+      }
 
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    const formattedStartDate = startDate.replace(/-/g, "");
-    const formattedEndDate = endDate.replace(/-/g, "");
-    saveAs(
-      blob,
-      `report_${reportType}_${formattedStartDate}_${formattedEndDate}.xlsx`
-    );
+      const response = await axiosInstance.post(endpoint, filters, {
+        responseType: "blob", 
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error downloading report:", error);
+    }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        marginTop: "50px",
-      }}
-    >
-      <Typography variant="h5">Reports</Typography>
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-          width: "300px",
-          margin: "0 auto",
-          mt: 10,
-        }}
-      >
-        <TextField
-          label="Start Date"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          inputProps={{max: endDate || today}}
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <TextField
-          label="End Date"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          inputProps={{min: startDate, max: today }}
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-        <FormControl fullWidth>
-          <InputLabel id="report-type-label">Report Type</InputLabel>
-          <Select
-            labelId="report-type-label"
-            value={reportType}
-            label="Report Type"
-            onChange={(e) => setReportType(e.target.value)}
-          >
-            <MenuItem value="still-under-treatment">Still Under Treatment</MenuItem>
-            <MenuItem value="treated-and-cured">Treated And Cured</MenuItem>
-            <MenuItem value="died-during-treatment">Died During Treatment</MenuItem>
-          </Select>
-        </FormControl>
-        <Button
-          variant="contained"
-          onClick={handleDownload}
-          disabled={!startDate || !endDate || !reportType}
-        >
-          Download Report
-        </Button>
-      </Box>
-    </Box>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ p: 3, height: "100%" }}>
+            <Typography variant="h5" gutterBottom>
+              Report Generation
+            </Typography>
+            <TextField
+              fullWidth
+              select
+              label="Role"
+              value={currentRole}
+              onChange={(e) => setCurrentRole(e.target.value)}
+              variant="outlined"
+              InputLabelProps={{ shrink: true }}
+            >
+              <MenuItem value="patient">Patient</MenuItem>
+              <MenuItem value="telecaller">TeleCaller</MenuItem>
+            </TextField>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} md={8}>
+          <Paper sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+              Set Report Filters
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Age"
+                  type="number"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ min: 0 }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  select
+                  label="Gender"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="M">Male</MenuItem>
+                  <MenuItem value="F">Female</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Start Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="End Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
+                <TextField
+                  fullWidth
+                  select
+                  label="Current Status"
+                  value={currentStatus}
+                  onChange={(e) => setCurrentStatus(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="dead">Deceased</MenuItem>
+                  <MenuItem value="alive">Under Treatment</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={cured}
+                      onChange={(e) => setCured(e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label="Cured"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleDownloadReport("/report/patient/filter", "Patient_Report.xlsx")}
+                    size="large"
+                  >
+                    Download Report
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleDownloadReport("/report/patient/filter", "All_Patient_Reports.xlsx")}
+                    size="large"
+                  >
+                    Download All Reports
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Container>
   );
-}
+};
 
 export default Reports;
