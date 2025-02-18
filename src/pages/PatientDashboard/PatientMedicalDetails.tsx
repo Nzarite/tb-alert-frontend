@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
 import { renderField } from "./PatientNikshayDetails";
 
-const PatientMedicalDetails = () => {
+const PatientMedicalDetails = (patientId:any) => {
 	const [patientData, setPatientData] = useState(null);
 	const fields = [
 		{ name: "dateOfDiagnosis", label: "Date of Diagnosis", size: 6 },
@@ -14,9 +14,8 @@ const PatientMedicalDetails = () => {
 	];
 
 	useEffect(() => {
-		const id = 1;
 		const getData = async () => {
-			const res = await axiosInstance.get(`tbdetails/${id}`);
+			const res = await axiosInstance.get(`tbdetails/${patientId.patientId}`);
 			setPatientData(res.data);
 		};
 

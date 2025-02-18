@@ -1,190 +1,232 @@
 import { useState, useEffect } from "react";
-import { Box, Container, Typography, Button, Stepper, Step, StepLabel, TextField, Grid, Paper } from "@mui/material";
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  TextField,
+  Grid,
+  Paper,
+} from "@mui/material";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export type ContactScreeningData = {
-    contactScreeningDone: boolean;
-    contactScreeningDate: string;
-    availableHhcs: number;
-    screenedHhcs: number;
-    hhcsWithTbSymptoms: number;
-    hhcsReferredForTbTesting: number;
-    hhcsDiagnosedTb: number;
-    hhcsDiagnosedTbOnAtt: number;
-    hhcsUndergoneLBTI: number;
-    eligibleForTpt: number;
-    hhcsInitiatedOnTpt: number;
-}
+  contactScreeningDone: boolean;
+  dateOfContactScreening: string;
+  noOfHHCsAvailable: number;
+  noOfHHCsScreened: number;
+  noOfHHCsWithTBSymptoms: number;
+  noOfHHCsReferredTBTesting: number;
+  noOfHHCsDiagnosedTB: number;
+  noOfHHCsTBInitiatedATT: number;
+  noOfHHCsUndergoneLTBITest: number;
+  noOfEligibleForTPT: number;
+  noOfHHCsInitiatedTPT: number;
+};
 
 const contactScreeningDetailsSchema = z.object({
-    ontactScreeningDone: z.boolean(),
-    contactScreeningDate: z.string().optional(),
-    availableHhcs: z.number().optional(),
-    screenedHhcs: z.number().optional(),
-    hhcsWithTbSymptoms: z.number().optional(),
-    hhcsReferredForTbTesting: z.number().optional(),
-    hhcsDiagnosedTb: z.number().optional(),
-    hhcsDiagnosedTbOnAtt: z.number().optional(),
-    hhcsUndergoneLBTI: z.number().optional(),
-    eligibleForTpt: z.number().optional(),
-    hhcsInitiatedOnTpt: z.number().optional(),
+  contactScreeningDone: z.boolean(),
+  dateOfContactScreening: z.string().optional(),
+  noOfHHCsAvailable: z.number().optional(),
+  noOfHHCsScreened: z.number().optional(),
+  noOfHHCsWithTBSymptoms: z.number().optional(),
+  noOfHHCsReferredTBTesting: z.number().optional(),
+  noOfHHCsDiagnosedTB: z.number().optional(),
+  noOfHHCsTBInitiatedATT: z.number().optional(),
+  noOfHHCsUndergoneLTBITest: z.number().optional(),
+  noOfEligibleForTPT: z.number().optional(),
+  noOfHHCsInitiatedTPT: z.number().optional(),
 });
 
-const ContactScreeningDetailsForm = ( {language, data, onSave, onSubmit, onBack}:any ) => {
+const ContactScreeningDetailsForm = ({
+  language,
+  data,
+  onSave,
+  onSubmit,
+  onBack,
+  functionality,
+}: any) => {
+  interface LabelOption {
+    label: string;
+    options?: { label: string; value: boolean }[];
+  }
 
-    interface LabelOption {
-        label: string;
-        options?: { label: string; value: boolean }[];
-    }
-    
-    interface ContactScreeningDetailsFormLabelsData {
-        contactScreeningDoneLabel: LabelOption;
-        contactScreeningDateLabel: string;
-        availableHhcsLabel: string;
-        screenedHhcsLabel: string;
-        hhcsWithTbSymptomsLabel: string;
-        hhcsReferredForTbTestingLabel: string;
-        hhcsDiagnosedTbLabel: string;
-        hhcsDiagnosedTbOnAttLabel: string;
-        hhcsUndergoneLBTILabel: string;
-        eligibleForTptLabel: string;
-        hhcsInitiatedOnTptLabel: string;
-    }    
+  interface ContactScreeningDetailsFormLabelsData {
+    contactScreeningDoneLabel: LabelOption;
+    dateOfContactScreeningLabel: string;
+    noOfHHCsAvailableLabel: string;
+    noOfHHCsScreenedLabel: string;
+    noOfHHCsWithTBSymptomsLabel: string;
+    noOfHHCsReferredTBTestingLabel: string;
+    noOfHHCsDiagnosedTBLabel: string;
+    noOfHHCsTBInitiatedATTLabel: string;
+    noOfHHCsUndergoneLTBITestLabel: string;
+    noOfEligibleForTPTLabel: string;
+    noOfHHCsInitiatedTPTLabel: string;
+  }
 
-    const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
-        contactScreeningDoneLabel: { label: "", options: [] },
-        contactScreeningDateLabel: "",
-        availableHhcsLabel: "",
-        screenedHhcsLabel: "",
-        hhcsWithTbSymptomsLabel: "",
-        hhcsReferredForTbTestingLabel: "",
-        hhcsDiagnosedTbLabel: "",
-        hhcsDiagnosedTbOnAttLabel: "",
-        hhcsUndergoneLBTILabel: "",
-        eligibleForTptLabel: "",
-        hhcsInitiatedOnTptLabel: ""
+  const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
+    contactScreeningDoneLabel: { label: "", options: [] },
+    dateOfContactScreeningLabel: "",
+    noOfHHCsAvailableLabel: "",
+    noOfHHCsScreenedLabel: "",
+    noOfHHCsWithTBSymptomsLabel: "",
+    noOfHHCsReferredTBTestingLabel: "",
+    noOfHHCsDiagnosedTBLabel: "",
+    noOfHHCsTBInitiatedATTLabel: "",
+    noOfHHCsUndergoneLTBITestLabel: "",
+    noOfEligibleForTPTLabel: "",
+    noOfHHCsInitiatedTPTLabel: "",
+  });
+
+  useEffect(() => {
+    fetch(`/locales/patient_registration_form4_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.nikshaydetailsform))
+      .catch((error) => console.error("Error loading language file:", error));
+  }, [language]);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    reset,
+    register,
+  } = useForm<ContactScreeningData>({
+    defaultValues: data || {},
+    resolver: zodResolver(contactScreeningDetailsSchema),
+    shouldUnregister: true,
+  });
+
+  useEffect(() => {
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        setValue(key as keyof ContactScreeningData, data[key]);
       });
+    }
+  }, [data, setValue]);
 
-    useEffect(() => {
-        fetch(`/locales/patient_registration_form3_${language}.json`)
-          .then((response) => response.json())
-          .then((data) => setLabels(data.nikshaydetailsform))
-          .catch((error) => console.error("Error loading language file:", error));
-    }, [language]);
+  const contactScreeningDone = useWatch({
+    control,
+    name: "contactScreeningDone",
+  });
 
-    const {control, handleSubmit, formState: { errors }, setValue,  reset, register} = useForm<ContactScreeningData>({
-        defaultValues: data,
-        resolver: zodResolver(
-            contactScreeningDetailsSchema
-    ),
-    });
+  const onFormSubmit = (stepData: ContactScreeningData) => {
+    onSave(stepData);
+  };
 
-    const contactScreeningDone = useWatch({ control, name: "contactScreeningDone" });
+  const fieldMappings: Record<string, keyof ContactScreeningData> = {
+    noOfHHCsAvailableLabel: "noOfHHCsAvailable",
+    noOfHHCsScreenedLabel: "noOfHHCsScreened",
+    noOfHHCsWithTBSymptomsLabel: "noOfHHCsWithTBSymptoms",
+    noOfHHCsReferredTBTestingLabel: "noOfHHCsReferredTBTesting",
+    noOfHHCsDiagnosedTBLabel: "noOfHHCsDiagnosedTB",
+    noOfHHCsTBInitiatedATTLabel: "noOfHHCsTBInitiatedATT",
+    noOfHHCsUndergoneLTBITestLabel: "noOfHHCsUndergoneLTBITest",
+    noOfEligibleForTPTLabel: "noOfEligibleForTPT",
+    noOfHHCsInitiatedTPTLabel: "noOfHHCsInitiatedTPT",
+  };
 
-    const onFormSubmit = (stepData: ContactScreeningData) => {
-        onSave(stepData);
-        onSubmit(stepData); // Submit final data
-      };    
+  if (!labels) return <p>Loading...</p>;
 
-    const contactScreeningDetailsFields = [
-    // {name: "contactScreeningDone", label: "Contact Screening done (Yes/No)",type: "select",options: ["Yes", "No"]},
-    {name: "contactScreeningDate", label: "Date of Contact Screening",type: "number"},
-    {name: "availableHhcs", label: "No of HHCs available",type: "number"},
-    {name: "screenedHhcs", label: "No of HHCs screened",type: "number"},
-    {name: "hhcsWithTbSymptoms", label: "No of HHCs found with TB Sympotoms",type: "number"},
-    {name: "hhcsReferredForTbTesting", label: "No of HHCs found with TB Sympotoms referred for TB testing",type: "number"},
-    {name: "hhcsDiagnosedTb", label: "No.of HHCs diagnosed TB",type: "number"},
-    {name: "hhcsDiagnosedTbOnAtt", label: "No of HHCs diagnosed with TB initiated on ATT",type: "number"},
-    {name: "hhcsUndergoneLBTI", label: "No of HHCs undergone for LTBI test",type: "number"},
-    {name: "eligibleForTpt", label: "No.of eligible for TPT",type: "number"},
-    {name: "hhcsInitiatedOnTpt", label: "No of HHCs initiated on TPT",type: "number"},
-    ];
-
-    if (!labels) return <p>Loading...</p>;
-
-    return (
-        <Box>
-        <Typography variant="h6">Contact Screening Details</Typography>
-        <form onSubmit={handleSubmit(onFormSubmit)}>
+  return (
+    <Box>
+      <Typography variant="h6">Contact Screening Details</Typography>
+      <form onSubmit={handleSubmit(onFormSubmit)}>
         <FormControl fullWidth margin="normal">
-                    <InputLabel>{labels.contactScreeningDoneLabel.label}</InputLabel>
-                    <Controller
-                        name="contactScreeningDone"
-                        control={control}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                onChange={(e) => {
-                                    const value = e.target.value === "true";
-                                    field.onChange(value);
-                                    if (!value) {
-                                        Object.keys(labels).forEach((key) => setValue(key as keyof ContactScreeningData, ""));
-                                    }
-                                }}
-                            >
-                                {labels.contactScreeningDoneLabel.options?.map((option) => (
-                                    <MenuItem key={option.value.toString()} value={option.value.toString()}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        )}
-                    />
-                </FormControl>
+          <InputLabel>{labels.contactScreeningDoneLabel.label}</InputLabel>
+          <Controller
+            name="contactScreeningDone"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                value={field.value ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value === "true";
+                  field.onChange(value);
+                  if (!value) {
+                    Object.keys(labels).forEach((key) =>
+                      setValue(key as keyof ContactScreeningData, "")
+                    );
+                  }
+                }}
+              >
+                {labels.contactScreeningDoneLabel.options?.map((option) => (
+                  <MenuItem
+                    key={option.value.toString()}
+                    value={option.value.toString()}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+          />
+        </FormControl>
 
-                {contactScreeningDone &&
-                    Object.keys(labels).map((key) => {
-                        if (key !== "contactScreeningDoneLabel") {
-                            return (
-                                <TextField
-                                    key={key}
-                                    label={(labels as any)[key]}
-                                    type="number"
-                                    {...register(key as keyof ContactScreeningData)}
-                                    fullWidth
-                                    margin="normal"
-                                />
-                            );
-                        }
-                        return null;
-                    })}
-        {/* <FormControl fullWidth margin="normal">
-        <InputLabel>{labels.contactScreeningDoneLabel.label}</InputLabel>
-        <Controller name="contactScreeningDone" control={control} render={({ field }) => (
-        <Select 
-            {...field}
-            onChange={(e) => {
-            const value = e.target.value === "true";
-            field.onChange(value);
-            if (!value) {
-                contactScreeningDetailsFields.forEach(field => setValue(field.name as keyof ContactScreeningData, ""));
-            }
-            }}
-        >
-            <MenuItem value={"true"}>Yes</MenuItem>
-            <MenuItem value={"false"}>No</MenuItem>
-        </Select>
-        )} />
-    </FormControl>
+        {contactScreeningDone && (
+          <>
+            <TextField
+              key="dateOfContactScreening"
+              {...register("dateOfContactScreening")}
+              label={labels.dateOfContactScreeningLabel}
+              type="date"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              slotProps={{ inputLabel: { shrink: true } }}
+              error={!!errors.dateOfContactScreening}
+              helperText={errors.dateOfContactScreening?.message}
+            />
+            {Object.entries(fieldMappings).map(([labelKey, fieldName]) => (
+              <TextField
+                key={fieldName}
+                label={(labels as any)[labelKey]}
+                type="number"
+                {...register(fieldName, { valueAsNumber: true })}
+                fullWidth
+                margin="normal"
+                slotProps={{ inputLabel: { shrink: true } }}
+                error={!!errors[fieldName]}
+                helperText={errors[fieldName]?.message}
+              />
+            ))}
+          </>
+        )}
 
-    {contactScreeningDone && contactScreeningDetailsFields.map(({ name, type }) => (
-        <TextField key={name} label={labels[name]} type={type} {...register(name as keyof ContactScreeningData)} fullWidth margin="normal" />
-    ))} */}
-
-    <Box mt={3} display="flex" justifyContent="space-between">
-          <Button variant="outlined" color="secondary" onClick={onBack}>
-            Back
-          </Button>
-          <Button type="submit" variant="contained" color="success">
-            Submit
-          </Button>
+        <Box mt={3} display="flex" justifyContent="space-between">
+          {functionality === "register" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onBack}
+              disabled
+            >
+              Back
+            </Button>
+          )}
+          {functionality === "register" && (
+            <Button type="submit" variant="contained" color="primary">
+              Save and Next
+            </Button>
+          )}
+          {functionality === "editdetails" && (
+            <Button type="submit" variant="contained" color="primary">
+              Update
+            </Button>
+          )}
         </Box>
-    </form>
+      </form>
     </Box>
-    )
+  );
 };
 
 export default ContactScreeningDetailsForm;
