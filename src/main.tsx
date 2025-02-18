@@ -29,6 +29,7 @@ const oidcConfig = {
   authority: "http://localhost:8081/realms/tb-alert",
   client_id: "tb-alert-frontend",
   redirect_uri: "http://localhost:5173",
+  post_logout_redirect_uri: "http://localhost:5173/",
   onSigninCallback: () => {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
