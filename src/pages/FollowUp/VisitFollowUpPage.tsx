@@ -70,13 +70,11 @@ const VisitFollowUpPage = () => {
         {data && (
           <Grid item xs={12} md={3}>
             {/* Sidebar */}
-            {data && data.followUpDetails.length > 0 && (
-              <FollowUpSidebar
-                selectedIndex={selectedIndex}
-                setIndex={handleListItemClick}
-                data={data}
-              />
-            )}
+            <FollowUpSidebar
+              selectedIndex={selectedIndex}
+              setIndex={handleListItemClick}
+              data={data}
+            />
           </Grid>
         )}
         {data ? (

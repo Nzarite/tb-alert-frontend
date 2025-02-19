@@ -20,6 +20,7 @@ import {
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { RiPencilFill } from "react-icons/ri";
+import { Link } from "react-router-dom";
 import { z } from "zod";
 import axiosInstance from "../../components/axiosInstance";
 import {
@@ -200,7 +201,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
         marginTop: 1,
       }}
     >
-      {data ? (
+      {data && data.followUpDetails.length > 0 ? (
         <>
           <Typography
             variant="h6"
@@ -378,7 +379,22 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
           </Box>
         </>
       ) : (
-        <Typography align="center">No Followups found</Typography>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          <Typography align="center" variant="body1" color="textSecondary">
+            Please complete Patient Registration
+          </Typography>
+          <Link to={`/patient-dashboard/${data.patient.patientId}`}>
+            <Button variant="contained">Go to Dashboard</Button>
+          </Link>
+        </div>
       )}
     </Paper>
   );

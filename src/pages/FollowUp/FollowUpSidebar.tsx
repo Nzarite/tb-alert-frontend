@@ -119,7 +119,7 @@ export default function FollowUpSidebar({
           overflow: "auto",
         }}
       >
-        {data ? (
+        {data.followUpDetails.length > 0 ? (
           <>
             <Typography
               variant="subtitle2"
@@ -183,9 +183,9 @@ export default function FollowUpSidebar({
             </List>
           </>
         ) : (
-          <Box>
-            Please Register TB Details for patient to view follow up details
-          </Box>
+          <Typography align="center" variant="body2" color="textSecondary">
+            No Follow ups found
+          </Typography>
         )}
       </Paper>
     </Box>
