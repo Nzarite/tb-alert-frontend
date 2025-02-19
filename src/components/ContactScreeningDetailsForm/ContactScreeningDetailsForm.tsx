@@ -10,6 +10,7 @@ import {
   TextField,
   Grid,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
@@ -51,6 +52,8 @@ const ContactScreeningDetailsForm = ({
   onSubmit,
   onBack,
   functionality,
+  patientName,
+  loading,
 }: any) => {
   interface LabelOption {
     label: string;
@@ -58,6 +61,7 @@ const ContactScreeningDetailsForm = ({
   }
 
   interface ContactScreeningDetailsFormLabelsData {
+    patientNameLabel: string;
     contactScreeningDoneLabel: LabelOption;
     dateOfContactScreeningLabel: string;
     noOfHHCsAvailableLabel: string;
@@ -72,6 +76,7 @@ const ContactScreeningDetailsForm = ({
   }
 
   const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
+    patientNameLabel: "",
     contactScreeningDoneLabel: { label: "", options: [] },
     dateOfContactScreeningLabel: "",
     noOfHHCsAvailableLabel: "",
@@ -89,7 +94,10 @@ const ContactScreeningDetailsForm = ({
     fetch(`/locales/patient_registration_form4_${language}.json`)
       .then((response) => response.json())
       .then((data) => setLabels(data.nikshaydetailsform))
-      .catch((error) => console.error("Error loading language file:", error));
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
   }, [language]);
 
   const {
@@ -134,17 +142,33 @@ const ContactScreeningDetailsForm = ({
     noOfHHCsInitiatedTPTLabel: "noOfHHCsInitiatedTPT",
   };
 
-  if (!labels) return <p>Loading...</p>;
+  if (!labels) return <CircularProgress />;
 
   return (
     <Box>
       <Typography variant="h6">Contact Screening Details</Typography>
       <form onSubmit={handleSubmit(onFormSubmit)}>
+        {functionality === "register" && (
+          <TextField
+            label={labels.patientNameLabel}
+            value={patientName}
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            disabled
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "black", // Ensures text remains black
+              },
+            }}
+          />
+        )}
         <FormControl fullWidth margin="normal">
           <InputLabel>{labels.contactScreeningDoneLabel.label}</InputLabel>
           <Controller
             name="contactScreeningDone"
             control={control}
+            disabled={loading}
             render={({ field }) => (
               <Select
                 {...field}
@@ -183,6 +207,7 @@ const ContactScreeningDetailsForm = ({
               fullWidth
               margin="normal"
               slotProps={{ inputLabel: { shrink: true } }}
+              disabled={loading}
               error={!!errors.dateOfContactScreening}
               helperText={errors.dateOfContactScreening?.message}
             />
@@ -195,6 +220,7 @@ const ContactScreeningDetailsForm = ({
                 fullWidth
                 margin="normal"
                 slotProps={{ inputLabel: { shrink: true } }}
+                disabled={loading}
                 error={!!errors[fieldName]}
                 helperText={errors[fieldName]?.message}
               />
@@ -214,13 +240,31 @@ const ContactScreeningDetailsForm = ({
             </Button>
           )}
           {functionality === "register" && (
-            <Button type="submit" variant="contained" color="primary">
-              Save and Next
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Save and Next"
+              )}
             </Button>
           )}
           {functionality === "editdetails" && (
-            <Button type="submit" variant="contained" color="primary">
-              Update
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Update"
+              )}
             </Button>
           )}
         </Box>

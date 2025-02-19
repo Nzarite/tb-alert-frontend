@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -10,6 +10,8 @@ import {
   StepLabel,
   Grid,
   Paper,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import PatientDetailsForm from "../../../components/PatientDetailsForm/PatientDetailsForm";
@@ -30,6 +32,9 @@ const PatientRegistrationPage = () => {
     location.state?.initialStep || 0
   );
   const [patientId, setPatientId] = useState<string | null>(null);
+  const [patientName, setPatientName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const steps = [
     "Patient Details",
@@ -74,6 +79,8 @@ const PatientRegistrationPage = () => {
     //   console.log("Contact Screening Details Saved:", stepData);
     // }
 
+    setLoading(true);
+    setError(null);
     try {
       let response;
 
@@ -81,6 +88,10 @@ const PatientRegistrationPage = () => {
         response = await axiosInstance.post("/patient/register", stepData);
         if (response.status === 200 || 201 || 202) {
           setPatientId(response.data.patientId);
+          setPatientName(
+            response.data.firstName +
+              (response.data.lastName ? " " + response.data.lastName : "")
+          );
           setFormData({ ...formData, patientDetails: stepData });
           setActiveStep(activeStep + 1);
         }
@@ -123,7 +134,12 @@ const PatientRegistrationPage = () => {
       }
     } catch (error: any) {
       console.error("Error saving data:", error);
-      alert(`Error: ${error.response?.data?.message || error.message}`);
+      setError(
+        error.response?.data?.message ||
+          "There was an error submitting the form, please try again"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -167,6 +183,7 @@ const PatientRegistrationPage = () => {
                   onSave={handleSave}
                   // onNext={handleNext}
                   functionality="register"
+                  loading={loading}
                 />
               )}
               {activeStep === 1 && (
@@ -177,6 +194,8 @@ const PatientRegistrationPage = () => {
                   // onNext={handleNext}
                   onBack={handleBack}
                   functionality="register"
+                  patientName={patientName}
+                  loading={loading}
                 />
               )}
               {activeStep === 2 && (
@@ -187,6 +206,8 @@ const PatientRegistrationPage = () => {
                   // onNext={handleNext}
                   onBack={handleBack}
                   functionality="register"
+                  patientName={patientName}
+                  loading={loading}
                 />
               )}
               {activeStep === 3 && (
@@ -197,7 +218,14 @@ const PatientRegistrationPage = () => {
                   onSubmit={handleSubmit(onSubmit)}
                   onBack={handleBack}
                   functionality="register"
+                  patientName={patientName}
+                  loading={loading}
                 />
+              )}
+              {error && (
+                <Alert severity="error" sx={{ mt: 3, mb: 2 }}>
+                  {error}
+                </Alert>
               )}
             </Paper>
           </Grid>

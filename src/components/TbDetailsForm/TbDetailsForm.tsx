@@ -12,13 +12,13 @@ import {
   Paper,
   MenuItem,
   LabelDisplayedRowsArgs,
+  CircularProgress,
 } from "@mui/material";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export type TbDetailsData = {
-  nameOfPwtb: string;
   typeOfPwtb: string;
   clinicalOrMicrobiological: string;
   dateOfDiagnosis: string;
@@ -28,7 +28,6 @@ export type TbDetailsData = {
 };
 
 const tbDetailsSchema = z.object({
-  nameOfPwtb: z.string().min(1, "Name of PwTB is required"),
   typeOfPwtb: z.enum(["Identified by Project", "Received from NTEP"], {
     errorMap: () => ({ message: "Type of PwTB is required" }),
   }),
@@ -58,6 +57,8 @@ const TbDetailsForm = ({
   // onNext,
   onBack,
   functionality,
+  patientName,
+  loading,
 }: any) => {
   interface LabelOption {
     label: string;
@@ -65,7 +66,7 @@ const TbDetailsForm = ({
   }
 
   interface TbDetailsFormLabelsData {
-    nameOfPwtbLabel: string;
+    patientNameLabel: string;
     typeOfPwtbLabel: LabelOption;
     clinicalOrMicrobiologicalLabel: LabelOption;
     dateOfDiagnosisLabel: string;
@@ -75,7 +76,7 @@ const TbDetailsForm = ({
   }
 
   const [labels, setLabels] = useState<TbDetailsFormLabelsData>({
-    nameOfPwtbLabel: "",
+    patientNameLabel: "",
     typeOfPwtbLabel: { label: "", options: [] },
     clinicalOrMicrobiologicalLabel: { label: "", options: [] },
     dateOfDiagnosisLabel: "",
@@ -88,7 +89,10 @@ const TbDetailsForm = ({
     fetch(`/locales/patient_registration_form2_${language}.json`)
       .then((response) => response.json())
       .then((data) => setLabels(data.tbdetailsform))
-      .catch((error) => console.error("Error loading language file:", error));
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
   }, [language]);
 
   const {
@@ -124,7 +128,6 @@ const TbDetailsForm = ({
     label: string;
     options?: { label: string; value: string }[];
   }[] = [
-    { name: "nameOfPwtb", type: "text", label: labels.nameOfPwtbLabel },
     {
       name: "typeOfPwtb",
       type: "select",
@@ -162,13 +165,27 @@ const TbDetailsForm = ({
     },
   ];
 
-  if (!labels) return <p>Loading...</p>;
+  if (!labels) return <CircularProgress />;
 
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h6">TB Details</Typography>
-        {/* Loop through simple text fields */}
+        {functionality === "register" && (
+          <TextField
+            label={labels.patientNameLabel}
+            value={patientName}
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            disabled
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "black", // Ensures text remains black
+              },
+            }}
+          />
+        )}
         {formFields.map((field) =>
           field.type === "text" ? (
             <TextField
@@ -179,6 +196,7 @@ const TbDetailsForm = ({
               fullWidth
               margin="normal"
               slotProps={{ inputLabel: { shrink: true } }}
+              disabled={loading}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             />
@@ -196,6 +214,7 @@ const TbDetailsForm = ({
                   fullWidth
                   margin="normal"
                   InputLabelProps={{ shrink: true }}
+                  disabled={loading}
                   error={!!errors[field.name]}
                   helperText={errors[field.name]?.message}
                   value={value || ""} // Ensure controlled value
@@ -238,6 +257,7 @@ const TbDetailsForm = ({
               fullWidth
               margin="normal"
               slotProps={{ inputLabel: { shrink: true } }}
+              disabled={loading}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             />
@@ -256,13 +276,31 @@ const TbDetailsForm = ({
             </Button>
           )}
           {functionality === "register" && (
-            <Button type="submit" variant="contained" color="primary">
-              Save and Next
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Save and Next"
+              )}
             </Button>
           )}
           {functionality === "editdetails" && (
-            <Button type="submit" variant="contained" color="primary">
-              Update
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Update"
+              )}
             </Button>
           )}
         </Box>

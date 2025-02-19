@@ -3,6 +3,7 @@ import StarIcon from "@mui/icons-material/Star";
 import {
   Box,
   Button,
+  CircularProgress,
   Divider,
   Paper,
   Rating,
@@ -69,6 +70,8 @@ type FormData = z.infer<typeof schema>;
 const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   const [isEditable, setIsEditable] = useState(false); // Add editable state
   const [hover, setHover] = useState(-1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     control,
@@ -118,16 +121,23 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   }
 
   const formSubmitHandler = (formData: FormData) => {
+    setLoading(true);
+    setError(null);
     try {
       const submitData = {
         ...formData,
         date: data?.followUpDetails[index].date,
       };
       axiosInstance.put(`/followup/${data?.patient.patientId}`, submitData);
-      getPatientData(data?.patient.patientId?.toString);
-    } catch (Error) {
+      getPatientData(data?.patient.patientId?.toString());
+    } catch (Error:any) {
       console.error(Error);
+      setError(
+        Error.response?.data?.message ||
+          "Failed to update follow-up. Please try again."
+      );
     } finally {
+      setLoading(false);
       setIsEditable(false);
     }
   };
@@ -346,10 +356,19 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={!isValid || !isEditable}
+                  disabled={!isValid || !isEditable || loading}
                 >
-                  Submit
+                  {loading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    "Submit"
+                  )}
                 </Button>
+                {error && (
+                  <Typography color="error" align="center">
+                    {error}
+                  </Typography>
+                )}
               </Box>
             </Stack>
           </Box>

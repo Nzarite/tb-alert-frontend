@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Paper } from "@mui/material";
+import { Box, CircularProgress, Container, Grid, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
@@ -14,6 +14,8 @@ const VisitFollowUpPage = () => {
 
   const [data, setData] = useState<VisitDataInterface | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleListItemClick = (index: number) => {
     if (data && index >= 0 && index < data?.followUpDetails.length)
@@ -21,6 +23,8 @@ const VisitFollowUpPage = () => {
   };
 
   const getPatientData = async (search: string) => {
+    setLoading(true);
+    setError(null);
     try {
       const res = await axiosInstance.get(`/followup/${search}`);
       const res2 = await axiosInstance.get(`/patientmedication/${search}`);
@@ -30,8 +34,10 @@ const VisitFollowUpPage = () => {
         if (!followup.followUpStatus) followup.medicationDetails = res2.data;
       });
       setData(newData);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setError(error.response?.data?.message || "Failed to fetch data.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,37 +73,43 @@ const VisitFollowUpPage = () => {
     >
       <Container maxWidth="xl">
         <Grid container spacing={{ xs: 2, md: 3 }}>
-          {data && (
-            <Grid item xs={12} md={3}>
-              {/* Sidebar */}
-              <Paper
-                variant="outlined"
-                sx={{
-                  padding: 2,
-                  height: "78vh",
-                  overflow: "auto",
-                }}
-              >
-                {data && data.followUpDetails.length > 0 && (
-                  <FollowUpSidebar
-                    selectedIndex={selectedIndex}
-                    setIndex={handleListItemClick}
-                    data={data}
-                  />
-                )}
-              </Paper>
+          {loading ? (
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <CircularProgress />
             </Grid>
-          )}
-          {data ? (
-            <Grid item xs={12} md={9}>
-              {/* Search Bar */}
-              <SearchBox changeSearch={(input) => setSearch(input.value)} />
-              <FollowUpFormComponent
-                index={selectedIndex}
-                data={data}
-                getPatientData={(input) => getPatientData(input)}
-              />
-            </Grid>
+          ) : data ? (
+            <>
+              <Grid item xs={12} md={3}>
+                {/* Sidebar */}
+                <Paper
+                  variant="outlined"
+                  sx={{ padding: 2, height: "78vh", overflow: "auto" }}
+                >
+                  {data.followUpDetails.length > 0 && (
+                    <FollowUpSidebar
+                      selectedIndex={selectedIndex}
+                      setIndex={handleListItemClick}
+                      data={data}
+                    />
+                  )}
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={9}>
+                {/* Search Bar */}
+                <SearchBox changeSearch={(input) => setSearch(input.value)} />
+                <FollowUpFormComponent
+                  index={selectedIndex}
+                  data={data}
+                  getPatientData={(input) => getPatientData(input)}
+                />
+              </Grid>
+            </>
           ) : (
             <Grid item xs={12}>
               {/* Search Bar */}
@@ -107,6 +119,11 @@ const VisitFollowUpPage = () => {
                 data={data}
                 getPatientData={(input) => getPatientData(input)}
               />
+              {error && (
+                <Box textAlign="center" color="error.main" mt={2}>
+                  {error}
+                </Box>
+              )}
             </Grid>
           )}
         </Grid>

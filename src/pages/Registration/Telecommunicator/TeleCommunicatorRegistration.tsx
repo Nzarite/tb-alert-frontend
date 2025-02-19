@@ -1,6 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Paper,
+  Stack,
+  Typography,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
 import StateData from "../../../components/Json/states.json";
@@ -19,6 +29,9 @@ const schema = z.object({
     .regex(/^\d+$/, "Contact must contain only numbers")
     .min(10, "Contact must be 10 digits"),
   email: z.string().email("Please enter a valid email"),
+  dateOfJoining: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: "Invalid date format",
+  }),
   state: z.string().nonempty("Please select a state"),
   district: z.string().min(1, "District Name is required"),
   village: z.string().min(1, "Village Name is required"),
@@ -40,27 +53,30 @@ const TeleCommunicationRegistration = () => {
     mode: "all",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const formFields = [
     {
       name: "firstName",
       label: "First Name",
       placeholder: "Enter First Name",
       type: "text",
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "lastName",
       label: "Last Name",
       placeholder: "Enter Last Name",
       type: "text",
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "dateOfBirth",
       label: "Date of Birth",
       placeholder: "Date of Birth",
       type: "date",
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "gender",
@@ -70,21 +86,28 @@ const TeleCommunicationRegistration = () => {
         { label: "Male", value: "M" },
         { label: "Female", value: "F" },
       ],
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "phoneNumber",
       label: "Contact",
       placeholder: "Enter Phone Number",
       type: "text",
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "email",
       label: "Email",
       placeholder: "Enter Email",
       type: "text",
-      disabled: false,
+      disabled: loading,
+    },
+    {
+      name: "dateOfJoining",
+      label: "Date of Joining",
+      placeholder: "Date of Joining",
+      type: "date",
+      disabled: loading,
     },
     // {
     //   name: "state",
@@ -103,53 +126,60 @@ const TeleCommunicationRegistration = () => {
         { label: "Uttar Pradesh", value: "UP" },
         { label: "Bihar", value: "BR" },
       ],
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "district",
       label: "District",
       placeholder: "Enter District Name",
       type: "text",
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "village",
       label: "Village",
       placeholder: "Enter Village Name",
       type: "text",
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "block",
       label: "Block",
       placeholder: "Enter Block name",
       type: "text",
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "gp",
       label: "GP",
       placeholder: "Enter GP name",
       type: "text",
-      disabled: false,
+      disabled: loading,
     },
     {
       name: "createdBy",
       label: "Email of person created by",
       placeholder: "Email of person created by",
       type: "text",
-      disabled: false,
+      disabled: loading,
     },
   ];
 
   const formSubmitHandler = async (data: FormData) => {
+    setLoading(true);
+    setErrorMessage(null);
     const formData = { ...data };
     console.log("Submitted Data: ", data);
     try {
       await axiosInstance.post("/telecaller/register", formData);
       reset();
     } catch (err: any) {
-      console.error(err);
+      setErrorMessage(
+        err.response?.data?.message ||
+          "There was an error submitting the form, please try again"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -157,7 +187,7 @@ const TeleCommunicationRegistration = () => {
     <Paper
       variant="outlined"
       sx={{
-        height: "95vh",
+        height: "90vh",
         overflow: "auto",
         padding: 4,
         width: "40vw",
@@ -178,20 +208,28 @@ const TeleCommunicationRegistration = () => {
               errors={errors}
             />
           ))}
-          {/* Buttons */}
+          {errorMessage && (
+            <Alert severity="error" sx={{ marginBottom: "15px" }}>
+              {errorMessage}
+            </Alert>
+          )}
           <Box
             sx={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
           >
-            <Button onClick={() => reset()} color="inherit">
+            <Button onClick={() => reset()} color="inherit" disabled={loading}>
               Reset
             </Button>
             <Button
               type="submit"
               variant="contained"
               color="primary"
-              disabled={!isValid}
+              disabled={!isValid || loading}
             >
-              Submit
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Submit"
+              )}
             </Button>
           </Box>
         </Stack>
