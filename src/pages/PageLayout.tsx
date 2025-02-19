@@ -10,7 +10,7 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/register/state-coordinator": "State Coordinator",
   "/register/telecommunicator": "Telecommunicator",
   "/visit": "Visit Follow-Up",
-  "/dashboard/patient": "Patient Search",
+  "/patient-dashboard": "Patient Search",
   "/reports": "Reports",
   "/settings": "Settings",
 };

@@ -2,10 +2,10 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import {
-	createBrowserRouter,
-	createRoutesFromElements,
-	Route,
-	RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
 } from "react-router-dom";
 import "./index.css";
 import ErrorPage from "./pages/Error/ErrorPage";
@@ -67,9 +67,9 @@ const router = createBrowserRouter(
         path="/register/telecommunicator"
         element={<TeleCommunicatorRegistration />}
       />
-      <Route path="/dashboard/patient" element={<PatientSearchPage />} />
+      <Route path="/patient-dashboard" element={<PatientSearchPage />} />
       <Route
-        path="/dashboard/patient/:patientId"
+        path="/patient-dashboard/:patientId"
         element={<PatientDashboardPage />}
       />
       <Route path="/reports" element={<Reports />} />

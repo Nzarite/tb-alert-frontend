@@ -118,7 +118,7 @@ const PatientRegistrationPage = () => {
         });
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, contactScreeningDetails: stepData });
-          navigate(`/dashboard/patient/${patientId}`);
+          navigate(`/patient-dashboard/${patientId}`);
         }
       }
     } catch (error: any) {

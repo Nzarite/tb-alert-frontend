@@ -26,7 +26,7 @@ const LandingPage = () => {
           <Box>Follow-ups</Box>
         </Link>
 
-        <Link to="dashboard/patient" className="module-item">
+        <Link to="/patient-dashboard" className="module-item">
           <MdDashboard className="icon"/>
           <Box>Patient Dashboard</Box>
         </Link>
