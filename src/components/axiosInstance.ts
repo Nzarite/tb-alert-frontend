@@ -23,14 +23,13 @@ const attachToken = (
 };
 
 // let isRefreshing = false;
+const oidcSessionKey = `oidc.user:${import.meta.env.VITE_OIDC_AUTHORITY}:${import.meta.env.VITE_OIDC_CLIENT_ID}`;
 
 axiosInstance.interceptors.request.use(
   async (config) => {
     try {
       // Retrieve the session data from sessionStorage
-      const sessionData = sessionStorage.getItem(
-        "oidc.user:http://localhost:8081/realms/tb-alert:tb-alert-frontend"
-      );
+      const sessionData = sessionStorage.getItem(oidcSessionKey);
 
       if (sessionData) {
         const parsedSessionData = JSON.parse(sessionData);

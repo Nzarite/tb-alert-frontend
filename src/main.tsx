@@ -26,10 +26,10 @@ import { AuthProvider } from "react-oidc-context";
 import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 
 const oidcConfig = {
-  authority: "http://localhost:8081/realms/tb-alert",
-  client_id: "tb-alert-frontend",
-  redirect_uri: "http://localhost:5173",
-  post_logout_redirect_uri: "http://localhost:5173/",
+  authority: import.meta.env.VITE_OIDC_AUTHORITY,
+  client_id: import.meta.env.VITE_OIDC_CLIENT_ID,
+  redirect_uri: import.meta.env.VITE_REDIRECT_URI,
+  post_logout_redirect_uri: import.meta.env.VITE_POST_LOGOUT_REDIRECT_URI,
   onSigninCallback: () => {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
