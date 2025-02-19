@@ -157,11 +157,11 @@ const StateCoordinatorRegistrationPage = () => {
     <Paper
       variant="outlined"
       sx={{
-        height: "95vh",
+        height: "83vh",
         overflow: "auto",
         padding: 4,
-        width: "40vw",
-        margin: "30px auto 0px auto",
+        width: "50vw",
+        margin: "0px auto",
       }}
     >
       <Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>

@@ -3,7 +3,6 @@ import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
-import StateData from "../../../components/Json/states.json";
 import axiosInstance from "../../../components/axiosInstance";
 
 const schema = z.object({
@@ -157,11 +156,11 @@ const TeleCommunicationRegistration = () => {
     <Paper
       variant="outlined"
       sx={{
-        height: "95vh",
+        height: "83vh",
         overflow: "auto",
         padding: 4,
-        width: "40vw",
-        margin: "30px auto 0px auto",
+        width: "50vw",
+        margin: "0px auto",
       }}
     >
       <Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>
