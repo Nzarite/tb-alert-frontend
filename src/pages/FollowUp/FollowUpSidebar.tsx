@@ -90,9 +90,9 @@ export default function FollowUpSidebar({
                 fontWeight={600}
                 color="text.secondary"
               >
-                DOB:{" "}
+                Age:{" "}
               </Typography>
-              {data.patient.dateOfBirth}
+              {data.patient.age}
             </Typography>
             <Typography
               variant="body2"

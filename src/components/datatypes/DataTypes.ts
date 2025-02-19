@@ -5,18 +5,23 @@ export interface VisitDataInterface {
 
 export interface PatientInterface {
   patientId: string;
+  personId: null;
   firstName: string;
   lastName: string;
   gender: string;
-  dateOfBirth: string;
+  age: null;
   phoneNumber: string;
+  email: string;
   block: string;
   gp: string;
   village: string;
   district: string;
-  currentStatus: boolean;
-  cured: boolean;
-  aliveOrDead: boolean;
+  state: string;
+  currentStatus: string;
+  cured: false;
+  createdAt: string;
+  createdBy: string;
+  updatedBy: null;
 }
 
 export interface FollowUpsDataInterface {
