@@ -5,7 +5,7 @@ const PageLayout = () => {
   return (
     <>
       <Navbar />
-      <main style={{ height: "100vh", overflow: "auto" }}>
+      <main style={{ height: "92vh", overflow: "auto" }}>
         <Outlet />
       </main>
     </>
