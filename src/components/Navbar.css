@@ -2,11 +2,12 @@
 	background-color: #0b455c;
 	width: 100%;
 	color: white;
-	padding: 15px;
+	padding: 10px;
 	display: flex;
 	justify-content: space-between;
 	position: sticky;
 	z-index: 100;
+	top: 0;
 }
 
 .navbar-left, .navbar-right{
