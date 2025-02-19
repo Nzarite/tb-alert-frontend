@@ -16,7 +16,7 @@ import { patientConditionLabels } from "../FollowUp/FollowUpMain";
 import { getStatusColor, getStatusName } from "../FollowUp/FollowUpSidebar";
 
 const PatientFollowUpDetails = (patientId: any) => {
-  const [patientData, setPatientData] = useState(null);
+  const [patientData, setPatientData] = useState<FollowUpsDataInterface[] | null>(null);
 
   useEffect(() => {
     const getData = async () => {
