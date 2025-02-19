@@ -84,7 +84,7 @@ const PatientDashboardPage = () => {
             component: <PatientMedicineDetails patientId={patientId} />,
             icon: <MdVaccines style={{ fontSize: "20px" }} />,
             size: 6,
-            editURL: "",
+            editURL: null,
           },
           {
             title: "Follow Up",
@@ -92,7 +92,7 @@ const PatientDashboardPage = () => {
             icon: <MdAssessment style={{ fontSize: "22px" }} />,
             size: 6,
             editURL: "/visit",
-            prop: 1,
+            prop: patientId,
           },
         ].map((section, index) => (
           <Grid item xs={12} sm={section.size} key={index}>
