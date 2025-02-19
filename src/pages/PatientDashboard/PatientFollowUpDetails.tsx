@@ -72,8 +72,14 @@ const PatientFollowUpDetails = (patientId: any) => {
                           followup.date,
                           followup.followUpStatus
                         )}
-                        variant="outlined"
+                        variant="filled"
                         size="small"
+                        sx={{
+                          fontWeight: 600,
+                          fontSize: "0.65rem",
+                          height: 20,
+                          "& .MuiChip-label": { px: 1 },
+                        }}
                       />
                     </TableCell>
                     <TableCell>
@@ -88,7 +94,7 @@ const PatientFollowUpDetails = (patientId: any) => {
               <TableRow>
                 <TableCell colSpan={4} align="center">
                   <Typography variant="body2" color="textSecondary">
-                    No Follow Ups Found
+                    No Follow Ups Found. Please register TB Details.
                   </Typography>
                 </TableCell>
               </TableRow>
