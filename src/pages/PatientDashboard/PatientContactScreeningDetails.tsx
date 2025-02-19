@@ -1,32 +1,7 @@
 import { Divider, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
-import { DashboardFieldsProp } from "../../components/datatypes/DataTypes";
-
-export const renderField = (data, item: DashboardFieldsProp, index: number) => {
-  const fieldValue = data[item.name];
-  const displayValue =
-    fieldValue === true
-      ? "Yes"
-      : fieldValue === false
-      ? "No"
-      : fieldValue !== null && fieldValue !== undefined && fieldValue !== ""
-      ? fieldValue
-      : "N/A";
-
-  return (
-    <Grid item xs={item.size} key={index}>
-      <Typography variant="subtitle2" fontWeight="bold" sx={{ color: "gray" }}>
-        {item.label.toUpperCase()}:
-      </Typography>
-      <Typography variant="body1" sx={{ fontWeight: "medium", color: "#333" }}>
-        {typeof displayValue === "string" || typeof displayValue === "number"
-          ? displayValue
-          : "N/A"}
-      </Typography>
-    </Grid>
-  );
-};
+import { renderField } from "./PatientNikshayDetails";
 
 const PatientContactScreeningDetails = (patientId: any) => {
   const [patientData, setPatientData] = useState(null);
