@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 
 const breadcrumbNameMap: { [key: string]: string } = {
   "/": "Home",
+  "/register": "Register",
   "/register/caregiver": "Caregiver",
   "/register/patient": "Patient",
   "/register/state-coordinator": "State Coordinator",
