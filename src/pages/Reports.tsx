@@ -63,7 +63,7 @@ const Reports = () => {
     }
   }
 
-  const handleDownloadReport = async (endpoint:String, filename:String) => {
+  const handleDownloadReport = async (endpoint:string, filename:string) => {
     try {
 
       let filters = {
@@ -245,6 +245,14 @@ const Reports = () => {
                       >
                         Download All Patients Reports
                       </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleDownloadReport("/report/patient/followup", "Patient_FollowUps.xlsx")}
+                        size="large"
+                      >
+                        Download Patients FollowUp Reports
+                      </Button>
                     </>
                   )}
                   {currentRole === "telecaller" && (
@@ -254,7 +262,7 @@ const Reports = () => {
                       onClick={() => handleTeleCallerReport()}
                       size="large"
                     >
-                      Download All TeleCaller
+                      Download TeleCaller Reports
                     </Button>
                   )}
                   {currentRole==="statehead" && (<Button
@@ -263,7 +271,7 @@ const Reports = () => {
                     onClick={() => handleStateHeadReports()}
                     size="large"
                   >
-                    Download All StateHeads
+                    Download StateHeads Reports
                   </Button>)}
                 </Box>
 
