@@ -4,8 +4,10 @@ import { MdLogout } from "react-icons/md";
 import { RiAccountBoxFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
+import { useAuth } from "react-oidc-context";
 
 const Navbar = () => {
+  const auth = useAuth();
   const [language, setLanguage] = useState("en");
   return (
     <Box id="navbar">
@@ -29,11 +31,15 @@ const Navbar = () => {
           </Select>
         </FormControl>
 
-        <Link to="#" className="navbar-text">
+        <Link to="/profile" className="navbar-text">
           <RiAccountBoxFill title="Profile" size={25} />
         </Link>
         <Link to="#" className="navbar-text">
-          <MdLogout title="Log Out" size={25} />
+          <MdLogout
+            title="Log Out"
+            size={25}
+            onClick={() => auth.signoutRedirect()}
+          />
         </Link>
       </Box>
     </Box>

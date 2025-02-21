@@ -6,14 +6,18 @@ import { VisitDataInterface } from "../../components/datatypes/DataTypes";
 import SearchBox from "../../components/SearchBox";
 import FollowUpFormComponent from "./FollowUpMain";
 import FollowUpSidebar from "./FollowUpSidebar";
+import { useAuth } from "react-oidc-context";
 
 const VisitFollowUpPage = () => {
   const location = useLocation();
   const initialState = location.state?.prop || null;
-  const [search, setSearch] = useState<string | null>(initialState);
 
   const [data, setData] = useState<VisitDataInterface | null>(null);
+  const [search, setSearch] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const auth = useAuth();
+  const access_token = auth.user?.access_token || "";
 
   const handleListItemClick = (index: number) => {
     if (data && index >= 0 && index < data?.followUpDetails.length)
