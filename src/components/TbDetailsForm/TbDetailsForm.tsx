@@ -105,6 +105,7 @@ const TbDetailsForm = ({
   } = useForm<TbDetailsData>({
     defaultValues: data || {},
     resolver: zodResolver(tbDetailsSchema),
+    mode: "onChange",
   });
 
   useEffect(() => {

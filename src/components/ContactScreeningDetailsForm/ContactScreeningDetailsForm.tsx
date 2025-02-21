@@ -110,6 +110,7 @@ const ContactScreeningDetailsForm = ({
   } = useForm<ContactScreeningData>({
     defaultValues: data || {},
     resolver: zodResolver(contactScreeningDetailsSchema),
+    mode: "onChange",
     shouldUnregister: true,
   });
 

@@ -10,8 +10,6 @@
       ]
     },
     "phoneNumberLabel": "Contact Number",
-    "emailLabel": "Email of the Patient",
-    "dateOfBirthLabel": "Date of Birth",
     "ageLabel": "Age of the Patient",
     "createdByLabel": "Email of the person registering Patient",
     "districtLabel": "Name of the District",

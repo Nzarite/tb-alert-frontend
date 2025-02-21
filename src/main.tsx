@@ -21,6 +21,7 @@ import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import { store } from "./redux/store";
 import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
+import SmsModulePage from "./pages/SmsModulePage";
 
 const theme = createTheme({
 	palette: {
@@ -61,10 +62,10 @@ const router = createBrowserRouter(
 			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
 			<Route path="/dashboard/patient" element={<PatientSearchPage />} />
 			<Route path="/dashboard/patient/:patientId" element={<PatientDashboardPage />} />
-			<Route path="/reports" element={<Reports />} />
 			<Route path="*" element={<ErrorPage />} />
 			<Route path="/settings" element={<Settings />} />
 			<Route path="/reports" element={<Reports />} />
+			<Route path="/sms/module" element={<SmsModulePage />} />
 		</Route>
 	)
 );

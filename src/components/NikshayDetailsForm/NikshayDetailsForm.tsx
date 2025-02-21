@@ -155,6 +155,7 @@ const NikshayDetailsForm = ({
   } = useForm<NikshayDetailsData>({
     defaultValues: data || {},
     resolver: zodResolver(nikshayDetailsSchema),
+    mode: "onChange",
   });
 
   useEffect(() => {

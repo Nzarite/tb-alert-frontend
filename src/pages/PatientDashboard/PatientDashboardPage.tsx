@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import {
   MdAssessment,
   MdLocalHospital,
@@ -17,6 +17,7 @@ import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
 import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
+import axiosInstance from "../../components/axiosInstance";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
@@ -39,12 +40,26 @@ const PatientDashboardPage = () => {
     setSelectedPatientData(null);
   };
 
+  const handlePatientDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this patient?"))
+      return;
+    try {
+      await axiosInstance.delete(`/patient/${patientId}`);
+      alert("Patient deleted successfully.");
+      console.log(`Patient ${patientId} deleted successfully.`);
+    } catch (Error) {
+      alert("Failed to delete patient. Please try again.");
+      console.log(Error);
+    }
+  };
+
   if (!patientId) {
     return <Typography variant="h6">No patient selected</Typography>;
   }
 
   return (
     <>
+      {/* <Button onClick={handlePatientDelete}>Delete Patient</Button> */}
       <Grid container spacing={2} sx={{ p: 2 }}>
         {[
           {

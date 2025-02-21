@@ -7,7 +7,7 @@ interface SearchProps {
 }
 
 interface patientSearch {
-  patientId: number;
+  patientId: string;
   firstName: string;
   lastName: string;
   gender: string;
@@ -87,6 +87,7 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
         }}
         onInputChange={(newValue) => setInputValue(newValue)}
         options={options}
+        filterOption={() => true}
         placeholder="Search Patient..."
       />
       {error && <p style={{ color: "red", marginTop: "5px" }}>{error}</p>}

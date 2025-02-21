@@ -12,6 +12,7 @@ import {
   Paper,
   Alert,
   CircularProgress,
+  Snackbar,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import PatientDetailsForm from "../../../components/PatientDetailsForm/PatientDetailsForm";
@@ -35,6 +36,7 @@ const PatientRegistrationPage = () => {
   const [patientName, setPatientName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const steps = [
     "Patient Details",
@@ -129,7 +131,11 @@ const PatientRegistrationPage = () => {
         });
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, contactScreeningDetails: stepData });
-          navigate(`/dashboard/patient/${patientId}`);
+          setOpenSnackbar(true);
+          setTimeout(() => {
+            navigate(`/dashboard/patient/${patientId}`);
+          }, 4000);
+          // navigate(`/dashboard/patient/${patientId}`);
         }
       }
     } catch (error: any) {
@@ -227,6 +233,17 @@ const PatientRegistrationPage = () => {
                   {error}
                 </Alert>
               )}
+              <Snackbar
+                open={openSnackbar}
+                autoHideDuration={4000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+              >
+                <Alert severity="success" variant="filled">
+                  Patient registered successfully with Personal, TB, Nikshay & Contact
+                  Screening details.
+                </Alert>
+              </Snackbar>
             </Paper>
           </Grid>
         </Grid>

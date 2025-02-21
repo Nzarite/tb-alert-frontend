@@ -8,6 +8,7 @@ import {
   Typography,
   CircularProgress,
   Alert,
+  Snackbar,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -19,9 +20,6 @@ import axiosInstance from "../../../components/axiosInstance";
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
   lastName: z.string(),
-  dateOfBirth: z.string().refine((date) => !isNaN(Date.parse(date)), {
-    message: "Invalid date format",
-  }),
   gender: z.string().nonempty("Please select a Gender"),
   phoneNumber: z
     .string()
@@ -33,10 +31,6 @@ const schema = z.object({
     message: "Invalid date format",
   }),
   state: z.string().nonempty("Please select a state"),
-  district: z.string().min(1, "District Name is required"),
-  village: z.string().min(1, "Village Name is required"),
-  block: z.string().min(1, "Block Name is required"),
-  gp: z.string().min(1, "GP Name is required"),
   createdBy: z.string().email("Please enter a valid email"),
 });
 
@@ -55,6 +49,7 @@ const StateCoordinatorRegistrationPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const formFields = [
     {
@@ -69,13 +64,6 @@ const StateCoordinatorRegistrationPage = () => {
       label: "Last Name",
       placeholder: "Enter Last Name",
       type: "text",
-      disabled: loading,
-    },
-    {
-      name: "dateOfBirth",
-      label: "Date of Birth",
-      placeholder: "Date of Birth",
-      type: "date",
       disabled: loading,
     },
     {
@@ -122,38 +110,10 @@ const StateCoordinatorRegistrationPage = () => {
       label: "State",
       type: "select",
       options: [
-        { label: "Telangana", value: "TG" },
-        { label: "Uttar Pradesh", value: "UP" },
-        { label: "Bihar", value: "BR" },
+        { label: "Telangana", value: "TELANGANA" },
+        { label: "Uttar Pradesh", value: "UTTAR PRADESH" },
+        { label: "Bihar", value: "BIHAR" },
       ],
-      disabled: loading,
-    },
-    {
-      name: "district",
-      label: "District",
-      placeholder: "Enter District Name",
-      type: "text",
-      disabled: loading,
-    },
-    {
-      name: "village",
-      label: "Village",
-      placeholder: "Enter Village Name",
-      type: "text",
-      disabled: loading,
-    },
-    {
-      name: "block",
-      label: "Block",
-      placeholder: "Enter Block name",
-      type: "text",
-      disabled: loading,
-    },
-    {
-      name: "gp",
-      label: "GP",
-      placeholder: "Enter GP name",
-      type: "text",
       disabled: loading,
     },
     {
@@ -172,6 +132,7 @@ const StateCoordinatorRegistrationPage = () => {
     console.log("Submitted Data: ", formData);
     try {
       await axiosInstance.post("/statehead/register", formData);
+      setOpenSnackbar(true);
       reset();
     } catch (err: any) {
       setErrorMessage(
@@ -187,7 +148,7 @@ const StateCoordinatorRegistrationPage = () => {
     <Paper
       variant="outlined"
       sx={{
-        height: "90vh",
+        height: "85vh",
         overflow: "auto",
         padding: 4,
         width: "40vw",
@@ -216,7 +177,16 @@ const StateCoordinatorRegistrationPage = () => {
           <Box
             sx={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
           >
-            <Button onClick={() => reset()} color="inherit" disabled={loading}>
+            <Button
+              onClick={() => {
+                reset(
+                  {},
+                  { keepErrors: false, keepDirty: false, keepTouched: false }
+                );
+              }}
+              color="inherit"
+              disabled={loading}
+            >
               Reset
             </Button>
             <Button
@@ -234,6 +204,21 @@ const StateCoordinatorRegistrationPage = () => {
           </Box>
         </Stack>
       </Box>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity="success"
+          variant="filled"
+        >
+          The person has been registered successfully as a State Coordinator. An
+          email has been sent for password reset.
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 };

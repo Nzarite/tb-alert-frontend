@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./styles.css";
 import { FaUser } from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard, MdMessage } from "react-icons/md";
 import { TbReportMedical } from "react-icons/tb";
 import { IoIosSettings } from "react-icons/io";
 import { AiFillSchedule } from "react-icons/ai";
@@ -49,6 +49,11 @@ const LandingPage = () => {
         <Link to="/register/telecommunicator" className="module-item">
           <FaUser className="icon"/>
           <Box>Register Tele Communicator</Box>
+        </Link>
+
+        <Link to="/sms/module" className="module-item">
+          <MdMessage className="icon"/>
+          <Box>SMS Module</Box>
         </Link>
       </Box>
     </Box>

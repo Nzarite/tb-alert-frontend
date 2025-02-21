@@ -28,8 +28,6 @@ export type PatientDetailsData = {
   lastName: string;
   gender: string;
   phoneNumber: string;
-  email: string;
-  dateOfBirth: string;
   age: number;
   createdBy: string;
   state: string;
@@ -50,10 +48,6 @@ const patientDetailsSchema = z.object({
     .regex(/^\d+$/, "Contact number must contain only numbers")
     .min(10, "Contact number must be at least 10 digits")
     .max(15, "Contact number can't exceed 15 digits"),
-  email: z.string().email("Please enter a valid email"),
-  dateOfBirth: z.string().refine((date) => !isNaN(Date.parse(date)), {
-    message: "Invalid date format",
-  }),
   age: z
     .number()
     .int("Age must be an integer")
@@ -89,8 +83,6 @@ const PatientDetailsForm = ({
     lastNameLabel: string;
     genderLabel: LabelOption;
     phoneNumberLabel: string;
-    emailLabel: string;
-    dateOfBirthLabel: string;
     ageLabel: string;
     createdByLabel: string;
     districtLabel: string;
@@ -104,8 +96,6 @@ const PatientDetailsForm = ({
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
     phoneNumberLabel: "",
-    emailLabel: "",
-    dateOfBirthLabel: "",
     ageLabel: "",
     createdByLabel: "",
     districtLabel: "",
@@ -144,6 +134,7 @@ const PatientDetailsForm = ({
   } = useForm<PatientDetailsData>({
     defaultValues: data || {},
     resolver: zodResolver(patientDetailsSchema),
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -176,8 +167,6 @@ const PatientDetailsForm = ({
       options: labels.genderLabel.options,
     },
     { name: "phoneNumber", type: "text", label: labels.phoneNumberLabel },
-    { name: "email", type: "text", label: labels.emailLabel },
-    { name: "dateOfBirth", type: "date", label: labels.dateOfBirthLabel },
     { name: "age", type: "number", label: labels.ageLabel },
     { name: "createdBy", type: "text", label: labels.createdByLabel },
     {
