@@ -24,6 +24,44 @@ export interface PatientInterface {
   updatedBy: null;
 }
 
+export interface TeleCallerInterface {
+  teleCallerId: number;
+  personId: number;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  gender: string;
+  block: string;
+  gp: string;
+  village: string;
+  district: string;
+  state: string;
+  createdBy: string;
+  createdOn: string;
+  updatedBy: string | null;
+  dateOfJoining: string;
+}
+
+export interface StateHeadInterface {
+  stateHeadId: number;
+  personId: number;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  gender: string;
+  block: string;
+  gp: string;
+  village: string;
+  district: string;
+  state: string;
+  createdBy: string;
+  createdOn: string;
+  updatedBy: string | null;
+  dateOfJoining: string;
+}
+
 export interface FollowUpsDataInterface {
   date: string;
   followUpStatus: boolean;
