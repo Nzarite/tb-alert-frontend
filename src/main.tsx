@@ -20,7 +20,6 @@ import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverR
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import PrivateRoute from "./components/PrivateRoute";
-import { store } from "./redux/store";
 
 import { AuthProvider } from "react-oidc-context";
 import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";

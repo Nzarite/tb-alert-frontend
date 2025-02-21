@@ -1,4 +1,4 @@
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios from "axios";
 // import { jwtDecode } from "jwt-decode";
 // import { deleteTokens, updateTokens } from "../store/jwtSlice";
 // import { store } from "../store/store";
@@ -10,17 +10,6 @@ const axiosInstance = axios.create({
   baseURL: `${BACKEND_SERVICE_NAME}:${SERVER_PORT}`,
   timeout: 10000,
 });
-
-const attachToken = (
-  config: InternalAxiosRequestConfig<any>,
-  getToken: { (): string | null; (): any }
-) => {
-  const token = getToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-};
 
 // let isRefreshing = false;
 const oidcSessionKey = `oidc.user:${import.meta.env.VITE_OIDC_AUTHORITY}:${import.meta.env.VITE_OIDC_CLIENT_ID}`;
