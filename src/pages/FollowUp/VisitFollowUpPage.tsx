@@ -6,6 +6,7 @@ import { VisitDataInterface } from "../../components/datatypes/DataTypes";
 import SearchBox from "../../components/SearchBox";
 import FollowUpFormComponent from "./FollowUpMain";
 import FollowUpSidebar from "./FollowUpSidebar";
+import FollowUPStatus from "../../components/Json/FollowUpStatus.json";
 
 const VisitFollowUpPage = () => {
   const location = useLocation();
@@ -42,6 +43,7 @@ const VisitFollowUpPage = () => {
     return data.followUpDetails.reduce((bestIndex, followUp, i) => {
       const followUpDate = Date.parse(followUp.date);
       return followUpDate < today &&
+        followUp.followUpStatus !== FollowUPStatus.Cancelled &&
         followUpDate > Date.parse(data.followUpDetails[bestIndex].date)
         ? i
         : bestIndex;

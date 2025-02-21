@@ -5,11 +5,11 @@ export interface VisitDataInterface {
 
 export interface PatientInterface {
   patientId: string;
-  personId: null;
+  personId: number;
   firstName: string;
   lastName: string;
   gender: string;
-  age: null;
+  age: number;
   phoneNumber: string;
   email: string;
   block: string;
@@ -18,10 +18,10 @@ export interface PatientInterface {
   district: string;
   state: string;
   currentStatus: string;
-  cured: false;
+  cured: boolean;
   createdAt: string;
   createdBy: string;
-  updatedBy: null;
+  updatedBy: string | null;
 }
 
 export interface TeleCallerInterface {
@@ -64,8 +64,8 @@ export interface StateHeadInterface {
 
 export interface FollowUpsDataInterface {
   date: string;
-  followUpStatus: boolean;
-  remarks: string | null;
+  followUpStatus: string;
+  remarks: string;
   patientCondition: number;
   medicationDetails: MedicationInterface[] | [];
 }
@@ -73,7 +73,7 @@ export interface FollowUpsDataInterface {
 export interface MedicationInterface {
   medicationId: number;
   medicationName: string;
-  missedDosages: string;
+  missedDosages: number;
   comments: string;
 }
 

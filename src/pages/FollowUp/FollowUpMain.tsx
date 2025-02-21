@@ -46,7 +46,7 @@ export const patientConditionLabels: { [key: number]: string } = {
 // Updated schema: currentStatus as boolean, patientCondition as number, etc.
 const schema = z.object({
   remarks: z.string().min(1, "Description can't be null"),
-  aliveOrDead: z.boolean(),
+  currentStatus: z.boolean(),
   missedMedications: z.array(
     z.object({
       medicationId: z.number(),
@@ -82,7 +82,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
     resolver: zodResolver(schema),
     mode: "all",
     defaultValues: {
-      aliveOrDead: data?.patient.aliveOrDead ?? false,
+      aliveOrDead: data?.patient.currentStatus === "alive",
       patientCondition: data?.followUpDetails[index]?.patientCondition ?? 4,
       remarks: data?.followUpDetails[index]?.remarks ?? "",
       cured: data?.patient.cured ?? false,
@@ -99,7 +99,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   useEffect(() => {
     if (data) {
       reset({
-        aliveOrDead: data?.patient.aliveOrDead ?? false,
+        currentStatus: data?.patient.currentStatus === "alive",
         patientCondition: data?.followUpDetails[index]?.patientCondition ?? 4,
         remarks: data?.followUpDetails[index]?.remarks ?? "",
         cured: data?.patient.cured ?? false,
@@ -155,7 +155,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
           name={`missedMedications.${medIndex}.missedDosages`}
           control={control}
           disabled={!isEditable}
-          defaultValue={medicine.missedDosages?.toString() || ""}
+          defaultValue={medicine.missedDosages || 0}
           render={({ field }) => (
             <TextField
               {...field}
@@ -217,7 +217,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
           <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
             <Stack spacing={4}>
               <Controller
-                name="aliveOrDead"
+                name="currentStatus"
                 control={control}
                 disabled={!isEditable}
                 render={({ field }) => (
@@ -391,7 +391,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
           <Typography align="center" variant="body1" color="textSecondary">
             Please complete Patient Registration
           </Typography>
-          <Link to={`/patient-dashboard/${data.patient.patientId}`}>
+          <Link to={`/patient-dashboard/${data?.patient.patientId}`}>
             <Button variant="contained">Go to Dashboard</Button>
           </Link>
         </div>

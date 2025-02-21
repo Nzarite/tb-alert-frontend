@@ -11,20 +11,33 @@ interface FollowUpSidebarProps {
   data: VisitDataInterface;
 }
 
-export const getStatusColor = (dateOfFollowUp: string, filled: boolean) => {
+export const getStatusColor = (
+  dateOfFollowUp: string,
+  followUpStatus: string
+) => {
+  if (followUpStatus === FollowUpStatus.Cancelled) return "primary";
+
   const today = Date.now();
   const dof = Date.parse(dateOfFollowUp);
 
   if (today < dof) return "warning";
-  return filled ? "success" : "error";
+  return followUpStatus === FollowUpStatus.Missed ? "error" : "success";
 };
 
-export const getStatusName = (dateOfFollowUp: string, filled: boolean) => {
+export const getStatusName = (
+  dateOfFollowUp: string,
+  followUpStatus: string
+) => {
+  if (followUpStatus === FollowUpStatus.Cancelled)
+    return FollowUpStatus.Cancelled;
+
   const today = Date.now();
   const dof = Date.parse(dateOfFollowUp);
 
   if (today < dof) return FollowUpStatus.Scheduled;
-  return filled ? FollowUpStatus.Captured : FollowUpStatus.Missed;
+  return followUpStatus === FollowUpStatus.Missed
+    ? FollowUpStatus.Missed
+    : FollowUpStatus.Captured;
 };
 
 export default function FollowUpSidebar({
@@ -32,9 +45,12 @@ export default function FollowUpSidebar({
   setIndex,
   data,
 }: FollowUpSidebarProps) {
-  const isEditable = (dateOfFollowUp: string) => {
+  const isEditable = (followUpStatus: string, dateOfFollowUp: string) => {
+    if (followUpStatus === FollowUpStatus.Cancelled) return false;
+
     const today = Date.now();
     const dof = Date.parse(dateOfFollowUp);
+
     return today > dof;
   };
 
@@ -141,7 +157,7 @@ export default function FollowUpSidebar({
                   key={index}
                   selected={selectedIndex === index}
                   onClick={() => setIndex(index)}
-                  disabled={!isEditable(item.date)}
+                  disabled={!isEditable(item.followUpStatus, item.date)}
                   disableRipple
                   sx={{
                     borderRadius: 3,
