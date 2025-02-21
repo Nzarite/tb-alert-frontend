@@ -70,41 +70,52 @@ const router = createBrowserRouter(
       <Route path="/" element={<LandingPage />} />
 
       <Route path="/register/patient" element={<PatientRegistrationPage />} />
-
-      <Route path="/register/caregiver" element={<CaregiverRegistrationPage />} />
-
-      <Route path="/visit" element={<VisitFollowUpPage />} />
-        <Route path="/dashboard/patient" element={<PatientSearchPage />} />
-        <Route path="/dashboard/patient/:patientId" element={<PatientDashboardPage />} />
-
-      <Route path="/reports" element={<Reports />} />
-
-      <Route path="*" element={<ErrorPage />} />
-
-      <Route path="/unauthorized" element={<UnauthorizedPage />} />
-
-      <Route path="profile" element={<UserProfile />} />
-
-      <Route element = {<ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />}>
-        <Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
+      <Route
+        path="/register/caregiver"
+        element={<CaregiverRegistrationPage />}
+      />
+      <Route path="register" element={<RegisterWrapper />} />
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />
+        }
+      >
+        <Route
+          path="/register/telecommunicator"
+          element={<TeleCommunicatorRegistration />}
+        />
       </Route>
-
       <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
-        <Route path="/register/state-coordinator" element={<StateCoordinatorRegistrationPage />} />
+        <Route
+          path="/register/state-coordinator"
+          element={<StateCoordinatorRegistrationPage />}
+        />
         <Route path="/settings" element={<Settings />} />
       </Route>
+
+      <Route path="/visit" element={<VisitFollowUpPage />} />
+      <Route path="patient-dashboard" element={<PatientSearchPage />} />
+      <Route
+        path="patient-dashboard/:patientId"
+        element={<PatientDashboardPage />}
+      />
+
+      <Route path="/reports" element={<Reports />} />
+      <Route path="*" element={<ErrorPage />} />
+      <Route path="/unauthorized" element={<UnauthorizedPage />} />
+      <Route path="profile" element={<UserProfile />} />
     </Route>
   )
 );
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-  <AuthProvider {...oidcConfig}>
-    <ThemeProvider theme={theme}>
-      <PrivateRoute>
-        <RouterProvider router={router} />
-      </PrivateRoute>
-    </ThemeProvider>
-  </AuthProvider>
+    <AuthProvider {...oidcConfig}>
+      <ThemeProvider theme={theme}>
+        <PrivateRoute>
+          <RouterProvider router={router} />
+        </PrivateRoute>
+      </ThemeProvider>
+    </AuthProvider>
   </Provider>
 );
