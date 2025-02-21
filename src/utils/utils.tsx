@@ -1,4 +1,4 @@
-import { settingType } from "../redux/settingsSlice";
+import { SettingType } from "../components/datatypes/DataTypes";
 
 export const toSnakeCase = (str: string): string => {
   return str
@@ -7,18 +7,16 @@ export const toSnakeCase = (str: string): string => {
     .toLowerCase();
 };
 
-export const snakeToTitle = (str: string): string => {
+export const snakeToUpper = (str: string): string => {
   return str
     .split("_")
     .map((word) => word.toUpperCase())
     .join(" ");
 };
 
-export const groupSettingsByType = (settings: settingType[]) => {
+export const groupSettingsByType = (settings: SettingType[]) => {
   return settings.reduce((acc, setting) => {
-    const category = snakeToTitle(
-      setting.type.charAt(0).toUpperCase() + setting.type.slice(1)
-    );
+    const category = snakeToUpper(setting.type);
     acc[category] = acc[category] || [];
     acc[category].push({
       ...setting,

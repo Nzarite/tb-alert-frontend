@@ -1,11 +1,26 @@
 import { Box, List, ListSubheader, Typography } from "@mui/material";
-import SettingItem from "../components/Settings/SettingItem";
-import { useSettings } from "../hooks/useSettings";
+import { useEffect, useState } from "react";
+import axiosInstance from "../components/axiosInstance";
+import { SettingType } from "../components/datatypes/DataTypes";
+import SettingListItem from "../components/Settings/SettingListItem";
+import SettingStringItem from "../components/Settings/SettingStringItem";
 import { groupSettingsByType } from "../utils/utils";
 
 const Settings = () => {
-  const { settings, updateSetting } = useSettings();
+  const [settings, setSettings] = useState<SettingType[]>([]);
+  const getSettings = () => {
+    axiosInstance
+      .get("/setting/all")
+      .then((response) => setSettings(response.data))
+      .catch((error) => console.log(error.message));
+  };
+
+  useEffect(() => {
+    getSettings();
+  }, []);
   const groupedSettings = groupSettingsByType(settings);
+
+  const listSettings = ["MEDICATION"];
 
   return (
     <Box
@@ -37,15 +52,29 @@ const Settings = () => {
               </ListSubheader>
             }
           >
-            {items.map(({ keyName, value }) => (
-              <SettingItem
-                key={keyName}
-                keyName={keyName}
-                value={value}
-                type={type}
-                updateSetting={updateSetting}
-              />
-            ))}
+            {items.map(({ keyName, value, type }) =>
+              listSettings.includes(type) ? (
+                <SettingListItem
+                  key={keyName}
+                  keyName={keyName}
+                  value={value}
+                  type={type}
+                  settings={settings}
+                  getSettings={getSettings}
+                  setSettings={setSettings}
+                />
+              ) : (
+                <SettingStringItem
+                  key={keyName}
+                  keyName={keyName}
+                  value={value}
+                  type={type}
+                  settings={settings}
+                  getSettings={getSettings}
+                  setSettings={setSettings}
+                />
+              )
+            )}
           </List>
         ))}
       </Box>
