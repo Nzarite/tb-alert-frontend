@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import axiosInstance from "./axiosInstance";
 import { PatientInterface } from "./datatypes/DataTypes";
+import { useAuth } from "react-oidc-context";
 
 interface SearchProps {
   changeSearch: (text: { value: string; label: string }) => void;
@@ -16,9 +17,11 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
     label: string;
   } | null>(null);
 
-  // Debouncing the Search for optimisation
+  //   console.log(hasClientRole);
+  //   console.log(profile?.client_roles);
+
+  // This method fetches options for the drop down menu
   useEffect(() => {
-    // This method fetches options for the drop down menu
     const fetchOptions = async (search: string) => {
       if (!search) {
         setOptions([]);
@@ -27,10 +30,12 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
       }
       if (search === lastSearched) return; // Prevent duplicate fetches
       try {
-        const response = await axiosInstance.get(`/patient/name/${search}`);
-        const data = response.data.map((item: PatientInterface) => ({
+        const response = await axiosInstance.get(`/patient/name/${search}`, {
+          headers: { Authorization: `Bearer ${access_token}` },
+        });
+        const data = response.data.map((item: patientSearch) => ({
           value: item.patientId,
-          label: `${item.firstName} ${item.lastName} (${item.patientId})`,
+          label: `${item.firstName} ${item.lastName}`,
         }));
         setOptions(data);
         setLastSearched(search);
@@ -39,14 +44,14 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
       }
     };
 
-    const debounceSearch = setTimeout(() => {
-      fetchOptions(inputValue.trim());
-    }, 300);
+      const debounceSearch = setTimeout(() => {
+        fetchOptions(inputValue.trim());
+      }, 300);
 
-    return () => {
-      clearTimeout(debounceSearch);
-    };
-  }, [inputValue, lastSearched]);
+      return () => {
+        clearTimeout(debounceSearch);
+      };
+  }, [inputValue, lastSearched])
 
   // This method updates the search for all the
   useEffect(() => {
