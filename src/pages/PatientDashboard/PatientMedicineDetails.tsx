@@ -11,13 +11,12 @@ import {
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
 
-const PatientMedicineDetails = () => {
+const PatientMedicineDetails = (patientId:any) => {
 	const [patientData, setPatientData] = useState(null);
 
 	useEffect(() => {
-		const id = 1;
 		const getData = async () => {
-			const res = await axiosInstance.get(`patientmedication/${id}`);
+			const res = await axiosInstance.get(`patientmedication/${patientId.patientId}`);
 			setPatientData(res.data);
 		};
 

@@ -2,11 +2,11 @@ import axios from "axios";
 // import { jwtDecode } from "jwt-decode";
 // import { deleteTokens, updateTokens } from "../store/jwtSlice";
 // import { store } from "../store/store";
-const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || "http://localhost";
-const SERVER_PORT = import.meta.env.VITE_SERVER_PORT || "8080";
+const BACKEND_SERVICE_NAME = "http://"+ (import.meta.env.BACKEND_SERVICE_NAME || "localhost");
+const SERVER_PORT = import.meta.env.SPRINGBOOT_HOST_PORT || "8080";
 
 const axiosInstance = axios.create({
-	baseURL: `${SERVER_BASE_URL}:${SERVER_PORT}`,
+	baseURL: `${BACKEND_SERVICE_NAME}:${SERVER_PORT}`,
 	timeout: 10000,
 });
 

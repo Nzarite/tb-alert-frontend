@@ -8,7 +8,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import "./index.css";
-import CaregiverRegistrationPage from "./pages/CaregiverRegistrationPage";
 import ErrorPage from "./pages/Error/ErrorPage";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 import LandingPage from "./pages/Homepage/LandingPage";
@@ -17,6 +16,7 @@ import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage"
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
 import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
+import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import PrivateRoute from "./components/PrivateRoute";
@@ -33,9 +33,9 @@ const oidcConfig = {
 };
 import { store } from "./redux/store";
 import ProtectedRoute from "./components/Authorization/ProtectedRoute";
-import Unauthorized from "./pages/Unauthorized/UnauthorizedPage";
 import UnauthorizedPage from "./pages/Unauthorized/UnauthorizedPage";
 import UserProfile from "./pages/UserProfile";
+import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 
 const theme = createTheme({
 	palette: {
@@ -71,10 +71,10 @@ const router = createBrowserRouter(
       <Route path="/register/patient" element={<PatientRegistrationPage />} />
 
       <Route path="/register/caregiver" element={<CaregiverRegistrationPage />} />
-      
-      <Route path="/visit" element={<VisitFollowUpPage />} />
 
-      <Route path="/dashboard/patient" element={<PatientDashboardPage />} />
+      <Route path="/visit" element={<VisitFollowUpPage />} />
+        <Route path="/dashboard/patient" element={<PatientSearchPage />} />
+        <Route path="/dashboard/patient/:patientId" element={<PatientDashboardPage />} />
 
       <Route path="/reports" element={<Reports />} />
 
@@ -105,5 +105,5 @@ createRoot(document.getElementById("root")!).render(
       </PrivateRoute>
     </ThemeProvider>
   </AuthProvider>
-  </Provider> 
+  </Provider>
 );

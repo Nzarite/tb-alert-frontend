@@ -70,6 +70,27 @@ const FormFieldRenderer = ({ field, control, errors }: FormFieldRendererProps) =
 					<FormHelperText>{errors[name]?.message}</FormHelperText>
 				</FormControl>
 			);
+			case "date":
+			return (
+				<Controller
+					key={name}
+					name={name}
+					control={control}
+					defaultValue={value || ""}
+					render={({ field }) => (
+						<TextField
+							{...field}
+							label={label}
+							type="date"
+							error={!!errors[name]}
+							helperText={errors[name]?.message}
+							fullWidth
+							disabled={disabled}
+							InputLabelProps={{ shrink: true }}
+						/>
+					)}
+				/>
+			);
 		default:
 			return null;
 	}
