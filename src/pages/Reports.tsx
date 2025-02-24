@@ -156,8 +156,8 @@ const Reports = () => {
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
                 >
-                  <MenuItem value="M">Male</MenuItem>
-                  <MenuItem value="F">Female</MenuItem>
+                  <MenuItem value="Male">Male</MenuItem>
+                  <MenuItem value="Female">Female</MenuItem>
                 </TextField>
               </Grid>
               <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>

@@ -48,7 +48,7 @@ const PatientRegistrationPage = () => {
 
   // const [language, setLanguage] = useState("en");
 
-  const language = useSelector((state: any) => state.language);
+  const language = useSelector((state: any) => state.language.language);
   console.log(language);
 
   const { handleSubmit } = useForm();

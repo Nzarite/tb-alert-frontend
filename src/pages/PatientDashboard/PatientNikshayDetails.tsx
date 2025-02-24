@@ -4,6 +4,7 @@ import axiosInstance from "../../components/axiosInstance";
 import { DashboardFieldsProp } from "../../components/datatypes/DataTypes";
 
 export const renderField = (data, item: DashboardFieldsProp, index: number) => {
+	console.log(data);
 	const fieldValue = data[item.name];
 	const displayValue =
 	fieldValue === true ? "Yes" :

@@ -40,7 +40,7 @@ export type PatientDetailsData = {
 const patientDetailsSchema = z.object({
   firstName: z.string().min(1, "First Name is required"),
   lastName: z.string().optional(),
-  gender: z.enum(["M", "F"], {
+  gender: z.enum(["Male", "Female"], {
     errorMap: () => ({ message: "Gender is required" }),
   }),
   phoneNumber: z

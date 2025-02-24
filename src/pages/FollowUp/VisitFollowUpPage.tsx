@@ -95,7 +95,7 @@ const VisitFollowUpPage = () => {
           {data ? (
             <Grid item xs={12} md={9}>
               {/* Search Bar */}
-              <SearchBox changeSearch={(input) => setSearch(input.value)} />
+              <SearchBox changeSearch={(input) => setSearch(input.value)} role="patient"/>
               <FollowUpFormComponent
                 index={selectedIndex}
                 data={data}
@@ -105,7 +105,7 @@ const VisitFollowUpPage = () => {
           ) : (
             <Grid item xs={12}>
               {/* Search Bar */}
-              <SearchBox changeSearch={(input) => setSearch(input.value)} />
+              <SearchBox changeSearch={(input) => setSearch(input.value)} role="patient"/>
               <FollowUpFormComponent
                 index={selectedIndex}
                 data={data}

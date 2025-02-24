@@ -109,3 +109,33 @@ export interface SettingListItemProps {
 	value: string;
 	type: string;
   }
+
+  export interface TeleCaller{
+	createdBy:string;
+	createdOn:string;
+	dateOfJoining:string;
+	email:string;
+	firstName:string;
+	gender:string;
+	lastName:string;
+	personId:number
+	phoneNumber:string;
+	state:string;
+	teleCallerId:number;	
+	updatedBy:string;
+  }
+
+  export interface StateHead{
+	createdBy:string;
+	createdOn:string;
+	dateOfJoining:string;
+	email:string;
+	firstName:string;
+	gender:string;
+	lastName:string;
+	personId:number
+	phoneNumber:string;
+	state:string;
+	stateHeadId:number;	
+	updatedBy:string;
+  }
