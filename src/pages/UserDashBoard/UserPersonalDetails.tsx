@@ -23,6 +23,7 @@ const UserPersonalDetails = ({user}:SearchProps) => {
         { name: "phoneNumber", label: "Contact", size: 6 },
         { name: "dateOfJoining", label: "Date of Joining", size: 6 },
         { name: "email", label: "Email", size: 6 },
+        { name: "dateOfLeaving", label: "Date of Leaving", size: 6 },
 
         
         

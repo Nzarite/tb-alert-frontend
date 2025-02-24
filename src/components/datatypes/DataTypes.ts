@@ -123,6 +123,7 @@ export interface SettingListItemProps {
 	state:string;
 	teleCallerId:number;	
 	updatedBy:string;
+	dateOfLeaving:string;
   }
 
   export interface StateHead{
@@ -138,4 +139,6 @@ export interface SettingListItemProps {
 	state:string;
 	stateHeadId:number;	
 	updatedBy:string;
+	dateOfLeaving:string;
+
   }

@@ -23,7 +23,9 @@ const userSchema = z.object({
   phoneNumber: z
     .string()
     .regex(/^[0-9]{10}$/, "Phone number must be 10 digits"),
-  dateOfJoining: z.string().optional(),
+  dateOfJoining: z.string({message:"Select Valid date of Joining"}),
+  dateOfLeaving: z.string({message:"Select Valid date of leaving"}),
+  createdBy:z.string()
 });
 
 interface UserDetailsModalProps {
@@ -61,6 +63,8 @@ const UserDetailsModal = ({
       setValue("state", user.state || "");
       setValue("phoneNumber", user.phoneNumber || "");
       setValue("dateOfJoining", user.dateOfJoining || "");
+      setValue("dateOfLeaving", user.dateOfLeaving || "");
+      setValue("createdBy",user.createdBy||"")
     }
   }, [user, setValue]);
 
@@ -73,9 +77,8 @@ const UserDetailsModal = ({
 
       const formattedData = {
         ...formData,
-        dateOfJoining: formData.dateOfJoining
-          ? new Date(formData.dateOfJoining).toISOString().split("T")[0]
-          : "",
+        
+        createdBy:user.createdBy
       };
 
       const response = await axiosInstance.put(updateUrl, formattedData);
@@ -129,6 +132,7 @@ const UserDetailsModal = ({
                 fullWidth
                 select
                 label="Gender"
+                defaultValue={user.gender}
                 {...register("gender")}
                 error={!!errors.gender}
                 helperText={errors.gender?.message}
@@ -164,6 +168,17 @@ const UserDetailsModal = ({
                 InputLabelProps={{ shrink: true }}
                 error={!!errors.dateOfJoining}
                 helperText={errors.dateOfJoining?.message}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Date of Leaving"
+                {...register("dateOfLeaving")}
+                InputLabelProps={{ shrink: true }}
+                error={!!errors.dateOfLeaving}
+                helperText={errors.dateOfLeaving?.message}
               />
             </Grid>
           </Grid>

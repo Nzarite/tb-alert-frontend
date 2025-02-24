@@ -43,7 +43,7 @@ const UserDashBoard = ({ role }: SearchProps) => {
           <Box sx={{ display: "flex", gap: 1 }}>
             <MdPerson style={{ fontSize: "24px" }} />
             <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: "#1976d2" }}>
-              Personal Details
+              {role==="telecaller"?"Telecaller Details":"State Coordinator Details"}
             </Typography>
           </Box>
           <RiPencilLine

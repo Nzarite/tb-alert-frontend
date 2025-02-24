@@ -32,13 +32,7 @@ const Reports = () => {
       const response=await axiosInstance.post("/report/telecaller",body,{
         responseType:"blob",
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "TeleCallerReport.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      blodHandler(response.data,"TelecallerReports.xlsx");
     }
     catch(error)
     {
@@ -49,20 +43,22 @@ const Reports = () => {
   const handleStateHeadReports=async()=>{
     try{
       const response=await axiosInstance.post("/report/statehead",{},{responseType:"blob",});
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "StateHeadReport.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      blodHandler(response.data,"StateHeadDetails.xlsx");
     }
     catch(error)
     {
       console.error(error);
     }
   }
-
+  const blodHandler=(data:any,filename:string)=>{
+    const url = window.URL.createObjectURL(new Blob([data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
   const handleDownloadReport = async (endpoint:string, filename:string) => {
     try {
 
@@ -84,25 +80,31 @@ const Reports = () => {
           startDate:null,
           endDate:null,
           currentStatus:null,
-          cured:null
+          cured:null,
+          state:"",
         }
       }
 
       const response = await axiosInstance.post(endpoint, filters, {
         responseType: "blob", 
       });
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      blodHandler(response.data,filename);
+     
     } catch (error) {
       console.error("Error downloading report:", error);
     }
   };
+
+  const handleFollowUpForToday=async()=>{
+    try {
+      const response=await axiosInstance.post("/report/patient/followup/today",{},{
+        responseType:"blob",
+      });
+      blodHandler(response.data,"FollowUpsForToday.xlsx");
+    } catch (error) {
+      
+    }
+  }
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
@@ -256,6 +258,7 @@ const Reports = () => {
                     </>
                   )}
                   {currentRole === "telecaller" && (
+                    <>
                     <Button
                       variant="contained"
                       color="secondary"
@@ -264,6 +267,14 @@ const Reports = () => {
                     >
                       Download TeleCaller Reports
                     </Button>
+                    <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={()=>handleFollowUpForToday()}
+                    size="large">
+                    Download FollowUps for Today
+                    </Button>
+                    </>
                   )}
                   {currentRole==="statehead" && (<Button
                     variant="contained"
