@@ -34,7 +34,7 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
 
   //   console.log(access_token);
 
-  // const profile = auth.user?.profile || {};
+  const profile = auth.user?.profile || {};
   // const hasClientRole = profile?.client_roles?.includes("Telecaller");
 
   //   console.log(hasClientRole);

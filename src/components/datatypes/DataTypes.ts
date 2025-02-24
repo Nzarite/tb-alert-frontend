@@ -80,3 +80,32 @@ export interface PatientContactScreeningInterface {
 	noOfEligibleForTPT: string;
 	noOfHHCsInitiatedTPT: string;
 }
+
+export interface SettingListItemProps {
+	keyName: string;
+	value: string;
+	type: string;
+	settings: SettingType[];
+	getSettings: () => void;
+	setSettings: React.Dispatch<React.SetStateAction<SettingType[]>>
+  }
+
+  export interface SettingStringItemProps {
+	keyName: string;
+	value: string;
+	type: string;
+	settings: SettingType[];
+	getSettings: () => void;
+	setSettings: React.Dispatch<React.SetStateAction<SettingType[]>>
+  }
+
+  export interface DBEntryType {
+	id: string,
+	name:string
+  }
+
+  export interface SettingType {
+	keyName: string;
+	value: string;
+	type: string;
+  }
