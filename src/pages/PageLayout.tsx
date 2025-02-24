@@ -13,6 +13,7 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/patient-dashboard": "Patient Search",
   "/reports": "Reports",
   "/settings": "Settings",
+  "/profile": "Profile",
 };
 
 const PageLayout = () => {
