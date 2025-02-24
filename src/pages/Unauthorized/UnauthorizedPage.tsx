@@ -1,18 +1,7 @@
-import {Box, Typography} from "@mui/material";
+import { Navigate } from "react-router-dom";
 
 const UnauthorizedPage = () => {
-    return (
-      <Box>
-        <Typography variant="h5" color="red">
-          Access Denied!
-        </Typography>
+  return <Navigate to={"/"} />;
+};
 
-        <Typography>
-          You do not have the required permissions to view this page
-        </Typography>
-      </Box> 
-    );
-  };
-  
-  export default UnauthorizedPage;
-  
+export default UnauthorizedPage;
