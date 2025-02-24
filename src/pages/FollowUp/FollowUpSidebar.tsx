@@ -1,7 +1,8 @@
-import { Box, Chip, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Paper, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import { FaPlusCircle } from "react-icons/fa";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
 import FollowUpStatus from "../../components/Json/FollowUpStatus.json";
 
@@ -197,6 +198,34 @@ export default function FollowUpSidebar({
                 </ListItemButton>
               ))}
             </List>
+
+            {selectedIndex === data.followUpDetails.length - 1 && (
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 1,
+                  borderRadius: 2,
+                  fontWeight: 600,
+                  fontSize: "0.875rem",
+                  textTransform: "none",
+                  mt: 1.5,
+                  transition: "all 0.2s ease-in-out",
+                  "&:hover": {
+                    backgroundColor: "primary.dark",
+                  },
+                }}
+              >
+                <FaPlusCircle size={10} />
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  Add a Follow-up
+                </Typography>
+              </Button>
+            )}
           </>
         ) : (
           <Typography align="center" variant="body2" color="textSecondary">
