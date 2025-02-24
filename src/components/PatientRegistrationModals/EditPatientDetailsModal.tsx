@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Box, Button, Typography } from "@mui/material";
+import { Box, Button, Modal, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useAuth } from "react-oidc-context";
+import { useSelector } from "react-redux";
+import axiosInstance from "../axiosInstance";
+import ContactScreeningDetailsForm, {
+  ContactScreeningData,
+} from "../ContactScreeningDetailsForm/ContactScreeningDetailsForm";
+import NikshayDetailsForm, {
+  NikshayDetailsData,
+} from "../NikshayDetailsForm/NikshayDetailsForm";
 import PatientDetailsForm, {
   PatientDetailsData,
 } from "../PatientDetailsForm/PatientDetailsForm";
 import TbDetailsForm, { TbDetailsData } from "../TbDetailsForm/TbDetailsForm";
-import NikshayDetailsForm, {
-  NikshayDetailsData,
-} from "../NikshayDetailsForm/NikshayDetailsForm";
-import ContactScreeningDetailsForm, {
-  ContactScreeningData,
-} from "../ContactScreeningDetailsForm/ContactScreeningDetailsForm";
-import { useSelector } from "react-redux";
-import axiosInstance from "../axiosInstance";
-import { useForm } from "react-hook-form";
 
-const EditPatientDetailsModal = ({
-  open,
-  onClose,
-  prop,
-  //   onUpdate,
-  patientId,
-}: any) => {
+const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
   const [formData, setFormData] = useState({
     patientDetails: {} as PatientDetailsData,
     tbdetailsDetails: {} as TbDetailsData,
     nikshaymitraDetails: {} as NikshayDetailsData,
     contactscreeningDetails: {} as ContactScreeningData,
   });
+
+  const auth = useAuth();
+  const userEmail =
+    useSelector((state) => state.user.profile.email) ||
+    auth.user?.profile.email;
 
   const [originalData, setOriginalData] = useState<any>(null);
 
@@ -49,15 +48,6 @@ const EditPatientDetailsModal = ({
     }
   };
 
-  //   const handleChange = (updatedData: any) => {
-  //     setFormData((prevData) => ({
-  //       ...prevData,
-  //       [`${prop}Details`]: updatedData,
-  //     }));
-  //   };
-
-  console.log(patientId);
-
   const getUpdateUrl = (prop: string, patientId: any) => {
     switch (prop) {
       case "patient":
@@ -77,9 +67,8 @@ const EditPatientDetailsModal = ({
     setFormData((prevData) => ({
       ...prevData,
       [`${prop}Details`]: updatedData,
+      updatedBy: userEmail,
     }));
-
-    // const updatedData = formData[`${prop}Details`];
 
     // Check if data has changed
     if (JSON.stringify(updatedData) === JSON.stringify(originalData)) {
