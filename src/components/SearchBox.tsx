@@ -17,6 +17,14 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
     label: string;
   } | null>(null);
 
+  const auth = useAuth();
+  const access_token = auth.user?.access_token || "";
+
+  //   console.log(access_token);
+
+  const profile = auth.user?.profile || {};
+  const hasClientRole = profile?.client_roles?.includes("Telecaller");
+
   //   console.log(hasClientRole);
   //   console.log(profile?.client_roles);
 
@@ -33,7 +41,7 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
         const response = await axiosInstance.get(`/patient/name/${search}`, {
           headers: { Authorization: `Bearer ${access_token}` },
         });
-        const data = response.data.map((item: patientSearch) => ({
+        const data = response.data.map((item: PatientInterface) => ({
           value: item.patientId,
           label: `${item.firstName} ${item.lastName}`,
         }));
@@ -44,14 +52,14 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
       }
     };
 
-      const debounceSearch = setTimeout(() => {
-        fetchOptions(inputValue.trim());
-      }, 300);
+		const debounceSearch = setTimeout(() => {
+			fetchOptions(inputValue.trim());
+		}, 300);
 
-      return () => {
-        clearTimeout(debounceSearch);
-      };
-  }, [inputValue, lastSearched])
+		return () => {
+			clearTimeout(debounceSearch);
+		};
+	}, [inputValue, lastSearched]);
 
   // This method updates the search for all the
   useEffect(() => {
