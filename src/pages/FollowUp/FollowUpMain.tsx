@@ -46,7 +46,7 @@ export const patientConditionLabels: { [key: number]: string } = {
 // Updated schema: currentStatus as boolean, patientCondition as number, etc.
 const schema = z.object({
   remarks: z.string().min(1, "Description can't be null"),
-  aliveOrDead: z.boolean(),
+  currentStatus: z.boolean(),
   missedMedications: z.array(
     z.object({
       medicationId: z.number(),
@@ -82,7 +82,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
     resolver: zodResolver(schema),
     mode: "all",
     defaultValues: {
-      aliveOrDead: data?.patient.currentStatus === "alive",
+      currentStatus: data?.patient.currentStatus === "alive",
       patientCondition: data?.followUpDetails[index]?.patientCondition ?? 4,
       remarks: data?.followUpDetails[index]?.remarks ?? "",
       cured: data?.patient.cured ?? false,
@@ -99,7 +99,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   useEffect(() => {
     if (data) {
       reset({
-        aliveOrDead: data?.patient.currentStatus === "alive",
+        currentStatus: data?.patient.currentStatus === "alive",
         patientCondition: data?.followUpDetails[index]?.patientCondition ?? 4,
         remarks: data?.followUpDetails[index]?.remarks ?? "",
         cured: data?.patient.cured ?? false,
@@ -125,7 +125,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
       const submitData = {
         ...formData,
         date: data?.followUpDetails[index].date,
-        aliveOrDead: formData.aliveOrDead ? "alive" : "dead",
+        currentStatus: formData.currentStatus ? "alive" : "dead",
       };
       await axiosInstance.put(
         `/followup/${data?.patient.patientId}`,
@@ -218,7 +218,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
           <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
             <Stack spacing={4}>
               <Controller
-                name="aliveOrDead"
+                name="currentStatus"
                 control={control}
                 disabled={!isEditable}
                 render={({ field }) => (
