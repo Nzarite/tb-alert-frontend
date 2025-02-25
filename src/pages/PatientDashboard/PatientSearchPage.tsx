@@ -1,13 +1,16 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SearchBox from "../../components/SearchBox";
 
 const PatientSearchPage = () => {
   const navigate = useNavigate();
 
-  const handleSearchChange = (selectedPatient: { value: string; label: string }) => {
+  const handleSearchChange = (selectedPatient: {
+    value: string;
+    label: string;
+  }) => {
     if (selectedPatient?.value) {
-      navigate(`/dashboard/patient/${selectedPatient.value}`);
+      navigate(`/patient-dashboard/${selectedPatient.value}`);
     }
   };
 

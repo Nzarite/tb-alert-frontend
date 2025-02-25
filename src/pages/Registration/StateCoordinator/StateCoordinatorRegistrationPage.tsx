@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
+import { useAuth } from "react-oidc-context";
+import { useSelector } from "react-redux";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
-import StateData from "../../../components/Json/states.json";
 import axiosInstance from "../../../components/axiosInstance";
 
 const schema = z.object({
@@ -39,6 +40,8 @@ const StateCoordinatorRegistrationPage = () => {
     resolver: zodResolver(schema),
     mode: "all",
   });
+  const auth = useAuth();
+  const email = useSelector(state => state.user.email) || auth.user?.profile.email
 
   const formFields = [
     {
@@ -133,17 +136,10 @@ const StateCoordinatorRegistrationPage = () => {
       type: "text",
       disabled: false,
     },
-    {
-      name: "createdBy",
-      label: "Email of person created by",
-      placeholder: "Email of person created by",
-      type: "text",
-      disabled: false,
-    },
   ];
 
   const formSubmitHandler = async (data: FormData) => {
-    const formData = { ...data };
+    const formData = { ...data, createdBy: email };
     console.log("Submitted Data: ", formData);
     try {
       await axiosInstance.post("/statehead/register", formData);
@@ -157,11 +153,11 @@ const StateCoordinatorRegistrationPage = () => {
     <Paper
       variant="outlined"
       sx={{
-        height: "95vh",
+        height: "83vh",
         overflow: "auto",
         padding: 4,
-        width: "40vw",
-        margin: "30px auto 0px auto",
+        width: "50vw",
+        margin: "0px auto",
       }}
     >
       <Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>

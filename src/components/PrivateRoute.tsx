@@ -15,7 +15,6 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const subTitleStyle: React.CSSProperties = { color: "grey" };
 
   if (auth.isLoading) {
-    console.log("privaterute");
     return (
       <div style={textAlignStyle}>
         {/* <Title>Keycloak is loading</Title>

@@ -7,8 +7,6 @@ export const store = configureStore({
 		language: langReducer,
 		user: userReducer,
 	},
-	// middleware: (getDefaultMiddleware) => 
-	// 	getDefaultMiddleware().concat(logger), 
 });
 
 export type RootState = ReturnType<typeof store.getState>;
