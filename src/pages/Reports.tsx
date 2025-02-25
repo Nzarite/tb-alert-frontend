@@ -12,8 +12,15 @@ import {
   Switch,
 } from "@mui/material";
 import axiosInstance from "../components/axiosInstance";
+import { useSelector } from "react-redux";
+import { useAuth } from "react-oidc-context";
 
 const Reports = () => {
+
+  const auth=useAuth();
+  const userEmail=useSelector((state:any)=> state.user?.profile?.email)||auth.user?.profile.email;
+  console.log(userEmail);
+
   const [currentRole, setCurrentRole] = useState("patient");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -22,10 +29,10 @@ const Reports = () => {
   const [currentStatus, setCurrentStatus] = useState("");
   const [cured, setCured] = useState(null);
   const [state, setState] = useState<String>("");
-  const [dsOrDr,setDsOrDr]=useState<string>("");
-  const [udstStatus,setUdstStatus]=useState<boolean|"">("");
-  const [dbtStatus,setDbtStatus]=useState<boolean|"">("");
-
+  const [dsOrDr, setDsOrDr] = useState<string>("");
+  const [udstStatus, setUdstStatus] = useState<boolean | "">("");
+  const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
+  const [createdBy,setCreatedBy]=useState<string>("")
 
   const handleTeleCallerReport = async () => {
     try {
@@ -72,9 +79,9 @@ const Reports = () => {
         currentStatus: currentStatus || null,
         cured: cured,
         state: state,
-        dstbOrDrtb:dsOrDr,
-        udstStatus:udstStatus,
-        dbtStatus:dbtStatus,
+        dstbOrDrtb: dsOrDr,
+        udstStatus: udstStatus,
+        dbtStatus: dbtStatus,
       };
 
       if (filename === "All_Patient_Reports.xlsx") {
@@ -86,9 +93,9 @@ const Reports = () => {
           currentStatus: null,
           cured: null,
           state: "",
-          dstbOrDrtb:"",
-          udstStatus:"",
-          dbtStatus:"",
+          dstbOrDrtb: "",
+          udstStatus: "",
+          dbtStatus: "",
         };
       }
 
@@ -105,7 +112,10 @@ const Reports = () => {
     try {
       const response = await axiosInstance.post(
         "/report/patient/followup/today",
-        {},
+        {
+          state:state,
+          createdBy:createdBy==="self"?userEmail:"",
+        },
         {
           responseType: "blob",
         }
@@ -134,6 +144,7 @@ const Reports = () => {
               <MenuItem value="patient">Patient</MenuItem>
               <MenuItem value="telecaller">TeleCaller</MenuItem>
               <MenuItem value="statehead">State Head</MenuItem>
+              <MenuItem value="followup">Follow Up</MenuItem>
             </TextField>
           </Paper>
         </Grid>
@@ -218,7 +229,7 @@ const Reports = () => {
                 sm={6}
                 sx={{
                   display:
-                    currentRole === "patient" || currentRole === "telecaller"
+                    currentRole === "patient" || currentRole === "telecaller" || currentRole==="followup"
                       ? "block"
                       : "none",
                 }}
@@ -268,7 +279,11 @@ const Reports = () => {
                   select
                   label="UDST Status"
                   value={udstStatus}
-                  onChange={(e) => setUdstStatus(e.target.value === "" ? "" : e.target.value === "true")}
+                  onChange={(e) =>
+                    setUdstStatus(
+                      e.target.value === "" ? "" : e.target.value === "true"
+                    )
+                  }
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
                 >
@@ -288,7 +303,11 @@ const Reports = () => {
                   select
                   label="DBT Status"
                   value={dbtStatus}
-                  onChange={(e) => setDbtStatus(e.target.value === "" ? "" : e.target.value === "true")}
+                  onChange={(e) =>
+                    setDbtStatus(
+                      e.target.value === "" ? "" : e.target.value === "true"
+                    )
+                  }
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
                 >
@@ -333,6 +352,25 @@ const Reports = () => {
                   }
                   label="Cured"
                 />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "followup" ? "block" : "none" }}
+              >
+                <TextField
+                  fullWidth
+                  select
+                  label="Created By"
+                  value={createdBy}
+                  onChange={(e) => setCreatedBy(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="self">Self</MenuItem>
+                </TextField>
               </Grid>
               <Grid item xs={12}>
                 <Box
@@ -391,16 +429,21 @@ const Reports = () => {
                       >
                         Download TeleCaller Reports
                       </Button>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => handleFollowUpForToday()}
-                        size="large"
-                      >
-                        Download FollowUps for Today
-                      </Button>
+                     
                     </>
                   )}
+                  {
+                    currentRole==="followup" && (
+                      <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleFollowUpForToday()}
+                      size="large"
+                    >
+                      Download FollowUps for Today
+                    </Button>
+                    )
+                  }
                   {currentRole === "statehead" && (
                     <Button
                       variant="contained"
