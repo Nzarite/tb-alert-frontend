@@ -30,7 +30,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const StateCoordinatorRegistrationPage = () => {
+const StateHeadRegistrationPage = () => {
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -41,7 +41,8 @@ const StateCoordinatorRegistrationPage = () => {
     mode: "all",
   });
   const auth = useAuth();
-  const email = useSelector(state => state.user.email) || auth.user?.profile.email
+  const email =
+    useSelector((state) => state.user.email) || auth.user?.profile.email;
 
   const formFields = [
     {
@@ -161,7 +162,7 @@ const StateCoordinatorRegistrationPage = () => {
       }}
     >
       <Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>
-        Register State Coordinator
+        Register State Head
       </Typography>
       <Divider sx={{ marginBottom: "30px" }} />
       <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
@@ -197,4 +198,4 @@ const StateCoordinatorRegistrationPage = () => {
   );
 };
 
-export default StateCoordinatorRegistrationPage;
+export default StateHeadRegistrationPage;

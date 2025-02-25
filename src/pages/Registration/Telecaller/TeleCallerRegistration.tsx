@@ -30,7 +30,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const TeleCommunicationRegistration = () => {
+const TeleCallerRegistration = () => {
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -163,7 +163,7 @@ const TeleCommunicationRegistration = () => {
       }}
     >
       <Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>
-        Register TeleCommunicator
+        Register Telecaller
       </Typography>
       <Divider sx={{ marginBottom: "30px" }} />
       <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
@@ -198,4 +198,4 @@ const TeleCommunicationRegistration = () => {
   );
 };
 
-export default TeleCommunicationRegistration;
+export default TeleCallerRegistration;

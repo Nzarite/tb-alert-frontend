@@ -17,9 +17,8 @@ import PageLayout from "./pages/PageLayout";
 import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
 import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
-import RegisterWrapper from "./pages/Registration/RegisterWrapper";
-import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
-import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
+import StateHeadRegistration from "./pages/Registration/StateHead/StateHeadRegistration";
+import TeleCallerRegistration from "./pages/Registration/Telecaller/TeleCallerRegistration";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import { store } from "./redux/store";
@@ -75,21 +74,21 @@ const router = createBrowserRouter(
         path="/register/caregiver"
         element={<CaregiverRegistrationPage />}
       />
-      <Route path="register" element={<RegisterWrapper />} />
+      <Route path="register" element={<Navigate to={"/"} />} />
       <Route
         element={
           <ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />
         }
       >
         <Route
-          path="/register/telecommunicator"
-          element={<TeleCommunicatorRegistration />}
+          path="/register/telecaller"
+          element={<TeleCallerRegistration />}
         />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
         <Route
-          path="/register/state-coordinator"
-          element={<StateCoordinatorRegistrationPage />}
+          path="/register/state-head"
+          element={<StateHeadRegistration />}
         />
         <Route path="/settings" element={<Settings />} />
       </Route>
