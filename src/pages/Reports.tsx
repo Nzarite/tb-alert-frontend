@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-import {
   Container,
   Grid,
   Paper,
@@ -10,7 +9,6 @@ import {
   MenuItem,
   Box,
   FormControlLabel,
-  Switch,
   Switch,
 } from "@mui/material";
 import axiosInstance from "../components/axiosInstance";
@@ -40,13 +38,7 @@ const Reports = () => {
     try {
       const body = {
         state: state,
-  const handleTeleCallerReport = async () => {
-    try {
-      const body = {
-        state: state,
       };
-      const response = await axiosInstance.post("/report/telecaller", body, {
-        responseType: "blob",
       const response = await axiosInstance.post("/report/telecaller", body, {
         responseType: "blob",
       });
@@ -169,12 +161,6 @@ const Reports = () => {
                 sm={6}
                 sx={{ display: currentRole === "patient" ? "block" : "none" }}
               >
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                sx={{ display: currentRole === "patient" ? "block" : "none" }}
-              >
                 <TextField
                   fullWidth
                   label="Age"
@@ -187,15 +173,10 @@ const Reports = () => {
                 />
               </Grid>
               <Grid
-               
                 item
-               
                 xs={12}
-               
                 sm={6}
-               
                 sx={{ display: currentRole === "patient" ? "block" : "none" }}
-              
               >
                 <TextField
                   fullWidth
@@ -211,15 +192,10 @@ const Reports = () => {
                 </TextField>
               </Grid>
               <Grid
-               
                 item
-               
                 xs={12}
-               
                 sm={6}
-               
                 sx={{ display: currentRole === "patient" ? "block" : "none" }}
-              
               >
                 <TextField
                   fullWidth
@@ -232,15 +208,10 @@ const Reports = () => {
                 />
               </Grid>
               <Grid
-               
                 item
-               
                 xs={12}
-               
                 sm={6}
-               
                 sx={{ display: currentRole === "patient" ? "block" : "none" }}
-              
               >
                 <TextField
                   fullWidth
@@ -278,12 +249,6 @@ const Reports = () => {
                   <MenuItem value="BIHAR">Bihar</MenuItem>
                 </TextField>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                sx={{ display: currentRole === "patient" ? "block" : "none" }}
-              >
               <Grid
                 item
                 xs={12}
@@ -408,10 +373,8 @@ const Reports = () => {
                 </TextField>
               </Grid>
               <Grid item xs={12}>
-                  <Box
-                 
+                <Box
                   sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
-                
                 >
                   {currentRole === "patient" && (
                     <>
