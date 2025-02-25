@@ -16,6 +16,9 @@ import {
 } from "@mui/material";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 export type TbDetailsData = {
@@ -54,7 +57,6 @@ const TbDetailsForm = ({
   language,
   data,
   onSave,
-  // onNext,
   onBack,
   functionality,
   patientName,
@@ -100,7 +102,6 @@ const TbDetailsForm = ({
     handleSubmit,
     formState: { errors },
     setValue,
-    reset,
     register,
   } = useForm<TbDetailsData>({
     defaultValues: data || {},
@@ -118,9 +119,6 @@ const TbDetailsForm = ({
 
   const onSubmit = (stepData: TbDetailsData) => {
     onSave(stepData);
-    // if (functionality !== "editdetails") {
-    //   onNext();
-    // }
   };
 
   const formFields: {

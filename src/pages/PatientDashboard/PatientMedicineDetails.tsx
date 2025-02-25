@@ -13,9 +13,12 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
+import { MedicationInterface } from "../../components/datatypes/DataTypes";
 
 const PatientMedicineDetails = ({ patientId }: any) => {
-  const [patientData, setPatientData] = useState(null);
+  const [patientData, setPatientData] = useState<MedicationInterface[] | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

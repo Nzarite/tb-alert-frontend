@@ -1,22 +1,11 @@
 import { useEffect, useState } from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import axiosInstance from "./axiosInstance";
+import { PatientInterface } from "./datatypes/DataTypes";
+import { useAuth } from "react-oidc-context";
 
 interface SearchProps {
   changeSearch: (text: { value: string; label: string }) => void;
-}
-
-interface patientSearch {
-  patientId: string;
-  firstName: string;
-  lastName: string;
-  gender: string;
-  dateOfBirth: string;
-  phone: string;
-  block: string;
-  gp: string;
-  village: string;
-  district: string;
 }
 
 const SearchBox = ({ changeSearch }: SearchProps) => {
@@ -44,9 +33,10 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
       setError(null);
       try {
         const response = await axiosInstance.get(`/patient/name/${search}`);
-        const data = response.data.map((item: patientSearch) => ({
+        const data = response.data.map((item: PatientInterface) => ({
           value: item.patientId,
           label: `${item.firstName} ${item.lastName}`,
+          details: `${item.patientId} | ${item.age} yrs | ${item.gender}`,
         }));
         setOptions(data);
         setLastSearched(search);
@@ -70,28 +60,68 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
     };
   }, [inputValue, lastSearched]);
 
-  // This method updates the search for all the
+  // Update search selection
   useEffect(() => {
     if (selectedOption) changeSearch(selectedOption);
   }, [changeSearch, selectedOption]);
 
-  return (
-    <div>
-      <Select
-        isClearable
-        isLoading={loading}
-        value={selectedOption}
-        onChange={(value) => {
-          setSelectedOption(value);
-          setInputValue(value?.label || ""); // Set the input value based on selection
+  const CustomOption = (props: any) => {
+    const { data, innerRef, innerProps } = props;
+    const [hover, setHover] = useState(false);
+
+    return (
+      <div
+        ref={innerRef}
+        {...innerProps}
+        style={{
+          padding: "12px 15px",
+          cursor: "pointer",
+          borderBottom: "1px solid #ddd",
+          marginBottom: 0,
+          backgroundColor: hover ? "#e8f1f6" : "white",
         }}
-        onInputChange={(newValue) => setInputValue(newValue)}
-        options={options}
-        filterOption={() => true}
-        placeholder="Search Patient..."
-      />
-      {error && <p style={{ color: "red", marginTop: "5px" }}>{error}</p>}
-    </div>
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <strong>{data.label}</strong>
+        <div style={{ fontSize: "12px", color: "#666" }}>{data.details}</div>
+      </div>
+    );
+  };
+
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      textAlign: "center",
+    }),
+    option: (provided: any, { isFocused }: { isFocused: boolean }) => ({
+      ...provided,
+      backgroundColor: isFocused ? "black" : "white",
+      color: "black",
+      cursor: "pointer",
+      textAlign: "center",
+    }),
+  };
+
+  return (
+      <>
+        <Select
+          isClearable
+          isLoading={loading}
+          value={selectedOption}
+          onChange={(value) => {
+            setSelectedOption(value);
+            setInputValue(value?.label || "");
+          }}
+          onInputChange={(newValue) => setInputValue(newValue)}
+          options={options}
+          filterOption={() => true}
+          placeholder="Search Patient..."
+          components={{ Option: CustomOption }}
+          styles={customStyles}
+        />
+        {error && <p style={{ color: "red", marginTop: "5px" }}>{error}</p>}
+      </>
   );
 };
 

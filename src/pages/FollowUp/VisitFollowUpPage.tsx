@@ -3,16 +3,20 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
+import FollowUPStatus from "../../components/Json/FollowUpStatus.json";
 import SearchBox from "../../components/SearchBox";
 import FollowUpFormComponent from "./FollowUpMain";
 import FollowUpSidebar from "./FollowUpSidebar";
 
 const VisitFollowUpPage = () => {
+  // For redirection of a patient
   const location = useLocation();
   const initialState = location.state?.prop || null;
   const [search, setSearch] = useState<string | null>(initialState);
 
+  // Patient's Visit Data
   const [data, setData] = useState<VisitDataInterface | null>(null);
+  // Open Follow up
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +52,7 @@ const VisitFollowUpPage = () => {
     return data.followUpDetails.reduce((bestIndex, followUp, i) => {
       const followUpDate = Date.parse(followUp.date);
       return followUpDate < today &&
+        followUp.followUpStatus !== FollowUPStatus.Cancelled &&
         followUpDate > Date.parse(data.followUpDetails[bestIndex].date)
         ? i
         : bestIndex;
@@ -67,67 +72,41 @@ const VisitFollowUpPage = () => {
   return (
     <Box
       sx={{
-        bgcolor: "background.default",
-        py: { xs: 1, sm: 2, md: 3 },
+        paddingTop: { xs: 1, sm: 2, md: 3 },
+        px: 2,
+        height: "100%",
       }}
     >
-      <Container maxWidth="xl">
-        <Grid container spacing={{ xs: 2, md: 3 }}>
-          {loading ? (
-            <Grid
-              item
-              xs={12}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <CircularProgress />
-            </Grid>
-          ) : data ? (
-            <>
-              <Grid item xs={12} md={3}>
-                {/* Sidebar */}
-                <Paper
-                  variant="outlined"
-                  sx={{ padding: 2, height: "78vh", overflow: "auto" }}
-                >
-                  {data.followUpDetails.length > 0 && (
-                    <FollowUpSidebar
-                      selectedIndex={selectedIndex}
-                      setIndex={handleListItemClick}
-                      data={data}
-                    />
-                  )}
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={9}>
-                {/* Search Bar */}
-                <SearchBox changeSearch={(input) => setSearch(input.value)} />
-                <FollowUpFormComponent
-                  index={selectedIndex}
-                  data={data}
-                  getPatientData={(input) => getPatientData(input)}
-                />
-              </Grid>
-            </>
-          ) : (
-            <Grid item xs={12}>
-              {/* Search Bar */}
-              <SearchBox changeSearch={(input) => setSearch(input.value)} />
-              <FollowUpFormComponent
-                index={selectedIndex}
-                data={data}
-                getPatientData={(input) => getPatientData(input)}
-              />
-              {error && (
-                <Box textAlign="center" color="error.main" mt={2}>
-                  {error}
-                </Box>
-              )}
-            </Grid>
-          )}
-        </Grid>
-      </Container>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ height: "100%" }}>
+
+        {data && (
+          <Grid item xs={12} md={3}>
+            {/* Sidebar */}
+            <FollowUpSidebar
+              selectedIndex={selectedIndex}
+              setIndex={handleListItemClick}
+              data={data}
+              getPatientData={(input) => getPatientData(input)}
+            />
+          </Grid>
+        )}
+        {data ? (
+          <Grid item xs={12} md={9}>
+            {/* Search Bar */}
+            <SearchBox changeSearch={(input) => setSearch(input.value)} />
+            <FollowUpFormComponent
+              index={selectedIndex}
+              data={data}
+              getPatientData={(input) => getPatientData(input)}
+            />
+          </Grid>
+        ) : (
+          <Grid item xs={12}>
+            {/* Search Bar */}
+            <SearchBox changeSearch={(input) => setSearch(input.value)} />
+          </Grid>
+        )}
+      </Grid>
     </Box>
   );
 };

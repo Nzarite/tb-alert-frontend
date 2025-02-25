@@ -15,6 +15,8 @@ import {
   Snackbar,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
+import { useAuth } from "react-oidc-context";
+import { useLocation, useNavigate } from "react-router-dom";
 import PatientDetailsForm from "../../../components/PatientDetailsForm/PatientDetailsForm";
 import TbDetailsForm from "../../../components/TbDetailsForm/TbDetailsForm";
 import NikshayDetailsForm from "../../../components/NikshayDetailsForm/NikshayDetailsForm";
@@ -38,6 +40,11 @@ const PatientRegistrationPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
+  const auth = useAuth();
+  const userEmail =
+    useSelector((state) => state.user.profile.email) ||
+    auth.user?.profile.email;
+
   const steps = [
     "Patient Details",
     "TB Details",
@@ -45,7 +52,6 @@ const PatientRegistrationPage = () => {
     "Contact Screening Details",
   ];
 
-  // const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     patientDetails: {} as PatientDetailsData,
     tbDetails: {} as TbDetailsData,
@@ -53,10 +59,7 @@ const PatientRegistrationPage = () => {
     contactScreeningDetails: {} as ContactScreeningData,
   });
 
-  // const [language, setLanguage] = useState("en");
-
   const language = useSelector((state: any) => state.language);
-  console.log(language);
 
   const { handleSubmit } = useForm();
 
@@ -64,37 +67,22 @@ const PatientRegistrationPage = () => {
     console.log("Final Submitted Data:", data);
   };
 
-  console.log(activeStep);
-
   const handleSave = async (stepData: any) => {
-    // if (activeStep === 0) {
-    //   setFormData({ ...formData, patientDetails: stepData });
-    //   console.log("Patient Details Saved:", stepData);
-    // } else if (activeStep === 1) {
-    //   setFormData({ ...formData, tbDetails: stepData });
-    //   console.log("TB Details Saved:", stepData);
-    // } else if (activeStep === 2) {
-    //   setFormData({ ...formData, nikshayDetails: stepData });
-    //   console.log("Nikshay Details Saved:", stepData);
-    // } else if (activeStep === 3) {
-    //   setFormData({ ...formData, contactScreeningDetails: stepData });
-    //   console.log("Contact Screening Details Saved:", stepData);
-    // }
-
-    setLoading(true);
+      setLoading(true);
     setError(null);
     try {
+      const formData = { ...stepData, createdBy: userEmail };
       let response;
 
       if (activeStep === 0) {
-        response = await axiosInstance.post("/patient/register", stepData);
+        response = await axiosInstance.post("/patient/register", formData);
         if (response.status === 200 || 201 || 202) {
           setPatientId(response.data.patientId);
           setPatientName(
             response.data.firstName +
               (response.data.lastName ? " " + response.data.lastName : "")
           );
-          setFormData({ ...formData, patientDetails: stepData });
+          setFormData({ ...formData, patientDetails: formData });
           setActiveStep(activeStep + 1);
         }
       } else if (activeStep === 1) {
@@ -102,11 +90,11 @@ const PatientRegistrationPage = () => {
           throw new Error("Patient ID not found. Please complete step 1.");
         }
         response = await axiosInstance.post("/tbdetails/register", {
-          ...stepData,
+          ...formData,
           patientId,
         });
         if (response.status === 200 || 201 || 202) {
-          setFormData({ ...formData, tbDetails: stepData });
+          setFormData({ ...formData, tbDetails: formData });
           setActiveStep(activeStep + 1);
         }
       } else if (activeStep === 2) {
@@ -114,11 +102,11 @@ const PatientRegistrationPage = () => {
           throw new Error("TB Details not found. Please complete step 2.");
         }
         response = await axiosInstance.post("/nikshaymitra/register", {
-          ...stepData,
+          ...formData,
           patientId,
         });
         if (response.status === 200 || 201 || 202) {
-          setFormData({ ...formData, nikshayDetails: stepData });
+          setFormData({ ...formData, nikshayDetails: formData });
           setActiveStep(activeStep + 1);
         }
       } else if (activeStep === 3) {
@@ -126,16 +114,15 @@ const PatientRegistrationPage = () => {
           throw new Error("Nikshay Details not found. Please complete step 3.");
         }
         response = await axiosInstance.post("/contactscreening/save", {
-          ...stepData,
+          ...formData,
           patientId,
         });
         if (response.status === 200 || 201 || 202) {
-          setFormData({ ...formData, contactScreeningDetails: stepData });
+          setFormData({ ...formData, contactScreeningDetails: formData });
           setOpenSnackbar(true);
           setTimeout(() => {
-            navigate(`/dashboard/patient/${patientId}`);
+              navigate(`/patient-dashboard/${patientId}`);
           }, 4000);
-          // navigate(`/dashboard/patient/${patientId}`);
         }
       }
     } catch (error: any) {

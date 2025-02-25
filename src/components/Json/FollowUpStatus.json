@@ -1,1 +1,6 @@
-{ "Captured": "Captured", "Missed": "Missed", "Scheduled": "Scheduled" }
+{
+  "Captured": "Captured",
+  "Missed": "Missed",
+  "Scheduled": "Scheduled",
+  "Cancelled": "Cancelled"
+}

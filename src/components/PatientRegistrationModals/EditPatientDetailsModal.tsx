@@ -1,3 +1,14 @@
+import { Box, Button, Modal, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useAuth } from "react-oidc-context";
+import { useSelector } from "react-redux";
+import axiosInstance from "../axiosInstance";
+import ContactScreeningDetailsForm, {
+  ContactScreeningData,
+} from "../ContactScreeningDetailsForm/ContactScreeningDetailsForm";
+import NikshayDetailsForm, {
+  NikshayDetailsData,
+} from "../NikshayDetailsForm/NikshayDetailsForm";
 import React, { useState, useEffect } from "react";
 import {
   Modal,
@@ -11,14 +22,6 @@ import PatientDetailsForm, {
   PatientDetailsData,
 } from "../PatientDetailsForm/PatientDetailsForm";
 import TbDetailsForm, { TbDetailsData } from "../TbDetailsForm/TbDetailsForm";
-import NikshayDetailsForm, {
-  NikshayDetailsData,
-} from "../NikshayDetailsForm/NikshayDetailsForm";
-import ContactScreeningDetailsForm, {
-  ContactScreeningData,
-} from "../ContactScreeningDetailsForm/ContactScreeningDetailsForm";
-import { useSelector } from "react-redux";
-import axiosInstance from "../axiosInstance";
 
 const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
   const [formData, setFormData] = useState({
@@ -27,6 +30,11 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
     nikshaymitraDetails: {} as NikshayDetailsData,
     contactscreeningDetails: {} as ContactScreeningData,
   });
+
+  const auth = useAuth();
+  const userEmail =
+    useSelector((state) => state.user.profile.email) ||
+    auth.user?.profile.email;
 
   const [originalData, setOriginalData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -60,9 +68,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
     }
   };
 
-  console.log(patientId);
-
-  const getPostUrl = (prop: string) => {
+const getPostUrl = (prop: string) => {
     switch (prop) {
       case "tbdetails":
         return `/tbdetails/register`;
@@ -97,6 +103,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
     setFormData((prevData) => ({
       ...prevData,
       [`${prop}Details`]: updatedData,
+      updatedBy: userEmail,
     }));
 
     const updateurl = getUpdateUrl(prop, patientId);

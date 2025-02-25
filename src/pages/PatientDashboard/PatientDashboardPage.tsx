@@ -87,13 +87,6 @@ const PatientDashboardPage = () => {
             prop: "tbdetails",
           },
           {
-            title: "Medicines",
-            component: <PatientMedicineDetails patientId={patientId} />,
-            icon: <MdVaccines style={{ fontSize: "20px" }} />,
-            size: 6,
-            editURL: "",
-          },
-          {
             title: "Contact Screening",
             component: <PatientContactScreeningDetails patientId={patientId} />,
             icon: <MdAssessment style={{ fontSize: "22px" }} />,
@@ -102,12 +95,19 @@ const PatientDashboardPage = () => {
             prop: "contactscreening",
           },
           {
+            title: "Medicines",
+            component: <PatientMedicineDetails patientId={patientId} />,
+            icon: <MdVaccines style={{ fontSize: "20px" }} />,
+            size: 6,
+            editURL: null,
+          },
+          {
             title: "Follow Up",
             component: <PatientFollowUpDetails patientId={patientId} />,
             icon: <MdAssessment style={{ fontSize: "22px" }} />,
             size: 6,
             editURL: "/visit",
-            prop: 1,
+            prop: patientId,
           },
         ].map((section, index) => (
           <Grid item xs={12} sm={section.size} key={index}>

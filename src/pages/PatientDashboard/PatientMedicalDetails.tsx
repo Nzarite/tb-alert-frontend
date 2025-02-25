@@ -61,7 +61,7 @@ const PatientMedicalDetails = ({ patientId }: any) => {
         </Grid>
       ) : (
         <Typography align="center" variant="body2" color="textSecondary">
-          Unable to fetch data
+          Medical Records not found
         </Typography>
       )}
     </>

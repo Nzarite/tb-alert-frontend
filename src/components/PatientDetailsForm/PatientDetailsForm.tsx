@@ -16,6 +16,8 @@ import {
   FormLabel,
   RadioGroup,
   FormControlLabel,
+  FormLabel,
+  MenuItem,
   Radio,
   CircularProgress,
 } from "@mui/material";
@@ -129,7 +131,6 @@ const PatientDetailsForm = ({
     handleSubmit,
     formState: { errors },
     setValue,
-    reset,
     register,
   } = useForm<PatientDetailsData>({
     defaultValues: data || {},
