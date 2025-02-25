@@ -21,8 +21,49 @@ const Reports = () => {
   const [endDate, setEndDate] = useState("");
   const [currentStatus, setCurrentStatus] = useState("");
   const [cured, setCured] = useState(null);
+  const [state,setState]=useState<String>("");
 
-  const handleDownloadReport = async (endpoint, filename) => {
+
+  const handleTeleCallerReport=async()=>{
+    try{
+      const body={
+        state:state
+      };
+      const response=await axiosInstance.post("/report/telecaller",body,{
+        responseType:"blob",
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "TeleCallerReport.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+    catch(error)
+    {
+      console.error(error);
+    }
+  }
+
+  const handleStateHeadReports=async()=>{
+    try{
+      const response=await axiosInstance.post("/report/statehead",{},{responseType:"blob",});
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "StateHeadReport.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+    catch(error)
+    {
+      console.error(error);
+    }
+  }
+
+  const handleDownloadReport = async (endpoint:string, filename:string) => {
     try {
 
       let filters = {
@@ -31,7 +72,8 @@ const Reports = () => {
         startDate: startDate || null,
         endDate: endDate || null,
         currentStatus: currentStatus || null,
-        cured: cured
+        cured: cured,
+        state: state
       };
 
       if(filename==="All_Patient_Reports.xlsx")
@@ -81,6 +123,7 @@ const Reports = () => {
             >
               <MenuItem value="patient">Patient</MenuItem>
               <MenuItem value="telecaller">TeleCaller</MenuItem>
+              <MenuItem value="statehead">State Head</MenuItem>
             </TextField>
           </Paper>
         </Grid>
@@ -91,7 +134,7 @@ const Reports = () => {
               Set Report Filters
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
                 <TextField
                   fullWidth
                   label="Age"
@@ -103,7 +146,7 @@ const Reports = () => {
                   inputProps={{ min: 0 }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
                 <TextField
                   fullWidth
                   select
@@ -117,7 +160,7 @@ const Reports = () => {
                   <MenuItem value="F">Female</MenuItem>
                 </TextField>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
                 <TextField
                   fullWidth
                   label="Start Date"
@@ -128,7 +171,7 @@ const Reports = () => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
                 <TextField
                   fullWidth
                   label="End Date"
@@ -138,6 +181,23 @@ const Reports = () => {
                   onChange={(e) => setEndDate(e.target.value)}
                   variant="outlined"
                 />
+              </Grid>
+              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" || currentRole==="telecaller" ? "block" : "none" }}>
+                <TextField
+                  fullWidth
+                  select
+                  label="State"
+                  InputLabelProps={{ shrink: true }}
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  variant="outlined"
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="TELANGANA">Telangana</MenuItem>
+                  <MenuItem value="UTTAR PRADESH">Uttar Pradesh</MenuItem>
+                  <MenuItem value="BIHAR">Bihar</MenuItem>
+
+                  </TextField>
               </Grid>
               <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
                 <TextField
@@ -166,24 +226,55 @@ const Reports = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleDownloadReport("/report/patient/filter", "Patient_Report.xlsx")}
-                    size="large"
-                  >
-                    Download Report
-                  </Button>
-                  <Button
+              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                  {currentRole === "patient" && (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleDownloadReport("/report/patient/filter", "Patient_Report.xlsx")}
+                        size="large"
+                      >
+                        Download Patients Report
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleDownloadReport("/report/patient/filter", "All_Patient_Reports.xlsx")}
+                        size="large"
+                      >
+                        Download All Patients Reports
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleDownloadReport("/report/patient/followup", "Patient_FollowUps.xlsx")}
+                        size="large"
+                      >
+                        Download Patients FollowUp Reports
+                      </Button>
+                    </>
+                  )}
+                  {currentRole === "telecaller" && (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleTeleCallerReport()}
+                      size="large"
+                    >
+                      Download TeleCaller Reports
+                    </Button>
+                  )}
+                  {currentRole==="statehead" && (<Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => handleDownloadReport("/report/patient/filter", "All_Patient_Reports.xlsx")}
+                    onClick={() => handleStateHeadReports()}
                     size="large"
                   >
-                    Download All Reports
-                  </Button>
+                    Download StateHeads Reports
+                  </Button>)}
                 </Box>
+
               </Grid>
             </Grid>
           </Paper>

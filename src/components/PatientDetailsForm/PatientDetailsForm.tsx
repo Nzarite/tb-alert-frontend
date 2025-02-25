@@ -1,25 +1,19 @@
-import { useState, useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
-  Container,
-  Typography,
   Button,
-  Stepper,
-  Step,
-  StepLabel,
-  TextField,
-  Grid,
-  Paper,
-  MenuItem,
-  LabelDisplayedRowsArgs,
+  CircularProgress,
   FormControl,
-  FormLabel,
-  RadioGroup,
   FormControlLabel,
+  FormLabel,
+  MenuItem,
   Radio,
+  RadioGroup,
+  TextField,
+  Typography
 } from "@mui/material";
-import { useForm, Controller, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 export type PatientDetailsData = {
@@ -27,9 +21,7 @@ export type PatientDetailsData = {
   lastName: string;
   gender: string;
   phoneNumber: string;
-  email: string;
-  dateOfBirth: string;
-  createdBy: string;
+  age: number;
   state: string;
   district: string;
   village: string;
@@ -48,11 +40,11 @@ const patientDetailsSchema = z.object({
     .regex(/^\d+$/, "Contact number must contain only numbers")
     .min(10, "Contact number must be at least 10 digits")
     .max(15, "Contact number can't exceed 15 digits"),
-  email: z.string().email("Please enter a valid email"),
-  dateOfBirth: z.string().refine((date) => !isNaN(Date.parse(date)), {
-    message: "Invalid date format",
-  }),
-  createdBy: z.string().email("Please enter a valid email"),
+  age: z
+    .number()
+    .int("Age must be an integer")
+    .min(1, "Age must be at least 1")
+    .max(150, "Age must be at most 150"),
   state: z.string().min(1, "State Name is required"),
   district: z.string().min(1, "District Name is required"),
   village: z.string().min(1, "Village Name is required"),
@@ -66,6 +58,7 @@ const PatientDetailsForm = ({
   onSave,
   // onNext,
   functionality,
+  loading,
 }: any) => {
   interface LabelOption {
     label: string;
@@ -81,9 +74,7 @@ const PatientDetailsForm = ({
     lastNameLabel: string;
     genderLabel: LabelOption;
     phoneNumberLabel: string;
-    emailLabel: string;
-    dateOfBirthLabel: string;
-    createdByLabel: string;
+    ageLabel: string;
     districtLabel: string;
     villageLabel: string;
     blockLabel: string;
@@ -95,9 +86,7 @@ const PatientDetailsForm = ({
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
     phoneNumberLabel: "",
-    emailLabel: "",
-    dateOfBirthLabel: "",
-    createdByLabel: "",
+    ageLabel: "",
     districtLabel: "",
     villageLabel: "",
     blockLabel: "",
@@ -108,14 +97,20 @@ const PatientDetailsForm = ({
     fetch(`/locales/patient_registration_form1_${language}.json`)
       .then((response) => response.json())
       .then((data) => setLabels(data.patientdetailsform))
-      .catch((error) => console.error("Error loading language file:", error));
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
   }, [language]);
 
   useEffect(() => {
     fetch(`/locales/states_${language}.json`)
       .then((response) => response.json())
       .then((data) => setState(data))
-      .catch((err) => console.error("Error fetching states:", err));
+      .catch((err) => {
+        console.error("Error fetching states:", err);
+        alert("Failed to load states data. Please try again.");
+      });
   }, [language]);
 
   const {
@@ -123,11 +118,11 @@ const PatientDetailsForm = ({
     handleSubmit,
     formState: { errors },
     setValue,
-    reset,
     register,
   } = useForm<PatientDetailsData>({
     defaultValues: data || {},
     resolver: zodResolver(patientDetailsSchema),
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -147,7 +142,7 @@ const PatientDetailsForm = ({
 
   const formFields: {
     name: keyof PatientDetailsData;
-    type: "text" | "select" | "date" | "radio";
+    type: "text" | "select" | "date" | "radio" | "number";
     label: string;
     options?: { label: string; value: string }[];
   }[] = [
@@ -160,9 +155,7 @@ const PatientDetailsForm = ({
       options: labels.genderLabel.options,
     },
     { name: "phoneNumber", type: "text", label: labels.phoneNumberLabel },
-    { name: "email", type: "text", label: labels.emailLabel },
-    { name: "dateOfBirth", type: "date", label: labels.dateOfBirthLabel },
-    { name: "createdBy", type: "text", label: labels.createdByLabel },
+    { name: "age", type: "number", label: labels.ageLabel },
     {
       name: "state",
       type: "select",
@@ -175,7 +168,7 @@ const PatientDetailsForm = ({
     { name: "gp", type: "text", label: labels.gpLabel },
   ];
 
-  if (!labels || !state.states) return <p>Loading...</p>;
+  if (!labels || !state.states) return <CircularProgress />;
 
   return (
     <Box>
@@ -192,6 +185,7 @@ const PatientDetailsForm = ({
               fullWidth
               margin="normal"
               slotProps={{ inputLabel: { shrink: true } }}
+              disabled={loading}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             />
@@ -206,6 +200,7 @@ const PatientDetailsForm = ({
               margin="normal"
               defaultValue={data?.name || ""}
               slotProps={{ inputLabel: { shrink: true } }}
+              disabled={loading}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             >
@@ -219,6 +214,7 @@ const PatientDetailsForm = ({
             <FormControl
               key={field.name}
               margin="normal"
+              disabled={loading}
               error={!!errors[field.name]}
             >
               <FormLabel>{field.label}</FormLabel>
@@ -241,17 +237,58 @@ const PatientDetailsForm = ({
                 )}
               />
             </FormControl>
+          ) : field.type === "number" ? (
+            <Controller
+              key={field.name}
+              name={field.name}
+              control={control}
+              render={({ field: controllerField }) => (
+                <TextField
+                  {...controllerField}
+                  label={field.label}
+                  type="number"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  slotProps={{ inputLabel: { shrink: true } }}
+                  disabled={loading}
+                  error={!!errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                  onChange={(e) =>
+                    controllerField.onChange(Number(e.target.value) || "")
+                  }
+                />
+              )}
+            />
           ) : null
         )}
         <Box mt={3}>
           {functionality === "register" && (
-            <Button type="submit" variant="contained" color="primary">
-              Save and Next
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Save and Next"
+              )}
             </Button>
           )}
           {functionality === "editdetails" && (
-            <Button type="submit" variant="contained" color="primary">
-              Update
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Update"
+              )}
             </Button>
           )}
         </Box>
