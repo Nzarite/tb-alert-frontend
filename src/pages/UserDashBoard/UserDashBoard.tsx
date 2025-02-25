@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import UserPersonalDetails from "./UserPersonalDetails";
 import { Paper, Box } from "@mui/material";
