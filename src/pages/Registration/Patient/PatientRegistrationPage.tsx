@@ -36,7 +36,7 @@ const PatientRegistrationPage = () => {
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user.profile.email) ||
+    useSelector((state) => state.user?.profile?.email) ||
     auth.user?.profile.email;
 
   const steps = [

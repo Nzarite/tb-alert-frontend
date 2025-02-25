@@ -25,7 +25,6 @@ const schema = z.object({
   village: z.string().min(1, "Village Name is required"),
   block: z.string().min(1, "Block Name is required"),
   gp: z.string().min(1, "GP Name is required"),
-  createdBy: z.string().email("Please enter a valid email"),
 });
 
 type FormData = z.infer<typeof schema>;
