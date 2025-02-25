@@ -11,12 +11,12 @@ import {
   Snackbar,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
-import StateData from "../../../components/Json/states.json";
 import axiosInstance from "../../../components/axiosInstance";
-
+import { useSelector } from "react-redux";
+ 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
   lastName: z.string(),
@@ -31,12 +31,11 @@ const schema = z.object({
     message: "Invalid date format",
   }),
   state: z.string().nonempty("Please select a state"),
-  createdBy: z.string().email("Please enter a valid email"),
 });
-
+ 
 type FormData = z.infer<typeof schema>;
-
-const StateCoordinatorRegistrationPage = () => {
+ 
+const StateHeadRegistrationPage = () => {
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -46,85 +45,106 @@ const StateCoordinatorRegistrationPage = () => {
     resolver: zodResolver(schema),
     mode: "all",
   });
-
+ 
+  interface LabelOption {
+    label: string;
+    options: { label: string; value: any }[];
+  }
+ 
+  const [state, setState] = useState<{ states: LabelOption }>({
+    states: { label: "", options: [] },
+  });
+ 
+  interface ScTcRegistrationFormLabelsData {
+    firstNameLabel: string;
+    lastNameLabel: string;
+    genderLabel: LabelOption;
+    phoneNumberLabel: string;
+    emailLabel: string;
+    dateOfJoiningLabel: string;
+  }
+ 
+  const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
+    firstNameLabel: "",
+    lastNameLabel: "",
+    genderLabel: { label: "", options: [] },
+    phoneNumberLabel: "",
+    emailLabel: "",
+    dateOfJoiningLabel: "",
+  });
+ 
+  const language = useSelector((state: any) => state.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
+ 
+  useEffect(() => {
+    fetch(`/locales/sc_tc_registration_form_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.scandtcregistrationform))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
+ 
+  useEffect(() => {
+    fetch(`/locales/states_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setState(data))
+      .catch((err) => {
+        console.error("Error fetching states:", err);
+        alert("Failed to load states data. Please try again.");
+      });
+  }, [language]);
+ 
   const formFields = [
     {
       name: "firstName",
-      label: "First Name",
-      placeholder: "Enter First Name",
+      label: labels.firstNameLabel,
       type: "text",
       disabled: loading,
     },
     {
       name: "lastName",
-      label: "Last Name",
-      placeholder: "Enter Last Name",
+      label: labels.lastNameLabel,
       type: "text",
       disabled: loading,
     },
     {
       name: "gender",
-      label: "Gender",
+      label: labels.genderLabel.label,
+      options: labels.genderLabel.options,
       type: "select",
-      options: [
-        { label: "Male", value: "M" },
-        { label: "Female", value: "F" },
-      ],
       disabled: loading,
     },
     {
       name: "phoneNumber",
-      label: "Contact",
-      placeholder: "Enter Phone Number",
+      label: labels.phoneNumberLabel,
       type: "text",
       disabled: loading,
     },
     {
       name: "email",
-      label: "Email",
-      placeholder: "Enter Email",
+      label: labels.emailLabel,
       type: "text",
       disabled: loading,
     },
     {
       name: "dateOfJoining",
-      label: "Date of Joining",
-      placeholder: "Date of Joining",
+      label: labels.dateOfJoiningLabel,
       type: "date",
       disabled: loading,
     },
-    // {
-    //   name: "state",
-    //   label: "State",
-    //   value: StateData[0].value,
-    //   type: "select",
-    //   options: StateData,
-    //   disabled: true,
-    // },
     {
       name: "state",
-      label: "State",
+      label: state.states.label,
+      options: state.states.options,
       type: "select",
-      options: [
-        { label: "Telangana", value: "TELANGANA" },
-        { label: "Uttar Pradesh", value: "UTTAR PRADESH" },
-        { label: "Bihar", value: "BIHAR" },
-      ],
-      disabled: loading,
-    },
-    {
-      name: "createdBy",
-      label: "Email of person created by",
-      placeholder: "Email of person created by",
-      type: "text",
       disabled: loading,
     },
   ];
-
+ 
   const formSubmitHandler = async (data: FormData) => {
     setLoading(true);
     setErrorMessage(null);
@@ -143,7 +163,7 @@ const StateCoordinatorRegistrationPage = () => {
       setLoading(false);
     }
   };
-
+ 
   return (
     <Paper
       variant="outlined"
@@ -156,7 +176,7 @@ const StateCoordinatorRegistrationPage = () => {
       }}
     >
       <Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>
-        Register State Coordinator
+        Register State Head
       </Typography>
       <Divider sx={{ marginBottom: "30px" }} />
       <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
@@ -222,5 +242,5 @@ const StateCoordinatorRegistrationPage = () => {
     </Paper>
   );
 };
-
-export default StateCoordinatorRegistrationPage;
+ 
+export default StateHeadRegistrationPage;

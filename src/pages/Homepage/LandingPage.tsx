@@ -43,17 +43,12 @@ const LandingPage = () => {
 
         <Link to="/register/state-coordinator" className="module-item">
           <FaUser className="icon"/>
-          <Box>Register State <br />Coordinator</Box>
+          <Box>Register State Head</Box>
         </Link>
 
-        <Link to="/register/telecommunicator" className="module-item">
+        <Link to="/register/telecaller" className="module-item">
           <FaUser className="icon"/>
-          <Box>Register Tele Communicator</Box>
-        </Link>
-
-        <Link to="/sms/module" className="module-item">
-          <MdMessage className="icon"/>
-          <Box>SMS Module</Box>
+          <Box>Register Telecaller</Box>
         </Link>
       </Box>
     </Box>

@@ -13,15 +13,15 @@ import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 import LandingPage from "./pages/Homepage/LandingPage";
 import PageLayout from "./pages/PageLayout";
 import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
-import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
-import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
-import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
+import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
+import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
+import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
+import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
-import { store } from "./redux/store";
-import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 import SmsModulePage from "./pages/SmsModulePage";
+import { store } from "./redux/store";
 
 const theme = createTheme({
 	palette: {
@@ -57,9 +57,9 @@ const router = createBrowserRouter(
 			<Route path="/visit" element={<VisitFollowUpPage />} />
 			<Route
 				path="/register/state-coordinator"
-				element={<StateCoordinatorRegistrationPage />}
+				element={<StateHeadRegistrationPage />}
 			/>
-			<Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
+			<Route path="/register/telecaller" element={<TelecallerRegistrationPage />} />
 			<Route path="/dashboard/patient" element={<PatientSearchPage />} />
 			<Route path="/dashboard/patient/:patientId" element={<PatientDashboardPage />} />
 			<Route path="*" element={<ErrorPage />} />
