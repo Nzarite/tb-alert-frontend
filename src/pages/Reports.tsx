@@ -23,6 +23,9 @@ const Reports = () => {
   const [cured, setCured] = useState(null);
   const [state, setState] = useState<String>("");
   const [dsOrDr,setDsOrDr]=useState<string>("");
+  const [udstStatus,setUdstStatus]=useState<boolean|"">("");
+  const [dbtStatus,setDbtStatus]=useState<boolean|"">("");
+
 
   const handleTeleCallerReport = async () => {
     try {
@@ -70,6 +73,8 @@ const Reports = () => {
         cured: cured,
         state: state,
         dstbOrDrtb:dsOrDr,
+        udstStatus:udstStatus,
+        dbtStatus:dbtStatus,
       };
 
       if (filename === "All_Patient_Reports.xlsx") {
@@ -81,7 +86,9 @@ const Reports = () => {
           currentStatus: null,
           cured: null,
           state: "",
-          dstbOrDrtb:""
+          dstbOrDrtb:"",
+          udstStatus:"",
+          dbtStatus:"",
         };
       }
 
@@ -248,6 +255,46 @@ const Reports = () => {
                 >
                   <MenuItem value="dead">Deceased</MenuItem>
                   <MenuItem value="alive">Under Treatment</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
+                <TextField
+                  fullWidth
+                  select
+                  label="UDST Status"
+                  value={udstStatus}
+                  onChange={(e) => setUdstStatus(e.target.value === "" ? "" : e.target.value === "true")}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="false">Not Done</MenuItem>
+                  <MenuItem value="true">Done</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
+                <TextField
+                  fullWidth
+                  select
+                  label="DBT Status"
+                  value={dbtStatus}
+                  onChange={(e) => setDbtStatus(e.target.value === "" ? "" : e.target.value === "true")}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="false">Not Done</MenuItem>
+                  <MenuItem value="true">Done</MenuItem>
                 </TextField>
               </Grid>
               <Grid
