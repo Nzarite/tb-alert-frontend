@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { 
+import {
   Container,
   Grid,
   Paper,
@@ -9,7 +9,7 @@ import {
   MenuItem,
   Box,
   FormControlLabel,
-  Switch
+  Switch,
 } from "@mui/material";
 import axiosInstance from "../components/axiosInstance";
 
@@ -21,16 +21,15 @@ const Reports = () => {
   const [endDate, setEndDate] = useState("");
   const [currentStatus, setCurrentStatus] = useState("");
   const [cured, setCured] = useState(null);
-  const [state,setState]=useState<String>("");
+  const [state, setState] = useState<String>("");
 
-
-  const handleTeleCallerReport=async()=>{
-    try{
-      const body={
-        state:state
+  const handleTeleCallerReport = async () => {
+    try {
+      const body = {
+        state: state,
       };
-      const response=await axiosInstance.post("/report/telecaller",body,{
-        responseType:"blob",
+      const response = await axiosInstance.post("/report/telecaller", body, {
+        responseType: "blob",
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -39,16 +38,18 @@ const Reports = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-    }
-    catch(error)
-    {
+    } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  const handleStateHeadReports=async()=>{
-    try{
-      const response=await axiosInstance.post("/report/statehead",{},{responseType:"blob",});
+  const handleStateHeadReports = async () => {
+    try {
+      const response = await axiosInstance.post(
+        "/report/statehead",
+        {},
+        { responseType: "blob" }
+      );
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -56,16 +57,13 @@ const Reports = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-    }
-    catch(error)
-    {
+    } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  const handleDownloadReport = async (endpoint:string, filename:string) => {
+  const handleDownloadReport = async (endpoint: string, filename: string) => {
     try {
-
       let filters = {
         age: age ? parseInt(age) : 0,
         gender: gender || null,
@@ -73,23 +71,22 @@ const Reports = () => {
         endDate: endDate || null,
         currentStatus: currentStatus || null,
         cured: cured,
-        state: state
+        state: state,
       };
 
-      if(filename==="All_Patient_Reports.xlsx")
-      {
-        filters={
-          age:0,
-          gender:null,
-          startDate:null,
-          endDate:null,
-          currentStatus:null,
-          cured:null
-        }
+      if (filename === "All_Patient_Reports.xlsx") {
+        filters = {
+          age: 0,
+          gender: null,
+          startDate: null,
+          endDate: null,
+          currentStatus: null,
+          cured: null,
+        };
       }
 
       const response = await axiosInstance.post(endpoint, filters, {
-        responseType: "blob", 
+        responseType: "blob",
       });
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -134,7 +131,12 @@ const Reports = () => {
               Set Report Filters
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
                 <TextField
                   fullWidth
                   label="Age"
@@ -146,7 +148,12 @@ const Reports = () => {
                   inputProps={{ min: 0 }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
                 <TextField
                   fullWidth
                   select
@@ -160,7 +167,12 @@ const Reports = () => {
                   <MenuItem value="F">Female</MenuItem>
                 </TextField>
               </Grid>
-              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
                 <TextField
                   fullWidth
                   label="Start Date"
@@ -171,7 +183,12 @@ const Reports = () => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
                 <TextField
                   fullWidth
                   label="End Date"
@@ -182,7 +199,17 @@ const Reports = () => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" || currentRole==="telecaller" ? "block" : "none" }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{
+                  display:
+                    currentRole === "patient" || currentRole === "telecaller"
+                      ? "block"
+                      : "none",
+                }}
+              >
                 <TextField
                   fullWidth
                   select
@@ -196,10 +223,14 @@ const Reports = () => {
                   <MenuItem value="TELANGANA">Telangana</MenuItem>
                   <MenuItem value="UTTAR PRADESH">Uttar Pradesh</MenuItem>
                   <MenuItem value="BIHAR">Bihar</MenuItem>
-
-                  </TextField>
+                </TextField>
               </Grid>
-              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
                 <TextField
                   fullWidth
                   select
@@ -213,7 +244,12 @@ const Reports = () => {
                   <MenuItem value="alive">Under Treatment</MenuItem>
                 </TextField>
               </Grid>
-              <Grid item xs={12} sm={6} sx={{ display: currentRole === "patient" ? "block" : "none" }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
                 <FormControlLabel
                   control={
                     <Switch
@@ -226,13 +262,20 @@ const Reports = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                <Box
+                  sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
+                >
                   {currentRole === "patient" && (
                     <>
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => handleDownloadReport("/report/patient/filter", "Patient_Report.xlsx")}
+                        onClick={() =>
+                          handleDownloadReport(
+                            "/report/patient/filter",
+                            "Patient_Report.xlsx"
+                          )
+                        }
                         size="large"
                       >
                         Download Patients Report
@@ -240,7 +283,12 @@ const Reports = () => {
                       <Button
                         variant="contained"
                         color="secondary"
-                        onClick={() => handleDownloadReport("/report/patient/filter", "All_Patient_Reports.xlsx")}
+                        onClick={() =>
+                          handleDownloadReport(
+                            "/report/patient/filter",
+                            "All_Patient_Reports.xlsx"
+                          )
+                        }
                         size="large"
                       >
                         Download All Patients Reports
@@ -248,7 +296,12 @@ const Reports = () => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => handleDownloadReport("/report/patient/followup", "Patient_FollowUps.xlsx")}
+                        onClick={() =>
+                          handleDownloadReport(
+                            "/report/patient/followup",
+                            "Patient_FollowUps.xlsx"
+                          )
+                        }
                         size="large"
                       >
                         Download Patients FollowUp Reports
@@ -265,16 +318,17 @@ const Reports = () => {
                       Download TeleCaller Reports
                     </Button>
                   )}
-                  {currentRole==="statehead" && (<Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleStateHeadReports()}
-                    size="large"
-                  >
-                    Download StateHeads Reports
-                  </Button>)}
+                  {currentRole === "statehead" && (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleStateHeadReports()}
+                      size="large"
+                    >
+                      Download StateHeads Reports
+                    </Button>
+                  )}
                 </Box>
-
               </Grid>
             </Grid>
           </Paper>
