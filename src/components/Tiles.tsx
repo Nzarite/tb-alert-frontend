@@ -26,5 +26,7 @@ export const tiles: Tile[] = [
 
   { path: "/register/state-coordinator", label: "Register State Coordinator", allowedRoles: ["SuperAdmin"], Icon: FaUser },
   { path: "/settings", label: "Settings", allowedRoles: ["SuperAdmin"], Icon: IoIosSettings },
+  { path: "/user/telecaller", label: "Telecaller Dashboard", allowedRoles:["StateCoordinator","SuperAdmin"],Icon:FaUser},
+  { path: "/user/statehead", label: "State Coordinator Dashboard", allowedRoles:["SuperAdmin"],Icon:FaUser}
 
 ];
