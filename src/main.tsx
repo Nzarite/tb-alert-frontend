@@ -27,6 +27,8 @@ import UnauthorizedPage from "./pages/Unauthorized/UnauthorizedPage";
 import UserProfile from "./pages/UserProfile";
 import { AuthProvider } from "react-oidc-context";
 import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
+import UserSearch from "./pages/UserDashBoard/UserSearch.tsx";
+import UserDashBoard from "./pages/UserDashBoard/UserDashBoard.tsx";
 
 const oidcConfig = {
   authority: import.meta.env.VITE_OIDC_AUTHORITY,
@@ -37,6 +39,7 @@ const oidcConfig = {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
 };
+
 
 const theme = createTheme({
   palette: {
@@ -108,6 +111,29 @@ const router = createBrowserRouter(
       <Route path="*" element={<ErrorPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
       <Route path="profile" element={<UserProfile />} />
+
+      <Route element = {<ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />}>
+        <Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
+        <Route path="/register/state-coordinator" element={<StateCoordinatorRegistrationPage />} />
+        <Route path="/settings" element={<Settings />} />
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]}/>}>
+        <Route path="/user/statehead" element={<UserSearch/>}/>
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin","StateCoordinator"]}/>}>
+        <Route path="/user/telecaller" element={<UserSearch/>}/>
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]}/>}>
+        <Route path="/dashboard/statehead/:userId" element={<UserDashBoard role="statehead" />}/>
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin","StateCoordinator"]}/>}>
+        <Route path="/dashboard/telecaller/:userId" element={<UserDashBoard role="telecaller"/>}/>
+      </Route>
+
     </Route>
   )
 );

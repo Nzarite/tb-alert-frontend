@@ -17,7 +17,7 @@ const PatientSearchPage = () => {
   return (
     <Box sx={{ p: 4 }}>
       {/* <Typography variant="h4" sx={{ mb: 2 }}>Search for a Patient</Typography> */}
-      <SearchBox changeSearch={handleSearchChange} />
+      <SearchBox changeSearch={handleSearchChange} role="patient"/>
     </Box>
   );
 };

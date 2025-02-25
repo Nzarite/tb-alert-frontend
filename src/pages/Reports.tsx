@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+import {
   Container,
   Grid,
   Paper,
@@ -10,10 +11,18 @@ import {
   Box,
   FormControlLabel,
   Switch,
+  Switch,
 } from "@mui/material";
 import axiosInstance from "../components/axiosInstance";
+import { useSelector } from "react-redux";
+import { useAuth } from "react-oidc-context";
 
 const Reports = () => {
+
+  const auth=useAuth();
+  const userEmail=useSelector((state:any)=> state.user?.profile?.email)||auth.user?.profile.email;
+  console.log(userEmail);
+
   const [currentRole, setCurrentRole] = useState("patient");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -22,7 +31,15 @@ const Reports = () => {
   const [currentStatus, setCurrentStatus] = useState("");
   const [cured, setCured] = useState(null);
   const [state, setState] = useState<String>("");
+  const [dsOrDr, setDsOrDr] = useState<string>("");
+  const [udstStatus, setUdstStatus] = useState<boolean | "">("");
+  const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
+  const [createdBy,setCreatedBy]=useState<string>("")
 
+  const handleTeleCallerReport = async () => {
+    try {
+      const body = {
+        state: state,
   const handleTeleCallerReport = async () => {
     try {
       const body = {
@@ -30,14 +47,10 @@ const Reports = () => {
       };
       const response = await axiosInstance.post("/report/telecaller", body, {
         responseType: "blob",
+      const response = await axiosInstance.post("/report/telecaller", body, {
+        responseType: "blob",
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "TeleCallerReport.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      blodHandler(response.data, "TelecallerReports.xlsx");
     } catch (error) {
       console.error(error);
     }
@@ -50,18 +63,20 @@ const Reports = () => {
         {},
         { responseType: "blob" }
       );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "StateHeadReport.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      blodHandler(response.data, "StateHeadDetails.xlsx");
     } catch (error) {
       console.error(error);
     }
   };
-
+  const blodHandler = (data: any, filename: string) => {
+    const url = window.URL.createObjectURL(new Blob([data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
   const handleDownloadReport = async (endpoint: string, filename: string) => {
     try {
       let filters = {
@@ -72,6 +87,9 @@ const Reports = () => {
         currentStatus: currentStatus || null,
         cured: cured,
         state: state,
+        dstbOrDrtb: dsOrDr,
+        udstStatus: udstStatus,
+        dbtStatus: dbtStatus,
       };
 
       if (filename === "All_Patient_Reports.xlsx") {
@@ -82,23 +100,36 @@ const Reports = () => {
           endDate: null,
           currentStatus: null,
           cured: null,
+          state: "",
+          dstbOrDrtb: "",
+          udstStatus: "",
+          dbtStatus: "",
         };
       }
 
       const response = await axiosInstance.post(endpoint, filters, {
         responseType: "blob",
       });
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      blodHandler(response.data, filename);
     } catch (error) {
       console.error("Error downloading report:", error);
     }
+  };
+
+  const handleFollowUpForToday = async () => {
+    try {
+      const response = await axiosInstance.post(
+        "/report/patient/followup/today",
+        {
+          state:state,
+          createdBy:createdBy==="self"?userEmail:"",
+        },
+        {
+          responseType: "blob",
+        }
+      );
+      blodHandler(response.data, "FollowUpsForToday.xlsx");
+    } catch (error) {}
   };
 
   return (
@@ -121,6 +152,7 @@ const Reports = () => {
               <MenuItem value="patient">Patient</MenuItem>
               <MenuItem value="telecaller">TeleCaller</MenuItem>
               <MenuItem value="statehead">State Head</MenuItem>
+              <MenuItem value="followup">Follow Up</MenuItem>
             </TextField>
           </Paper>
         </Grid>
@@ -131,6 +163,12 @@ const Reports = () => {
               Set Report Filters
             </Typography>
             <Grid container spacing={3}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
               <Grid
                 item
                 xs={12}
@@ -149,10 +187,15 @@ const Reports = () => {
                 />
               </Grid>
               <Grid
+               
                 item
+               
                 xs={12}
+               
                 sm={6}
+               
                 sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              
               >
                 <TextField
                   fullWidth
@@ -163,15 +206,20 @@ const Reports = () => {
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
                 >
-                  <MenuItem value="M">Male</MenuItem>
-                  <MenuItem value="F">Female</MenuItem>
+                  <MenuItem value="Male">Male</MenuItem>
+                  <MenuItem value="Female">Female</MenuItem>
                 </TextField>
               </Grid>
               <Grid
+               
                 item
+               
                 xs={12}
+               
                 sm={6}
+               
                 sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              
               >
                 <TextField
                   fullWidth
@@ -184,10 +232,15 @@ const Reports = () => {
                 />
               </Grid>
               <Grid
+               
                 item
+               
                 xs={12}
+               
                 sm={6}
+               
                 sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              
               >
                 <TextField
                   fullWidth
@@ -205,7 +258,7 @@ const Reports = () => {
                 sm={6}
                 sx={{
                   display:
-                    currentRole === "patient" || currentRole === "telecaller"
+                    currentRole === "patient" || currentRole === "telecaller" || currentRole==="followup"
                       ? "block"
                       : "none",
                 }}
@@ -231,6 +284,12 @@ const Reports = () => {
                 sm={6}
                 sx={{ display: currentRole === "patient" ? "block" : "none" }}
               >
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
                 <TextField
                   fullWidth
                   select
@@ -250,6 +309,74 @@ const Reports = () => {
                 sm={6}
                 sx={{ display: currentRole === "patient" ? "block" : "none" }}
               >
+                <TextField
+                  fullWidth
+                  select
+                  label="UDST Status"
+                  value={udstStatus}
+                  onChange={(e) =>
+                    setUdstStatus(
+                      e.target.value === "" ? "" : e.target.value === "true"
+                    )
+                  }
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="false">Not Done</MenuItem>
+                  <MenuItem value="true">Done</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
+                <TextField
+                  fullWidth
+                  select
+                  label="DBT Status"
+                  value={dbtStatus}
+                  onChange={(e) =>
+                    setDbtStatus(
+                      e.target.value === "" ? "" : e.target.value === "true"
+                    )
+                  }
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="false">Not Done</MenuItem>
+                  <MenuItem value="true">Done</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
+                <TextField
+                  fullWidth
+                  select
+                  label="DS-TB or DR-TB"
+                  value={dsOrDr}
+                  onChange={(e) => setDsOrDr(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="DS-TB">DS-TB</MenuItem>
+                  <MenuItem value="DR-TB">DR-TB</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" ? "block" : "none" }}
+              >
                 <FormControlLabel
                   control={
                     <Switch
@@ -261,9 +388,30 @@ const Reports = () => {
                   label="Cured"
                 />
               </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "followup" ? "block" : "none" }}
+              >
+                <TextField
+                  fullWidth
+                  select
+                  label="Created By"
+                  value={createdBy}
+                  onChange={(e) => setCreatedBy(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="self">Self</MenuItem>
+                </TextField>
+              </Grid>
               <Grid item xs={12}>
-                <Box
+                  <Box
+                 
                   sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
+                
                 >
                   {currentRole === "patient" && (
                     <>
@@ -309,15 +457,30 @@ const Reports = () => {
                     </>
                   )}
                   {currentRole === "telecaller" && (
-                    <Button
+                    <>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleTeleCallerReport()}
+                        size="large"
+                      >
+                        Download TeleCaller Reports
+                      </Button>
+                     
+                    </>
+                  )}
+                  {
+                    currentRole==="followup" && (
+                      <Button
                       variant="contained"
                       color="secondary"
-                      onClick={() => handleTeleCallerReport()}
+                      onClick={() => handleFollowUpForToday()}
                       size="large"
                     >
-                      Download TeleCaller Reports
+                      Download FollowUps for Today
                     </Button>
-                  )}
+                    )
+                  }
                   {currentRole === "statehead" && (
                     <Button
                       variant="contained"
