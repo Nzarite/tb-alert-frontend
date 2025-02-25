@@ -1,70 +1,77 @@
 import {
-	Divider,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
+  Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
+import { MedicationInterface } from "../../components/datatypes/DataTypes";
 
-const PatientMedicineDetails = (patientId:any) => {
-	const [patientData, setPatientData] = useState(null);
+const PatientMedicineDetails = (patientId: any) => {
+  const [patientData, setPatientData] = useState<MedicationInterface[] | null>(
+    null
+  );
 
-	useEffect(() => {
-		const getData = async () => {
-			const res = await axiosInstance.get(`patientmedication/${patientId.patientId}`);
-			setPatientData(res.data);
-		};
+  useEffect(() => {
+    const getData = async () => {
+      const res = await axiosInstance.get(
+        `patientmedication/${patientId.patientId}`
+      );
+      setPatientData(res.data);
+    };
 
-		getData();
-	}, []);
+    getData();
+  }, []);
 
-	return (
-		<>
-			<Divider sx={{ mb: 4 }} />
+  return (
+    <>
+      <Divider sx={{ mb: 4 }} />
 
-			<TableContainer>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell sx={{ backgroundColor: "#ebebeb" }}>
-								<Typography sx={{ fontWeight: "bold" }}>Medication Name</Typography>
-							</TableCell>
-							<TableCell sx={{ backgroundColor: "#ebebeb" }}>
-								<Typography sx={{ fontWeight: "bold" }}>Frequency</Typography>
-							</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{patientData && patientData.length > 0 ? (
-							patientData.map((medicine, index) => (
-								<TableRow key={index}>
-									<TableCell>
-										<Typography>{medicine.medicationName}</Typography>
-									</TableCell>
-									<TableCell>
-										<Typography>{medicine.frequency}</Typography>
-									</TableCell>
-								</TableRow>
-							))
-						) : (
-							<TableRow>
-								<TableCell colSpan={3} align="center">
-									<Typography variant="body2" color="textSecondary">
-										No Medications Found
-									</Typography>
-								</TableCell>
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
-			</TableContainer>
-		</>
-	);
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ backgroundColor: "#ebebeb" }}>
+                <Typography sx={{ fontWeight: "bold" }}>
+                  Medication Name
+                </Typography>
+              </TableCell>
+              <TableCell sx={{ backgroundColor: "#ebebeb" }}>
+                <Typography sx={{ fontWeight: "bold" }}>Frequency</Typography>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {patientData && patientData.length > 0 ? (
+              patientData.map((medicine, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Typography>{medicine.medicationName}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>{medicine.frequency}</Typography>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={3} align="center">
+                  <Typography variant="body2" color="textSecondary">
+                    No Medications Found
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
+  );
 };
 
 export default PatientMedicineDetails;

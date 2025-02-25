@@ -17,15 +17,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { RiPencilFill } from "react-icons/ri";
+import { Link } from "react-router-dom";
 import { z } from "zod";
+import axiosInstance from "../../components/axiosInstance";
 import {
   MedicationInterface,
   VisitDataInterface,
 } from "../../components/datatypes/DataTypes";
-import { RiPencilFill } from "react-icons/ri";
-import axiosInstance from "../../components/axiosInstance";
 
 interface Props {
   index: number;
@@ -34,7 +35,7 @@ interface Props {
 }
 
 // Labels for the rating control
-const labels: { [key: number]: string } = {
+export const patientConditionLabels: { [key: number]: string } = {
   1: "Need Urgent Support",
   2: "Poor",
   3: "Ok",
@@ -45,7 +46,7 @@ const labels: { [key: number]: string } = {
 // Updated schema: currentStatus as boolean, patientCondition as number, etc.
 const schema = z.object({
   remarks: z.string().min(1, "Description can't be null"),
-  aliveOrDead: z.boolean(),
+  currentStatus: z.boolean(),
   missedMedications: z.array(
     z.object({
       medicationId: z.number(),
@@ -81,7 +82,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
     resolver: zodResolver(schema),
     mode: "all",
     defaultValues: {
-      aliveOrDead: data?.patient.aliveOrDead ?? false,
+      currentStatus: data?.patient.currentStatus === "alive",
       patientCondition: data?.followUpDetails[index]?.patientCondition ?? 4,
       remarks: data?.followUpDetails[index]?.remarks ?? "",
       cured: data?.patient.cured ?? false,
@@ -98,7 +99,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   useEffect(() => {
     if (data) {
       reset({
-        aliveOrDead: data?.patient.aliveOrDead ?? false,
+        currentStatus: data?.patient.currentStatus === "alive",
         patientCondition: data?.followUpDetails[index]?.patientCondition ?? 4,
         remarks: data?.followUpDetails[index]?.remarks ?? "",
         cured: data?.patient.cured ?? false,
@@ -114,17 +115,23 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
 
   // Helper function for rating labels
   function getLabelText(value: number) {
-    return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
+    return `${value} Star${value !== 1 ? "s" : ""}, ${
+      patientConditionLabels[value]
+    }`;
   }
 
-  const formSubmitHandler = (formData: FormData) => {
+  const formSubmitHandler = async (formData: FormData) => {
     try {
       const submitData = {
         ...formData,
         date: data?.followUpDetails[index].date,
+        currentStatus: formData.currentStatus ? "alive" : "dead",
       };
-      axiosInstance.put(`/followup/${data?.patient.patientId}`, submitData);
-      getPatientData(data?.patient.patientId?.toString);
+      await axiosInstance.put(
+        `/followup/${data?.patient.patientId}`,
+        submitData
+      );
+      await getPatientData(data?.patient.patientId?.toString());
     } catch (Error) {
       console.error(Error);
     } finally {
@@ -149,7 +156,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
           name={`missedMedications.${medIndex}.missedDosages`}
           control={control}
           disabled={!isEditable}
-          defaultValue={medicine.missedDosages?.toString() || ""}
+          defaultValue={medicine.missedDosages || 0}
           render={({ field }) => (
             <TextField
               {...field}
@@ -189,63 +196,75 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
     <Paper
       variant="outlined"
       sx={{
-        height: "71vh",
+        height: "72vh",
         overflow: "auto",
         padding: 4,
         marginTop: 1,
       }}
     >
-      {data ? (
+      {data && data.followUpDetails.length > 0 ? (
         <>
-          <Typography variant="h6" sx={{ mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ display: "flex", justifyContent: "space-between" }}
+          >
             Follow Up {index + 1}{" "}
             <RiPencilFill onClick={() => setIsEditable(!isEditable)} />
-            <Typography variant="subtitle1">
-              {data.followUpDetails[index].date}
-            </Typography>
           </Typography>
-          <Divider variant="fullWidth" sx={{ mb: 3 }} />
+          <Typography variant="subtitle1" mb={2}>
+            {data.followUpDetails[index].date}
+          </Typography>
+          <Divider variant="fullWidth" sx={{ mb: 2 }} />
           <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
             <Stack spacing={4}>
-              <Box sx={{ display: "flex", gap: 5 }}>
-                {/* Patient Condition Switch for Alive or Dead via Controller */}
-                <Controller
-                  name="aliveOrDead"
-                  control={control}
-                  disabled={!isEditable}
-                  render={({ field }) => (
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <Typography variant="subtitle1">
-                        Is Patient Alive ?
-                      </Typography>
-                      <Switch
-                        {...field}
-                        checked={field.value}
-                        onChange={(e) => field.onChange(e.target.checked)}
-                      />
-                    </div>
-                  )}
-                />
+              <Controller
+                name="currentStatus"
+                control={control}
+                disabled={!isEditable}
+                render={({ field }) => (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "210px",
+                    }}
+                  >
+                    <Typography variant="subtitle1">
+                      Is Patient Alive ?
+                    </Typography>
+                    <Switch
+                      {...field}
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                    />
+                  </div>
+                )}
+              />
 
-                {/* Cured Status Switch */}
-                <Controller
-                  name="cured"
-                  control={control}
-                  disabled={!isEditable}
-                  render={({ field }) => (
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <Typography variant="subtitle1">
-                        Is Patient Cured?
-                      </Typography>
-                      <Switch
-                        {...field}
-                        checked={field.value}
-                        onChange={(e) => field.onChange(e.target.checked)}
-                      />
-                    </div>
-                  )}
-                />
-              </Box>
+              {/* Cured Status Switch */}
+              <Controller
+                name="cured"
+                control={control}
+                disabled={!isEditable}
+                render={({ field }) => (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "210px",
+                    }}
+                  >
+                    <Typography variant="subtitle1">
+                      Is Patient Cured?
+                    </Typography>
+                    <Switch
+                      {...field}
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                    />
+                  </div>
+                )}
+              />
 
               {/* Patient Condition (Rating) via Controller */}
               <Controller
@@ -255,27 +274,32 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                   <div
                     style={{
                       display: "flex",
-                      gap: "10px",
                       alignItems: "center",
+                      gap: "50px",
                     }}
                   >
-                    <Rating
-                      name="patientCondition"
-                      value={value}
-                      getLabelText={getLabelText}
-                      onChange={(_, newValue) => onChange(newValue)}
-                      onChangeActive={(_, newHover) => setHover(newHover)}
-                      disabled={!isEditable}
-                      emptyIcon={
-                        <StarIcon
-                          style={{ opacity: 0.55 }}
-                          fontSize="inherit"
-                        />
-                      }
-                    />
-                    {value !== null && (
-                      <Box>{labels[hover !== -1 ? hover : value]}</Box>
-                    )}
+                    <Typography>Patient's Condition</Typography>
+                    <Box display={"flex"}>
+                      <Rating
+                        name="patientCondition"
+                        value={value}
+                        getLabelText={getLabelText}
+                        onChange={(_, newValue) => onChange(newValue)}
+                        onChangeActive={(_, newHover) => setHover(newHover)}
+                        disabled={!isEditable}
+                        emptyIcon={
+                          <StarIcon
+                            style={{ opacity: 0.55 }}
+                            fontSize="inherit"
+                          />
+                        }
+                      />
+                      {value !== null && (
+                        <Box sx={{ marginLeft: 3 }}>
+                          {patientConditionLabels[hover !== -1 ? hover : value]}
+                        </Box>
+                      )}
+                    </Box>
                   </div>
                 )}
               />
@@ -333,6 +357,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                 </Table>
               </TableContainer>
 
+              {/* Buttons */}
               <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
                 <Button
                   variant="outlined"
@@ -355,7 +380,22 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
           </Box>
         </>
       ) : (
-        <Typography align="center">Please Search for a Patient</Typography>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          <Typography align="center" variant="body1" color="textSecondary">
+            Please complete Patient Registration
+          </Typography>
+          <Link to={`/patient-dashboard/${data?.patient.patientId}`}>
+            <Button variant="contained">Go to Dashboard</Button>
+          </Link>
+        </div>
       )}
     </Paper>
   );
