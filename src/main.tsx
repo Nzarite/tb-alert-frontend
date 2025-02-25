@@ -4,27 +4,30 @@ import { Provider } from "react-redux";
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
 } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
 import "./index.css";
 import ErrorPage from "./pages/Error/ErrorPage";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 import LandingPage from "./pages/Homepage/LandingPage";
 import PageLayout from "./pages/PageLayout";
 import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
+import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
 import RegisterWrapper from "./pages/Registration/RegisterWrapper";
 import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
 import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
-import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
-import PrivateRoute from "./components/PrivateRoute";
 import { store } from "./redux/store";
 
 import { AuthProvider } from "react-oidc-context";
+import ProtectedRoute from "./components/Authorization/ProtectedRoute";
 import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
+import UserProfile from "./pages/UserProfile";
 
 const oidcConfig = {
   authority: import.meta.env.VITE_OIDC_AUTHORITY,
@@ -35,9 +38,6 @@ const oidcConfig = {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
 };
-import ProtectedRoute from "./components/Authorization/ProtectedRoute";
-import UnauthorizedPage from "./pages/Unauthorized/UnauthorizedPage";
-import UserProfile from "./pages/UserProfile";
 
 const theme = createTheme({
   palette: {
@@ -102,7 +102,7 @@ const router = createBrowserRouter(
       />
       <Route path="/reports" element={<Reports />} />
       <Route path="*" element={<ErrorPage />} />
-      <Route path="/unauthorized" element={<UnauthorizedPage />} />
+      <Route path="/unauthorized" element={<Navigate to={"/"} />} />
       <Route path="profile" element={<UserProfile />} />
     </Route>
   )
