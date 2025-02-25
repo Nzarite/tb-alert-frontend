@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import axiosInstance from "./axiosInstance";
 import { PatientInterface } from "./datatypes/DataTypes";
 import { useAuth } from "react-oidc-context";
@@ -17,18 +17,7 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
     label: string;
   } | null>(null);
 
-  const auth = useAuth();
-  const access_token = auth.user?.access_token || "";
-
-  //   console.log(access_token);
-
-  const profile = auth.user?.profile || {};
-  const hasClientRole = profile?.client_roles?.includes("Telecaller");
-
-  //   console.log(hasClientRole);
-  //   console.log(profile?.client_roles);
-
-  // This method fetches options for the drop down menu
+  // Fetch patient search results with a debounce
   useEffect(() => {
     const fetchOptions = async (search: string) => {
       if (!search) {
@@ -38,12 +27,11 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
       }
       if (search === lastSearched) return; // Prevent duplicate fetches
       try {
-        const response = await axiosInstance.get(`/patient/name/${search}`, {
-          headers: { Authorization: `Bearer ${access_token}` },
-        });
+        const response = await axiosInstance.get(`/patient/name/${search}`);
         const data = response.data.map((item: PatientInterface) => ({
           value: item.patientId,
           label: `${item.firstName} ${item.lastName}`,
+          details: `${item.patientId} | ${item.age} yrs | ${item.gender}`,
         }));
         setOptions(data);
         setLastSearched(search);
@@ -52,19 +40,57 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
       }
     };
 
-		const debounceSearch = setTimeout(() => {
-			fetchOptions(inputValue.trim());
-		}, 300);
+    const debounceSearch = setTimeout(() => {
+      fetchOptions(inputValue.trim());
+    }, 300);
 
-		return () => {
-			clearTimeout(debounceSearch);
-		};
-	}, [inputValue, lastSearched]);
+    return () => {
+      clearTimeout(debounceSearch);
+    };
+  }, [inputValue, lastSearched]);
 
-  // This method updates the search for all the
+  // Update search selection
   useEffect(() => {
     if (selectedOption) changeSearch(selectedOption);
   }, [changeSearch, selectedOption]);
+
+  const CustomOption = (props: any) => {
+    const { data, innerRef, innerProps } = props;
+    const [hover, setHover] = useState(false);
+
+    return (
+      <div
+        ref={innerRef}
+        {...innerProps}
+        style={{
+          padding: "12px 15px",
+          cursor: "pointer",
+          borderBottom: "1px solid #ddd",
+          marginBottom: 0,
+          backgroundColor: hover ? "#e8f1f6" : "white",
+        }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <strong>{data.label}</strong>
+        <div style={{ fontSize: "12px", color: "#666" }}>{data.details}</div>
+      </div>
+    );
+  };
+
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      textAlign: "center",
+    }),
+    option: (provided: any, { isFocused }: { isFocused: boolean }) => ({
+      ...provided,
+      backgroundColor: isFocused ? "black" : "white",
+      color: "black",
+      cursor: "pointer",
+      textAlign: "center",
+    }),
+  };
 
   return (
     <Select
@@ -72,11 +98,13 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
       value={selectedOption}
       onChange={(value) => {
         setSelectedOption(value);
-        setInputValue(value?.label || ""); // Set the input value based on selection
+        setInputValue(value?.label || "");
       }}
       onInputChange={(newValue) => setInputValue(newValue)}
       options={options}
       placeholder="Search Patient..."
+      components={{ Option: CustomOption }}
+      styles={customStyles}
     />
   );
 };
