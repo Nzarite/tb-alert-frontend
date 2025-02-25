@@ -35,6 +35,7 @@ export type PatientDetailsData = {
   village: string;
   block: string;
   gp: string;
+  consentForMessage:boolean;
 };
 
 const patientDetailsSchema = z.object({
@@ -58,6 +59,7 @@ const patientDetailsSchema = z.object({
   village: z.string().min(1, "Village Name is required"),
   block: z.string().min(1, "Block Name is required"),
   gp: z.string().min(1, "GP Name is required"),
+  consentForMessage:z.string(),
 });
 
 const PatientDetailsForm = ({
@@ -88,6 +90,7 @@ const PatientDetailsForm = ({
     villageLabel: string;
     blockLabel: string;
     gpLabel: string;
+    consentForMessageLabel:LabelOption;
   }
 
   const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
@@ -102,6 +105,7 @@ const PatientDetailsForm = ({
     villageLabel: "",
     blockLabel: "",
     gpLabel: "",
+    consentForMessageLabel:{label:"",options:[]},
   });
 
   useEffect(() => {
@@ -173,6 +177,7 @@ const PatientDetailsForm = ({
     { name: "village", type: "text", label: labels.villageLabel },
     { name: "block", type: "text", label: labels.blockLabel },
     { name: "gp", type: "text", label: labels.gpLabel },
+    { name: "consentForMessage", type:"radio", label:labels.consentForMessageLabel.label, options:labels.consentForMessageLabel.options}
   ];
 
   if (!labels || !state.states) return <p>Loading...</p>;
@@ -231,8 +236,8 @@ const PatientDetailsForm = ({
                   <RadioGroup {...radioField} row>
                     {field.options?.map((option) => (
                       <FormControlLabel
-                        key={option.value}
-                        value={option.value}
+                        key={option.value.toString()}
+                        value={option.value.toString()}
                         control={<Radio />}
                         label={option.label}
                       />

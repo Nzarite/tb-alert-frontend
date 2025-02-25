@@ -16,6 +16,13 @@
     "districtLabel": "Name of the District",
     "villageLabel": "Name of the Village",
     "blockLabel": "Name of the Block",
-    "gpLabel": "Name of the GP"
+    "gpLabel": "Name of the GP",
+    "consentForMessageLabel":{
+      "label":"Consent For Message",
+      "options":[
+        {"label":"Yes","value":true},
+        {"label":"No","value":false}
+      ]
+    }
   }
 }
