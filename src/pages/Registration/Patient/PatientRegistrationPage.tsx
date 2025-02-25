@@ -1,32 +1,24 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Box,
+  Alert,
   Container,
-  Typography,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
   Grid,
   Paper,
-  Alert,
-  CircularProgress,
   Snackbar,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography
 } from "@mui/material";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "react-oidc-context";
-import { useLocation, useNavigate } from "react-router-dom";
-import PatientDetailsForm from "../../../components/PatientDetailsForm/PatientDetailsForm";
-import TbDetailsForm from "../../../components/TbDetailsForm/TbDetailsForm";
-import NikshayDetailsForm from "../../../components/NikshayDetailsForm/NikshayDetailsForm";
-import ContactScreeningDetailsForm from "../../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
-import { PatientDetailsData } from "../../../components/PatientDetailsForm/PatientDetailsForm";
-import { TbDetailsData } from "../../../components/TbDetailsForm/TbDetailsForm";
-import { NikshayDetailsData } from "../../../components/NikshayDetailsForm/NikshayDetailsForm";
-import { ContactScreeningData } from "../../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
-import axiosInstance from "../../../components/axiosInstance";
 import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import ContactScreeningDetailsForm, { ContactScreeningData } from "../../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
+import NikshayDetailsForm, { NikshayDetailsData } from "../../../components/NikshayDetailsForm/NikshayDetailsForm";
+import PatientDetailsForm, { PatientDetailsData } from "../../../components/PatientDetailsForm/PatientDetailsForm";
+import TbDetailsForm, { TbDetailsData } from "../../../components/TbDetailsForm/TbDetailsForm";
+import axiosInstance from "../../../components/axiosInstance";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -42,8 +34,8 @@ const PatientRegistrationPage = () => {
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user.profile.email) ||
-    auth.user?.profile.email;
+    useSelector((state) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
 
   const steps = [
     "Patient Details",
@@ -59,7 +51,7 @@ const PatientRegistrationPage = () => {
     contactScreeningDetails: {} as ContactScreeningData,
   });
 
-  const language = useSelector((state: any) => state.language);
+  const language = useSelector((state: any) => state.language.language);
 
   const { handleSubmit } = useForm();
 
@@ -71,18 +63,17 @@ const PatientRegistrationPage = () => {
       setLoading(true);
     setError(null);
     try {
-      const formData = { ...stepData, createdBy: userEmail };
       let response;
 
       if (activeStep === 0) {
-        response = await axiosInstance.post("/patient/register", formData);
+        response = await axiosInstance.post("/patient/register", {...stepData, createdBy: userEmail});
         if (response.status === 200 || 201 || 202) {
           setPatientId(response.data.patientId);
           setPatientName(
             response.data.firstName +
               (response.data.lastName ? " " + response.data.lastName : "")
           );
-          setFormData({ ...formData, patientDetails: formData });
+          setFormData({ ...formData, patientDetails: stepData });
           setActiveStep(activeStep + 1);
         }
       } else if (activeStep === 1) {
@@ -90,11 +81,11 @@ const PatientRegistrationPage = () => {
           throw new Error("Patient ID not found. Please complete step 1.");
         }
         response = await axiosInstance.post("/tbdetails/register", {
-          ...formData,
+          ...stepData,
           patientId,
         });
         if (response.status === 200 || 201 || 202) {
-          setFormData({ ...formData, tbDetails: formData });
+          setFormData({ ...formData, tbDetails: stepData });
           setActiveStep(activeStep + 1);
         }
       } else if (activeStep === 2) {
@@ -102,11 +93,11 @@ const PatientRegistrationPage = () => {
           throw new Error("TB Details not found. Please complete step 2.");
         }
         response = await axiosInstance.post("/nikshaymitra/register", {
-          ...formData,
+          ...stepData,
           patientId,
         });
         if (response.status === 200 || 201 || 202) {
-          setFormData({ ...formData, nikshayDetails: formData });
+          setFormData({ ...formData, nikshayDetails: stepData });
           setActiveStep(activeStep + 1);
         }
       } else if (activeStep === 3) {
@@ -114,11 +105,11 @@ const PatientRegistrationPage = () => {
           throw new Error("Nikshay Details not found. Please complete step 3.");
         }
         response = await axiosInstance.post("/contactscreening/save", {
-          ...formData,
+          ...stepData,
           patientId,
         });
         if (response.status === 200 || 201 || 202) {
-          setFormData({ ...formData, contactScreeningDetails: formData });
+          setFormData({ ...formData, contactScreeningDetails: stepData });
           setOpenSnackbar(true);
           setTimeout(() => {
               navigate(`/patient-dashboard/${patientId}`);
@@ -128,7 +119,7 @@ const PatientRegistrationPage = () => {
     } catch (error: any) {
       console.error("Error saving data:", error);
       setError(
-        error.response?.data?.message ||
+        error.response?.data ||
           "There was an error submitting the form, please try again"
       );
     } finally {
@@ -144,7 +135,7 @@ const PatientRegistrationPage = () => {
   //   if (activeStep < steps.length - 1) {
   //     setActiveStep(activeStep + 1);
   //   } else {
-  //     console.log("Final Data Submitted:", formData);
+  //     console.log("Final Data Submitted:", stepData);
   //   }
   // };
 

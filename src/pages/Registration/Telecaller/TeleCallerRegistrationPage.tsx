@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
+import { useAuth } from "react-oidc-context";
  
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -36,6 +37,10 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
  
 const TelecallerRegistrationPage = () => {
+
+  const auth = useAuth();
+  const userEmail = useSelector(state => state.user?.profile?.email) || auth.user?.profile?.email
+
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -73,7 +78,7 @@ const TelecallerRegistrationPage = () => {
     dateOfJoiningLabel: "",
   });
  
-  const language = useSelector((state: any) => state.language);
+  const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -148,8 +153,7 @@ const TelecallerRegistrationPage = () => {
   const formSubmitHandler = async (data: FormData) => {
     setLoading(true);
     setErrorMessage(null);
-    const formData = { ...data };
-    console.log("Submitted Data: ", data);
+    const formData = { ...data, createdBy: userEmail };
     try {
       await axiosInstance.post("/telecaller/register", formData);
       setOpenSnackbar(true);

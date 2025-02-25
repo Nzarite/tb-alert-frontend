@@ -134,10 +134,10 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
         submitData
       );
       await getPatientData(data?.patient.patientId?.toString());
-    } catch (Error:any) {
+    } catch (error:any) {
       console.error(Error);
       setError(
-        Error.response?.data?.message ||
+        error.response?.data ||
           "Failed to update follow-up. Please try again."
       );
     } finally {

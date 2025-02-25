@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Modal, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
@@ -9,15 +9,6 @@ import ContactScreeningDetailsForm, {
 import NikshayDetailsForm, {
   NikshayDetailsData,
 } from "../NikshayDetailsForm/NikshayDetailsForm";
-import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  Box,
-  Button,
-  Typography,
-  CircularProgress,
-  Alert,
-} from "@mui/material";
 import PatientDetailsForm, {
   PatientDetailsData,
 } from "../PatientDetailsForm/PatientDetailsForm";
@@ -60,7 +51,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
     } catch (error: any) {
       console.error("Error fetching form data:", error);
       setError(
-        error.response?.data?.message ||
+        error.response?.data ||
           "Failed to fetch form data. Please try again."
       );
     } finally {
@@ -133,7 +124,7 @@ const getPostUrl = (prop: string) => {
     } catch (error: any) {
       console.error("Error saving data:", error);
       setError(
-        error.response?.data?.message ||
+        error.response?.data ||
           "Failed to save data. Please try again."
       );
     } finally {
@@ -141,7 +132,7 @@ const getPostUrl = (prop: string) => {
     }
   };
 
-  const language = useSelector((state: any) => state.language);
+  const language = useSelector((state: any) => state.language.language);
   console.log(language);
 
   const renderForm = () => {

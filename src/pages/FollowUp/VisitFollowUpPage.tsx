@@ -39,7 +39,7 @@ const VisitFollowUpPage = () => {
       });
       setData(newData);
     } catch (error: any) {
-      setError(error.response?.data?.message || "Failed to fetch data.");
+      setError(error.response?.data || "Failed to fetch data.");
     } finally {
       setLoading(false);
     }

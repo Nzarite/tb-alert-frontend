@@ -1,6 +1,5 @@
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import {
   MdAssessment,
   MdLocalHospital,
@@ -9,15 +8,15 @@ import {
   MdVaccines,
 } from "react-icons/md";
 import { RiPencilLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
+import axiosInstance from "../../components/axiosInstance";
 import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
 import PatientFollowUpDetails from "./PatientFollowUpDetails";
 import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
-import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
-import axiosInstance from "../../components/axiosInstance";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();

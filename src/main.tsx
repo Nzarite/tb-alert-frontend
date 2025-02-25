@@ -17,8 +17,6 @@ import PageLayout from "./pages/PageLayout";
 import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
 import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
-import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
-import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import SmsModulePage from "./pages/SmsModulePage";
@@ -27,6 +25,8 @@ import { store } from "./redux/store";
 import { AuthProvider } from "react-oidc-context";
 import ProtectedRoute from "./components/Authorization/ProtectedRoute";
 import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
+import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
+import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
 import UserProfile from "./pages/UserProfile";
 
 const oidcConfig = {
@@ -83,13 +83,13 @@ const router = createBrowserRouter(
       >
         <Route
           path="/register/telecaller"
-          element={<TeleCallerRegistration />}
+          element={<TelecallerRegistrationPage />}
         />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
         <Route
           path="/register/state-head"
-          element={<StateHeadRegistration />}
+          element={<StateHeadRegistrationPage />}
         />
         <Route path="/settings" element={<Settings />} />
       </Route>

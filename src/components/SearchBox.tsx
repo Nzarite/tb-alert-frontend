@@ -43,7 +43,7 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
       } catch (error: any) {
         console.error("Error fetching options:", error);
         setError(
-          error.response?.data?.message ||
+          error.response?.data ||
             "Failed to fetch patient data. Please try again."
         );
       } finally {

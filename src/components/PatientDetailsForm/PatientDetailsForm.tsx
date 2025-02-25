@@ -1,28 +1,19 @@
-import { useState, useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
-  Container,
-  Typography,
   Button,
-  Stepper,
-  Step,
-  StepLabel,
-  TextField,
-  Grid,
-  Paper,
-  MenuItem,
-  LabelDisplayedRowsArgs,
+  CircularProgress,
   FormControl,
-  FormLabel,
-  RadioGroup,
   FormControlLabel,
   FormLabel,
   MenuItem,
   Radio,
-  CircularProgress,
+  RadioGroup,
+  TextField,
+  Typography
 } from "@mui/material";
-import { useForm, Controller, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 export type PatientDetailsData = {
@@ -31,7 +22,6 @@ export type PatientDetailsData = {
   gender: string;
   phoneNumber: string;
   age: number;
-  createdBy: string;
   state: string;
   district: string;
   village: string;
@@ -55,7 +45,6 @@ const patientDetailsSchema = z.object({
     .int("Age must be an integer")
     .min(1, "Age must be at least 1")
     .max(150, "Age must be at most 150"),
-  createdBy: z.string().email("Please enter a valid email"),
   state: z.string().min(1, "State Name is required"),
   district: z.string().min(1, "District Name is required"),
   village: z.string().min(1, "Village Name is required"),
@@ -86,7 +75,6 @@ const PatientDetailsForm = ({
     genderLabel: LabelOption;
     phoneNumberLabel: string;
     ageLabel: string;
-    createdByLabel: string;
     districtLabel: string;
     villageLabel: string;
     blockLabel: string;
@@ -99,7 +87,6 @@ const PatientDetailsForm = ({
     genderLabel: { label: "", options: [] },
     phoneNumberLabel: "",
     ageLabel: "",
-    createdByLabel: "",
     districtLabel: "",
     villageLabel: "",
     blockLabel: "",
@@ -169,7 +156,6 @@ const PatientDetailsForm = ({
     },
     { name: "phoneNumber", type: "text", label: labels.phoneNumberLabel },
     { name: "age", type: "number", label: labels.ageLabel },
-    { name: "createdBy", type: "text", label: labels.createdByLabel },
     {
       name: "state",
       type: "select",
