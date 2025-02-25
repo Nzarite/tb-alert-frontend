@@ -3,22 +3,21 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
+import FollowUPStatus from "../../components/Json/FollowUpStatus.json";
 import SearchBox from "../../components/SearchBox";
 import FollowUpFormComponent from "./FollowUpMain";
 import FollowUpSidebar from "./FollowUpSidebar";
-import FollowUPStatus from "../../components/Json/FollowUpStatus.json";
-import { useAuth } from "react-oidc-context";
 
 const VisitFollowUpPage = () => {
+  // For redirection of a patient
   const location = useLocation();
   const initialState = location.state?.prop || null;
   const [search, setSearch] = useState<string | null>(initialState);
 
+  // Patient's Visit Data
   const [data, setData] = useState<VisitDataInterface | null>(null);
+  // Open Follow up
   const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const auth = useAuth();
-  const access_token = auth.user?.access_token || "";
 
   const handleListItemClick = (index: number) => {
     if (data && index >= 0 && index < data?.followUpDetails.length)
@@ -80,6 +79,7 @@ const VisitFollowUpPage = () => {
               selectedIndex={selectedIndex}
               setIndex={handleListItemClick}
               data={data}
+              getPatientData={(input) => getPatientData(input)}
             />
           </Grid>
         )}

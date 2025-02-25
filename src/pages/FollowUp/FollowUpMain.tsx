@@ -34,7 +34,6 @@ interface Props {
   getPatientData: (input: string) => void;
 }
 
-// Labels for the rating control
 export const patientConditionLabels: { [key: number]: string } = {
   1: "Need Urgent Support",
   2: "Poor",
@@ -43,7 +42,6 @@ export const patientConditionLabels: { [key: number]: string } = {
   5: "Excellent",
 };
 
-// Updated schema: currentStatus as boolean, patientCondition as number, etc.
 const schema = z.object({
   remarks: z.string().min(1, "Description can't be null"),
   currentStatus: z.boolean(),
@@ -68,7 +66,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
-  const [isEditable, setIsEditable] = useState(false); // Add editable state
+  // This state toggles if the current followup can be edited or not
+  const [isEditable, setIsEditable] = useState(false);
   const [hover, setHover] = useState(-1);
 
   const {
@@ -266,7 +265,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                 )}
               />
 
-              {/* Patient Condition (Rating) via Controller */}
+              {/* Patient Condition (Rating) */}
               <Controller
                 name="patientCondition"
                 control={control}
