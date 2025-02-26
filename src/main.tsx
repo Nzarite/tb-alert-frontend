@@ -1,5 +1,6 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createRoot } from "react-dom/client";
+import { AuthProvider } from "react-oidc-context";
 import { Provider } from "react-redux";
 import {
   createBrowserRouter,
@@ -8,26 +9,26 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import ProtectedRoute from "./components/Authorization/ProtectedRoute";
+import PrivateRoute from "./components/PrivateRoute.tsx";
 import "./index.css";
 import ErrorPage from "./pages/Error/ErrorPage";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 import LandingPage from "./pages/Homepage/LandingPage";
 import PageLayout from "./pages/PageLayout";
 import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
+import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
+import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
+import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import SmsModulePage from "./pages/SmsModulePage";
-import { store } from "./redux/store";
-import ProtectedRoute from "./components/Authorization/ProtectedRoute";
-import UserProfile from "./pages/UserProfile";
-import { AuthProvider } from "react-oidc-context";
-import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
-import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
-import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
-import UserSearch from "./pages/UserDashBoard/UserSearch.tsx";
 import UserDashBoard from "./pages/UserDashBoard/UserDashBoard.tsx";
+import UserSearch from "./pages/UserDashBoard/UserSearch.tsx";
+import UserProfile from "./pages/UserProfile";
+import { store } from "./redux/store";
 
 const oidcConfig = {
   authority: import.meta.env.VITE_OIDC_AUTHORITY,
