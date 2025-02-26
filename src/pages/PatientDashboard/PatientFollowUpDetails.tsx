@@ -1,6 +1,9 @@
 import {
+  Alert,
+  Box,
   Chip,
   Divider,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -15,17 +18,42 @@ import { FollowUpsDataInterface } from "../../components/datatypes/DataTypes";
 import { patientConditionLabels } from "../FollowUp/FollowUpMain";
 import { getStatusColor, getStatusName } from "../FollowUp/FollowUpSidebar";
 
-const PatientFollowUpDetails = (patientId: any) => {
-  const [patientData, setPatientData] = useState<FollowUpsDataInterface[] | null>(null);
+const PatientFollowUpDetails = ({ patientId }: any) => {
+    const [patientData, setPatientData] = useState<FollowUpsDataInterface[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const getData = async () => {
-      const res = await axiosInstance.get(`followup/${patientId.patientId}`);
-      setPatientData(res.data.followUpDetails);
+      try {
+        setLoading(true);
+        const res = await axiosInstance.get(`followup/${patientId}`);
+        setPatientData(res.data.followUpDetails);
+        setError(null);
+      } catch (err: any) {
+        setError(
+          err.response?.data?.message || "Failed to fetch follow up details"
+        );
+      } finally {
+        setLoading(false);
+      }
     };
 
     getData();
-  }, []);
+  }, [patientId]);
+
+  if (loading) {
+    return (
+      <Box sx={{ p: 2 }}>
+        <Skeleton variant="rectangular" width="100%" height={100} />
+        <Skeleton variant="text" sx={{ mt: 1, width: "60%" }} />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return <Alert severity="error">{error}</Alert>;
+  }
 
   return (
     <>

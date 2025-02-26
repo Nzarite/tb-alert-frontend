@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import axiosInstance from "./axiosInstance";
-import { useAuth } from "react-oidc-context";
-import { TeleCaller,StateHead } from "./datatypes/DataTypes";
-import { Box } from "@mui/material";
+import { TeleCaller, StateHead } from "./datatypes/DataTypes";
 
 interface SearchProps {
   changeSearch: (text: { value: string; label: string }) => void;
@@ -16,7 +14,6 @@ interface Patient {
   lastName: string;
 }
 
-
 const SearchBox = ({ changeSearch, role }: SearchProps) => {
   const [inputValue, setInputValue] = useState("");
   const [lastSearched, setLastSearched] = useState("");
@@ -25,9 +22,8 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
     value: string;
     label: string;
   } | null>(null);
-
-  const auth = useAuth();
-  const access_token = auth.user?.access_token || "";
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const roleToUrlMap: Record<SearchProps["role"], string> = {
     patient: "/patient/name/",
@@ -37,38 +33,44 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
 
   const url = roleToUrlMap[role];
 
+  // Debouncing the Search for optimisation
   useEffect(() => {
+    // This method fetches options for the drop down menu
     const fetchOptions = async (search: string) => {
       if (!search || search === lastSearched) return;
 
       try {
-        const response = await axiosInstance.get(url + search, {
-          headers: { Authorization: `Bearer ${access_token}` },
-        });
-        console.log(response.data);
+        const response = await axiosInstance.get(url + search);
         let data;
         if (role === "patient") {
           data = response.data.map((item: Patient) => ({
             value: item.patientId,
             label: `${item.firstName} ${item.lastName}`,
+            details: `${item.patientId} | ${item.age} yrs | ${item.gender} | ${item.state}`,
           }));
         } else if (role === "telecaller") {
           data = response.data.map((item: TeleCaller) => ({
             value: item.teleCallerId.toString(),
             label: `${item.firstName} ${item.lastName}`,
-
+            details: `${item.gender} | ${item.state}`,
           }));
         } else if (role === "statehead") {
           data = response.data.map((item: StateHead) => ({
             value: item.stateHeadId.toString(),
             label: `${item.firstName} ${item.lastName}`,
+            details: `${item.gender} | ${item.state}`,
           }));
         }
-        console.log(data);
         setOptions(data);
         setLastSearched(search);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching options:", error);
+        setError(
+          error.response?.data ||
+            "Failed to fetch patient data. Please try again."
+        );
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -83,26 +85,71 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
     if (selectedOption) changeSearch(selectedOption);
   }, [changeSearch, selectedOption]);
 
+  const CustomOption = (props: any) => {
+    const { data, innerRef, innerProps } = props;
+    const [hover, setHover] = useState(false);
+
+    return (
+      <div
+        ref={innerRef}
+        {...innerProps}
+        style={{
+          padding: "12px 15px",
+          cursor: "pointer",
+          borderBottom: "1px solid #ddd",
+          marginBottom: 0,
+          backgroundColor: hover ? "#e8f1f6" : "white",
+        }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <strong>{data.label}</strong>
+        <div style={{ fontSize: "12px", color: "#666", marginTop: 2 }}>
+          {data.details}
+        </div>
+      </div>
+    );
+  };
+
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      textAlign: "center",
+    }),
+    option: (provided: any, { isFocused }: { isFocused: boolean }) => ({
+      ...provided,
+      backgroundColor: isFocused ? "black" : "white",
+      color: "black",
+      cursor: "pointer",
+      textAlign: "center",
+    }),
+  };
+
   return (
-    <Box>
-    <Select
-      isClearable
-      value={selectedOption}
-      onChange={(value) => {
-        setSelectedOption(value);
-        setInputValue(value?.label || "");
-      }}
-      onInputChange={(newValue) => setInputValue(newValue)}
-      options={options}
-      placeholder={
-        role === "patient"
-          ? "Search Patients..."
-          : role === "telecaller"
-          ? "Search Telecallers..."
-          : "Search State Coordinators..."
-      }
-    />
-    </Box>
+    <>
+      <Select
+        isClearable
+        isLoading={loading}
+        value={selectedOption}
+        onChange={(value) => {
+          setSelectedOption(value);
+          setInputValue(value?.label || "");
+        }}
+        onInputChange={(newValue) => setInputValue(newValue)}
+        options={options}
+        filterOption={() => true}
+        components={{ Option: CustomOption }}
+        styles={customStyles}
+        placeholder={`Search ${
+          role === "patient"
+            ? "Patients"
+            : role === "telecaller"
+            ? "Telecallers"
+            : "State heads"
+        } ...`}
+      />
+      {error && <p style={{ color: "red", marginTop: "5px" }}>{error}</p>}
+    </>
   );
 };
 

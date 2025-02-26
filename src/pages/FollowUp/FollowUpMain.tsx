@@ -3,6 +3,7 @@ import StarIcon from "@mui/icons-material/Star";
 import {
   Box,
   Button,
+  CircularProgress,
   Divider,
   Paper,
   Rating,
@@ -22,11 +23,11 @@ import { Controller, useForm } from "react-hook-form";
 import { RiPencilFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { z } from "zod";
-import axiosInstance from "../../components/axiosInstance";
 import {
   MedicationInterface,
   VisitDataInterface,
 } from "../../components/datatypes/DataTypes";
+import axiosInstance from "../../components/axiosInstance";
 
 interface Props {
   index: number;
@@ -34,7 +35,6 @@ interface Props {
   getPatientData: (input: string) => void;
 }
 
-// Labels for the rating control
 export const patientConditionLabels: { [key: number]: string } = {
   1: "Need Urgent Support",
   2: "Poor",
@@ -43,7 +43,6 @@ export const patientConditionLabels: { [key: number]: string } = {
   5: "Excellent",
 };
 
-// Updated schema: currentStatus as boolean, patientCondition as number, etc.
 const schema = z.object({
   remarks: z.string().min(1, "Description can't be null"),
   currentStatus: z.boolean(),
@@ -68,8 +67,11 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
-  const [isEditable, setIsEditable] = useState(false); // Add editable state
+  // This state toggles if the current followup can be edited or not
+  const [isEditable, setIsEditable] = useState(false);
   const [hover, setHover] = useState(-1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     control,
@@ -121,6 +123,8 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   }
 
   const formSubmitHandler = async (formData: FormData) => {
+    setLoading(true);
+    setError(null);
     try {
       const submitData = {
         ...formData,
@@ -132,9 +136,14 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
         submitData
       );
       await getPatientData(data?.patient.patientId?.toString());
-    } catch (Error) {
+    } catch (error:any) {
       console.error(Error);
+      setError(
+        error.response?.data ||
+          "Failed to update follow-up. Please try again."
+      );
     } finally {
+      setLoading(false);
       setIsEditable(false);
     }
   };
@@ -266,7 +275,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                 )}
               />
 
-              {/* Patient Condition (Rating) via Controller */}
+              {/* Patient Condition (Rating) */}
               <Controller
                 name="patientCondition"
                 control={control}
@@ -371,10 +380,19 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={!isValid || !isEditable}
+                  disabled={!isValid || !isEditable || loading}
                 >
-                  Submit
+                  {loading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    "Submit"
+                  )}
                 </Button>
+                {error && (
+                  <Typography color="error" align="center">
+                    {error}
+                  </Typography>
+                )}
               </Box>
             </Stack>
           </Box>
