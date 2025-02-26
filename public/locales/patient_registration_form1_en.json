@@ -5,8 +5,8 @@
     "genderLabel": {
       "label": "Gender",
       "options": [
-        { "label": "Male", "value": "M" },
-        { "label": "Female", "value": "F" }
+        { "label": "Male", "value": "Male" },
+        { "label": "Female", "value": "Female" }
       ]
     },
     "phoneNumberLabel": "Contact Number",
@@ -14,6 +14,13 @@
     "districtLabel": "Name of the District",
     "villageLabel": "Name of the Village",
     "blockLabel": "Name of the Block",
-    "gpLabel": "Name of the GP"
+    "gpLabel": "Name of the GP",
+    "consentForMessageLabel":{
+      "label":"Consent For Message",
+      "options":[
+        {"label":"Yes","value":true},
+        {"label":"No","value":false}
+      ]
+    }
   }
 }

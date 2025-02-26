@@ -21,7 +21,7 @@ const VisitFollowUpPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleListItemClick = (index: number) => {
+    const handleListItemClick = (index: number) => {
     if (data && index >= 0 && index < data?.followUpDetails.length)
       setSelectedIndex(index);
   };
@@ -33,7 +33,7 @@ const VisitFollowUpPage = () => {
       const res = await axiosInstance.get(`/followup/${search}`);
       const res2 = await axiosInstance.get(`/patientmedication/${search}`);
 
-      let newData: VisitDataInterface = res.data;
+      const newData: VisitDataInterface = res.data;
       newData.followUpDetails.forEach((followup) => {
         if (!followup.followUpStatus) followup.medicationDetails = res2.data;
       });
@@ -78,7 +78,6 @@ const VisitFollowUpPage = () => {
       }}
     >
       <Grid container spacing={{ xs: 2, md: 3 }} sx={{ height: "100%" }}>
-
         {data && (
           <Grid item xs={12} md={3}>
             {/* Sidebar */}
@@ -93,7 +92,7 @@ const VisitFollowUpPage = () => {
         {data ? (
           <Grid item xs={12} md={9}>
             {/* Search Bar */}
-            <SearchBox changeSearch={(input) => setSearch(input.value)} />
+            <SearchBox changeSearch={(input) => setSearch(input.value)} role="patient"/>
             <FollowUpFormComponent
               index={selectedIndex}
               data={data}
@@ -103,7 +102,7 @@ const VisitFollowUpPage = () => {
         ) : (
           <Grid item xs={12}>
             {/* Search Bar */}
-            <SearchBox changeSearch={(input) => setSearch(input.value)} />
+            <SearchBox changeSearch={(input) => setSearch(input.value)} role="patient"/>
           </Grid>
         )}
       </Grid>

@@ -1,14 +1,23 @@
 import { useEffect, useState } from "react";
 import Select, { components } from "react-select";
 import axiosInstance from "./axiosInstance";
-import { PatientInterface } from "./datatypes/DataTypes";
 import { useAuth } from "react-oidc-context";
+import { TeleCaller,StateHead } from "./datatypes/DataTypes";
+import { Box } from "@mui/material";
 
 interface SearchProps {
   changeSearch: (text: { value: string; label: string }) => void;
+  role: "patient" | "telecaller" | "statehead";
 }
 
-const SearchBox = ({ changeSearch }: SearchProps) => {
+interface Patient {
+  patientId: number;
+  firstName: string;
+  lastName: string;
+}
+
+
+const SearchBox = ({ changeSearch, role }: SearchProps) => {
   const [inputValue, setInputValue] = useState("");
   const [lastSearched, setLastSearched] = useState("");
   const [options, setOptions] = useState([]);
@@ -19,25 +28,44 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const auth = useAuth();
+  const access_token = auth.user?.access_token || "";
+
+  const roleToUrlMap: Record<SearchProps["role"], string> = {
+    patient: "/patient/name/",
+    telecaller: "/telecaller/name/",
+    statehead: "/statehead/name/",
+  };
+
+  const url = roleToUrlMap[role];
+
   // Debouncing the Search for optimisation
   useEffect(() => {
-    // This method fetches options for the drop down menu
     const fetchOptions = async (search: string) => {
-      if (!search) {
-        setOptions([]);
-        setLastSearched("");
-        return;
-      }
-      if (search === lastSearched) return; // Prevent duplicate fetches
-      setLoading(true);
-      setError(null);
+      if (!search || search === lastSearched) return;
+
       try {
-        const response = await axiosInstance.get(`/patient/name/${search}`);
-        const data = response.data.map((item: PatientInterface) => ({
-          value: item.patientId,
-          label: `${item.firstName} ${item.lastName}`,
+        const response = await axiosInstance.get(url + search);
+        let data;
+        if (role === "patient") {
+          data = response.data.map((item: Patient) => ({
+            value: item.patientId,
+            label: `${item.firstName} ${item.lastName}`,
           details: `${item.patientId} | ${item.age} yrs | ${item.gender}`,
-        }));
+          }));
+        } else if (role === "telecaller") {
+          data = response.data.map((item: TeleCaller) => ({
+            value: item.teleCallerId.toString(),
+            label: `${item.firstName} ${item.lastName}`,
+            details: ``
+          }));
+        } else if (role === "statehead") {
+          data = response.data.map((item: StateHead) => ({
+            value: item.stateHeadId.toString(),
+            label: `${item.firstName} ${item.lastName}`,
+              details: ``
+          }));
+        }
         setOptions(data);
         setLastSearched(search);
       } catch (error: any) {
@@ -55,12 +83,9 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
       fetchOptions(inputValue.trim());
     }, 300);
 
-    return () => {
-      clearTimeout(debounceSearch);
-    };
-  }, [inputValue, lastSearched]);
+    return () => clearTimeout(debounceSearch);
+  }, [inputValue, lastSearched, role]);
 
-  // Update search selection
   useEffect(() => {
     if (selectedOption) changeSearch(selectedOption);
   }, [changeSearch, selectedOption]);
@@ -116,9 +141,9 @@ const SearchBox = ({ changeSearch }: SearchProps) => {
           onInputChange={(newValue) => setInputValue(newValue)}
           options={options}
           filterOption={() => true}
-          placeholder="Search Patient..."
           components={{ Option: CustomOption }}
           styles={customStyles}
+          placeholder={`Search ${role === "patient" ? "Patients" : role ==="telecaller" ? "Telecallers": "State heads"} ...`}
         />
         {error && <p style={{ color: "red", marginTop: "5px" }}>{error}</p>}
       </>

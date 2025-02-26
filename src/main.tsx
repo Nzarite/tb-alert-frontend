@@ -28,6 +28,8 @@ import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
 import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
 import UserProfile from "./pages/UserProfile";
+import UserSearch from "./pages/UserDashBoard/UserSearch.tsx";
+import UserDashBoard from "./pages/UserDashBoard/UserDashBoard.tsx";
 
 const oidcConfig = {
   authority: import.meta.env.VITE_OIDC_AUTHORITY,
@@ -85,6 +87,8 @@ const router = createBrowserRouter(
           path="/register/telecaller"
           element={<TelecallerRegistrationPage />}
         />
+          <Route path="/user/telecaller" element={<UserSearch/>}/>
+          <Route path="/dashboard/telecaller/:userId" element={<UserDashBoard role="telecaller"/>}/>
       </Route>
       <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
         <Route
@@ -92,6 +96,8 @@ const router = createBrowserRouter(
           element={<StateHeadRegistrationPage />}
         />
         <Route path="/settings" element={<Settings />} />
+          <Route path="/user/statehead" element={<UserSearch/>}/>
+          <Route path="/dashboard/statehead/:userId" element={<UserDashBoard role="statehead" />}/>
       </Route>
 
       <Route path="/visit" element={<VisitFollowUpPage />} />
@@ -104,7 +110,7 @@ const router = createBrowserRouter(
       <Route path="*" element={<ErrorPage />} />
       <Route path="/unauthorized" element={<Navigate to={"/"} />} />
       <Route path="profile" element={<UserProfile />} />
-	<Route path="/sms/module" element={<SmsModulePage />} />
+        <Route path="/sms/module" element={<SmsModulePage />} />
     </Route>
   )
 );
