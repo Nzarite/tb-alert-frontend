@@ -24,8 +24,8 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user.profile.email) ||
-    auth.user?.profile.email;
+    useSelector((state) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
 
   const [originalData, setOriginalData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -66,7 +66,7 @@ const getPostUrl = (prop: string) => {
       case "nikshaymitra":
         return `/nikshaymitra/register`;
       case "contactscreening":
-        return `/contactscreening/save`;
+        return `/contactscreening/${patientId}`;
       default:
         return "";
     }
@@ -77,7 +77,7 @@ const getPostUrl = (prop: string) => {
       case "patient":
         return `/patient/update/${patientId}`;
       case "tbdetails":
-        return `/tbdetails1/${patientId}`;
+        return `/tbdetails/${patientId}`;
       case "nikshaymitra":
         return `/nikshaymitra/${patientId}`;
       case "contactscreening":

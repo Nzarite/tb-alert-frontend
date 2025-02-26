@@ -1,16 +1,16 @@
 {
     "scandtcregistrationform": {
-      "firstNameLabel": "First Name1",
+      "firstNameLabel": "First Name",
       "lastNameLabel": "Last Name",
       "genderLabel": {
         "label": "Gender",
         "options": [
-          { "label": "Male1", "value": "Male" },
+          { "label": "Male", "value": "Male" },
           { "label": "Female", "value": "Female" }
         ]
       },
       "phoneNumberLabel": "Contact Number",
-      "emailLabel": "Email of the Person1",
+      "emailLabel": "Email of the Person",
       "dateOfJoiningLabel": "Date of Joining of the Person"
     }
   }
