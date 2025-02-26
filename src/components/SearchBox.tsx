@@ -35,6 +35,7 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
 
   // Debouncing the Search for optimisation
   useEffect(() => {
+    // This method fetches options for the drop down menu
     const fetchOptions = async (search: string) => {
       if (!search || search === lastSearched) return;
 

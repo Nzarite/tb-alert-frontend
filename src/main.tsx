@@ -8,7 +8,6 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import PrivateRoute from "./components/PrivateRoute";
 import "./index.css";
 import ErrorPage from "./pages/Error/ErrorPage";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
@@ -21,13 +20,12 @@ import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import SmsModulePage from "./pages/SmsModulePage";
 import { store } from "./redux/store";
-
-import { AuthProvider } from "react-oidc-context";
 import ProtectedRoute from "./components/Authorization/ProtectedRoute";
+import UserProfile from "./pages/UserProfile";
+import { AuthProvider } from "react-oidc-context";
 import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
 import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
-import UserProfile from "./pages/UserProfile";
 import UserSearch from "./pages/UserDashBoard/UserSearch.tsx";
 import UserDashBoard from "./pages/UserDashBoard/UserDashBoard.tsx";
 
