@@ -113,7 +113,7 @@ const PatientRegistrationPage = () => {
           setOpenSnackbar(true);
           setTimeout(() => {
               navigate(`/patient-dashboard/${patientId}`);
-          }, 4000);
+          }, 2000);
         }
       }
     } catch (error: any) {
