@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import Select, { components } from "react-select";
+import Select from "react-select";
 import axiosInstance from "./axiosInstance";
-import { useAuth } from "react-oidc-context";
-import { TeleCaller,StateHead } from "./datatypes/DataTypes";
-import { Box } from "@mui/material";
+import { TeleCaller, StateHead } from "./datatypes/DataTypes";
 
 interface SearchProps {
   changeSearch: (text: { value: string; label: string }) => void;
@@ -16,7 +14,6 @@ interface Patient {
   lastName: string;
 }
 
-
 const SearchBox = ({ changeSearch, role }: SearchProps) => {
   const [inputValue, setInputValue] = useState("");
   const [lastSearched, setLastSearched] = useState("");
@@ -27,9 +24,6 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const auth = useAuth();
-  const access_token = auth.user?.access_token || "";
 
   const roleToUrlMap: Record<SearchProps["role"], string> = {
     patient: "/patient/name/",
@@ -51,19 +45,19 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
           data = response.data.map((item: Patient) => ({
             value: item.patientId,
             label: `${item.firstName} ${item.lastName}`,
-          details: `${item.patientId} | ${item.age} yrs | ${item.gender}`,
+            details: `${item.patientId} | ${item.age} yrs | ${item.gender} | ${item.state}`,
           }));
         } else if (role === "telecaller") {
           data = response.data.map((item: TeleCaller) => ({
             value: item.teleCallerId.toString(),
             label: `${item.firstName} ${item.lastName}`,
-            details: ``
+            details: `${item.gender} | ${item.state}`,
           }));
         } else if (role === "statehead") {
           data = response.data.map((item: StateHead) => ({
             value: item.stateHeadId.toString(),
             label: `${item.firstName} ${item.lastName}`,
-              details: ``
+            details: `${item.gender} | ${item.state}`,
           }));
         }
         setOptions(data);
@@ -109,7 +103,9 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
         onMouseLeave={() => setHover(false)}
       >
         <strong>{data.label}</strong>
-        <div style={{ fontSize: "12px", color: "#666" }}>{data.details}</div>
+        <div style={{ fontSize: "12px", color: "#666", marginTop: 2 }}>
+          {data.details}
+        </div>
       </div>
     );
   };
@@ -129,24 +125,30 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
   };
 
   return (
-      <>
-        <Select
-          isClearable
-          isLoading={loading}
-          value={selectedOption}
-          onChange={(value) => {
-            setSelectedOption(value);
-            setInputValue(value?.label || "");
-          }}
-          onInputChange={(newValue) => setInputValue(newValue)}
-          options={options}
-          filterOption={() => true}
-          components={{ Option: CustomOption }}
-          styles={customStyles}
-          placeholder={`Search ${role === "patient" ? "Patients" : role ==="telecaller" ? "Telecallers": "State heads"} ...`}
-        />
-        {error && <p style={{ color: "red", marginTop: "5px" }}>{error}</p>}
-      </>
+    <>
+      <Select
+        isClearable
+        isLoading={loading}
+        value={selectedOption}
+        onChange={(value) => {
+          setSelectedOption(value);
+          setInputValue(value?.label || "");
+        }}
+        onInputChange={(newValue) => setInputValue(newValue)}
+        options={options}
+        filterOption={() => true}
+        components={{ Option: CustomOption }}
+        styles={customStyles}
+        placeholder={`Search ${
+          role === "patient"
+            ? "Patients"
+            : role === "telecaller"
+            ? "Telecallers"
+            : "State heads"
+        } ...`}
+      />
+      {error && <p style={{ color: "red", marginTop: "5px" }}>{error}</p>}
+    </>
   );
 };
 
