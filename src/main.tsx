@@ -69,15 +69,26 @@ const theme = createTheme({
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<PageLayout />}>
-      {/* Routes accessible by all logged in users */}
       <Route path="/" element={<LandingPage />} />
-
       <Route path="/register/patient" element={<PatientRegistrationPage />} />
       <Route
         path="/register/caregiver"
         element={<CaregiverRegistrationPage />}
       />
-      <Route path="register" element={<Navigate to={"/"} />} />
+      <Route path="/visit" element={<VisitFollowUpPage />} />
+      <Route path="/patient-dashboard" element={<PatientSearchPage />} />
+      <Route
+        path="/patient-dashboard/:patientId"
+        element={<PatientDashboardPage />}
+      />
+      <Route path="/reports" element={<Reports />} />
+      <Route path="/profile" element={<UserProfile />} />
+      <Route path="*" element={<ErrorPage />} />
+
+      <Route path="/register" element={<Navigate to={"/"} />} />
+      <Route path="/user" element={<Navigate to={"/"} />} />
+      <Route path="/unauthorized" element={<Navigate to={"/"} />} />
+
       <Route
         element={
           <ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />
@@ -87,30 +98,26 @@ const router = createBrowserRouter(
           path="/register/telecaller"
           element={<TelecallerRegistrationPage />}
         />
-          <Route path="/user/telecaller" element={<UserSearch/>}/>
-          <Route path="/dashboard/telecaller/:userId" element={<UserDashBoard role="telecaller"/>}/>
+        <Route path="/user/telecaller" element={<UserSearch />} />
+        <Route
+          path="/user/telecaller/:userId"
+          element={<UserDashBoard role="telecaller" />}
+        />
       </Route>
+
       <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
         <Route
-          path="/register/state-head"
+          path="/register/statehead"
           element={<StateHeadRegistrationPage />}
         />
         <Route path="/settings" element={<Settings />} />
-          <Route path="/user/statehead" element={<UserSearch/>}/>
-          <Route path="/dashboard/statehead/:userId" element={<UserDashBoard role="statehead" />}/>
+        <Route path="/user/statehead" element={<UserSearch />} />
+        <Route
+          path="/user/statehead/:userId"
+          element={<UserDashBoard role="statehead" />}
+        />
+        <Route path="/sms-module" element={<SmsModulePage />} />
       </Route>
-
-      <Route path="/visit" element={<VisitFollowUpPage />} />
-      <Route path="patient-dashboard" element={<PatientSearchPage />} />
-      <Route
-        path="patient-dashboard/:patientId"
-        element={<PatientDashboardPage />}
-      />
-      <Route path="/reports" element={<Reports />} />
-      <Route path="*" element={<ErrorPage />} />
-      <Route path="/unauthorized" element={<Navigate to={"/"} />} />
-      <Route path="profile" element={<UserProfile />} />
-        <Route path="/sms/module" element={<SmsModulePage />} />
     </Route>
   )
 );
