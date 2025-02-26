@@ -17,7 +17,8 @@ import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
 import { useSelector } from "react-redux";
 import { useAuth } from "react-oidc-context";
- 
+import { useNavigate } from "react-router-dom";
+
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
   lastName: z.string(),
@@ -33,12 +34,15 @@ const schema = z.object({
   }),
   state: z.string().nonempty("Please select a state"),
 });
- 
+
 type FormData = z.infer<typeof schema>;
- 
+
 const StateHeadRegistrationPage = () => {
   const auth = useAuth();
-  const userEmail = useSelector(state => state.user?.profile?.email) || auth.user?.profile?.email
+  const userEmail =
+    useSelector((state) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -49,16 +53,16 @@ const StateHeadRegistrationPage = () => {
     resolver: zodResolver(schema),
     mode: "all",
   });
- 
+
   interface LabelOption {
     label: string;
     options: { label: string; value: any }[];
   }
- 
+
   const [state, setState] = useState<{ states: LabelOption }>({
     states: { label: "", options: [] },
   });
- 
+
   interface ScTcRegistrationFormLabelsData {
     firstNameLabel: string;
     lastNameLabel: string;
@@ -67,7 +71,7 @@ const StateHeadRegistrationPage = () => {
     emailLabel: string;
     dateOfJoiningLabel: string;
   }
- 
+
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
     firstNameLabel: "",
     lastNameLabel: "",
@@ -76,12 +80,12 @@ const StateHeadRegistrationPage = () => {
     emailLabel: "",
     dateOfJoiningLabel: "",
   });
- 
+
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
- 
+
   useEffect(() => {
     fetch(`/locales/sc_tc_registration_form_${language}.json`)
       .then((response) => response.json())
@@ -91,7 +95,7 @@ const StateHeadRegistrationPage = () => {
         alert("Failed to load form labels data. Please try again.");
       });
   }, [language]);
- 
+
   useEffect(() => {
     fetch(`/locales/states_${language}.json`)
       .then((response) => response.json())
@@ -101,7 +105,7 @@ const StateHeadRegistrationPage = () => {
         alert("Failed to load states data. Please try again.");
       });
   }, [language]);
- 
+
   const formFields = [
     {
       name: "firstName",
@@ -148,7 +152,7 @@ const StateHeadRegistrationPage = () => {
       disabled: loading,
     },
   ];
- 
+
   const formSubmitHandler = async (data: FormData) => {
     setLoading(true);
     setErrorMessage(null);
@@ -157,6 +161,7 @@ const StateHeadRegistrationPage = () => {
       await axiosInstance.post("/statehead/register", formData);
       setOpenSnackbar(true);
       reset();
+      navigate("/");
     } catch (err: any) {
       setErrorMessage(
         err.response?.data?.message ||
@@ -166,7 +171,7 @@ const StateHeadRegistrationPage = () => {
       setLoading(false);
     }
   };
- 
+
   return (
     <Paper
       variant="outlined"
@@ -245,5 +250,5 @@ const StateHeadRegistrationPage = () => {
     </Paper>
   );
 };
- 
+
 export default StateHeadRegistrationPage;

@@ -17,7 +17,8 @@ import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
 import { useAuth } from "react-oidc-context";
- 
+import { useNavigate } from "react-router-dom";
+
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
   lastName: z.string(),
@@ -33,13 +34,15 @@ const schema = z.object({
   }),
   state: z.string().nonempty("Please select a state"),
 });
- 
-type FormData = z.infer<typeof schema>;
- 
-const TelecallerRegistrationPage = () => {
 
+type FormData = z.infer<typeof schema>;
+
+const TelecallerRegistrationPage = () => {
   const auth = useAuth();
-  const userEmail = useSelector(state => state.user?.profile?.email) || auth.user?.profile?.email
+  const navigate = useNavigate();
+  const userEmail =
+    useSelector((state) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
 
   const {
     handleSubmit,
@@ -50,16 +53,16 @@ const TelecallerRegistrationPage = () => {
     resolver: zodResolver(schema),
     mode: "all",
   });
- 
+
   interface LabelOption {
     label: string;
     options: { label: string; value: any }[];
   }
- 
+
   const [state, setState] = useState<{ states: LabelOption }>({
     states: { label: "", options: [] },
   });
- 
+
   interface ScTcRegistrationFormLabelsData {
     firstNameLabel: string;
     lastNameLabel: string;
@@ -68,7 +71,7 @@ const TelecallerRegistrationPage = () => {
     emailLabel: string;
     dateOfJoiningLabel: string;
   }
- 
+
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
     firstNameLabel: "",
     lastNameLabel: "",
@@ -77,12 +80,12 @@ const TelecallerRegistrationPage = () => {
     emailLabel: "",
     dateOfJoiningLabel: "",
   });
- 
+
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
- 
+
   useEffect(() => {
     fetch(`/locales/sc_tc_registration_form_${language}.json`)
       .then((response) => response.json())
@@ -92,7 +95,7 @@ const TelecallerRegistrationPage = () => {
         alert("Failed to load form labels data. Please try again.");
       });
   }, [language]);
- 
+
   useEffect(() => {
     fetch(`/locales/states_${language}.json`)
       .then((response) => response.json())
@@ -102,7 +105,7 @@ const TelecallerRegistrationPage = () => {
         alert("Failed to load states data. Please try again.");
       });
   }, [language]);
- 
+
   const formFields = [
     {
       name: "firstName",
@@ -149,7 +152,7 @@ const TelecallerRegistrationPage = () => {
       disabled: loading,
     },
   ];
- 
+
   const formSubmitHandler = async (data: FormData) => {
     setLoading(true);
     setErrorMessage(null);
@@ -157,6 +160,7 @@ const TelecallerRegistrationPage = () => {
     try {
       await axiosInstance.post("/telecaller/register", formData);
       setOpenSnackbar(true);
+      navigate("/");
       reset();
     } catch (err: any) {
       setErrorMessage(
@@ -167,7 +171,7 @@ const TelecallerRegistrationPage = () => {
       setLoading(false);
     }
   };
- 
+
   return (
     <Paper
       variant="outlined"
@@ -246,5 +250,5 @@ const TelecallerRegistrationPage = () => {
     </Paper>
   );
 };
- 
+
 export default TelecallerRegistrationPage;

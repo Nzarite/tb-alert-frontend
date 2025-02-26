@@ -7,7 +7,7 @@ import {
   Step,
   StepLabel,
   Stepper,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -123,8 +123,8 @@ const PatientRegistrationPage = () => {
           setFormData({ ...formData, contactScreeningDetails: stepData });
           setOpenSnackbar(true);
           setTimeout(() => {
-            navigate(`/patient-dashboard/${patientId}`);
-          }, 4000);
+              navigate(`/patient-dashboard/${patientId}`);
+          }, 2000);
         }
       }
     } catch (error: any) {
@@ -229,8 +229,8 @@ const PatientRegistrationPage = () => {
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
               >
                 <Alert severity="success" variant="filled">
-                  Patient registered successfully with Personal, TB, Nikshay &
-                  Contact Screening details.
+                  Patient registered successfully with Personal, TB, Nikshay & Contact
+                  Screening details.
                 </Alert>
               </Snackbar>
             </Paper>
