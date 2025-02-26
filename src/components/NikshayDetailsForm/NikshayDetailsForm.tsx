@@ -1,19 +1,15 @@
-import { useState, useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
-  Container,
-  Typography,
   Button,
-  Stepper,
-  Step,
-  StepLabel,
+  CircularProgress,
+  FormControl, InputLabel,
+  MenuItem, Select,
   TextField,
-  Grid,
-  Paper,
+  Typography
 } from "@mui/material";
-import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
-import { useForm, Controller, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 export type NikshayDetailsData = {
@@ -30,7 +26,10 @@ export type NikshayDetailsData = {
 
 const nikshayDetailsSchema = z
   .object({
-    nikshayId: z.string().min(1, "Nikshay ID is required"),
+    nikshayId: z
+      .string()
+      .min(8, "Nikshay ID should be 8 digits")
+      .max(8, "Nikshay ID should be 8 digits"),
     udstStatus: z.boolean(),
     dateOfUdst: z.string().optional(),
     resultOfUdst: z.string().optional(),
@@ -96,6 +95,8 @@ const NikshayDetailsForm = ({
   // onNext,
   onBack,
   functionality,
+  patientName,
+  loading,
 }: any) => {
   interface LabelOption {
     label: string;
@@ -103,6 +104,7 @@ const NikshayDetailsForm = ({
   }
 
   interface NikshayDetailsFormLabelsData {
+    patientNameLabel: string;
     nikshayIdLabel: string;
     udstStatusLabel: LabelOption;
     dateOfUdstLabel: string;
@@ -115,6 +117,7 @@ const NikshayDetailsForm = ({
   }
 
   const [labels, setLabels] = useState<NikshayDetailsFormLabelsData>({
+    patientNameLabel: "",
     nikshayIdLabel: "",
     udstStatusLabel: { label: "", options: [] },
     dateOfUdstLabel: "",
@@ -130,7 +133,10 @@ const NikshayDetailsForm = ({
     fetch(`/locales/patient_registration_form3_${language}.json`)
       .then((response) => response.json())
       .then((data) => setLabels(data.nikshaydetailsform || {}))
-      .catch((error) => console.error("Error loading language file:", error));
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
   }, [language]);
 
   const {
@@ -144,6 +150,7 @@ const NikshayDetailsForm = ({
   } = useForm<NikshayDetailsData>({
     defaultValues: data || {},
     resolver: zodResolver(nikshayDetailsSchema),
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -185,16 +192,32 @@ const NikshayDetailsForm = ({
   //   nikshayMitraName: "",
   // });
 
-  if (!labels) return <p>Loading...</p>;
+  if (!labels) return <CircularProgress />;
 
   return (
     <Box>
       <Typography variant="h6">Nikshay Details</Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {functionality === "register" && (
+          <TextField
+            label={labels.patientNameLabel}
+            value={patientName}
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            disabled
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "black", // Ensures text remains black
+              },
+            }}
+          />
+        )}
         <TextField
           label={labels.nikshayIdLabel || "Nikshay Id"}
           {...register("nikshayId")}
           slotProps={{ inputLabel: { shrink: true } }}
+          disabled={loading}
           error={!!errors.nikshayId}
           helperText={errors.nikshayId?.message}
           fullWidth
@@ -206,6 +229,7 @@ const NikshayDetailsForm = ({
           <Controller
             name="udstStatus"
             control={control}
+            disabled={loading}
             render={({ field }) => (
               <Select
                 {...field}
@@ -253,6 +277,7 @@ const NikshayDetailsForm = ({
             type="date"
             slotProps={{ inputLabel: { shrink: true } }}
             {...register("dateOfUdst")}
+            disabled={loading}
             error={!!errors.dateOfUdst}
             helperText={errors.dateOfUdst?.message}
             fullWidth
@@ -266,6 +291,7 @@ const NikshayDetailsForm = ({
             <Controller
               name="resultOfUdst"
               control={control}
+              disabled={loading}
               render={({ field }) => (
                 <Select {...field}>
                   {labels.resultOfUdstLabel.options.map((option) => (
@@ -287,6 +313,7 @@ const NikshayDetailsForm = ({
           <Controller
             name="dbtStatus"
             control={control}
+            disabled={loading}
             render={({ field }) => (
               <Select
                 {...field}
@@ -330,6 +357,7 @@ const NikshayDetailsForm = ({
             type="date"
             slotProps={{ inputLabel: { shrink: true } }}
             {...register("dateOfDbt")}
+            disabled={loading}
             error={!!errors.dateOfDbt}
             helperText={errors.dateOfDbt?.message}
             fullWidth
@@ -340,6 +368,7 @@ const NikshayDetailsForm = ({
         <FormControl
           fullWidth
           margin="normal"
+          disabled={loading}
           error={!!errors.nikshayMitraStatus}
         >
           <InputLabel>{labels.nikshayMitraStatusLabel.label}</InputLabel>
@@ -399,6 +428,7 @@ const NikshayDetailsForm = ({
             type="date"
             slotProps={{ inputLabel: { shrink: true } }}
             {...register("nikshayMitraDate")}
+            disabled={loading}
             error={!!errors.nikshayMitraDate}
             helperText={errors.nikshayMitraDate?.message}
             fullWidth
@@ -411,6 +441,7 @@ const NikshayDetailsForm = ({
             label={labels.nikshayMitraNameLabel || "Nikshay Mitra Name"}
             {...register("nikshayMitraName")}
             slotProps={{ inputLabel: { shrink: true } }}
+            disabled={loading}
             error={!!errors.nikshayMitraName}
             helperText={errors.nikshayMitraName?.message}
             fullWidth
@@ -430,13 +461,31 @@ const NikshayDetailsForm = ({
             </Button>
           )}
           {functionality === "register" && (
-            <Button type="submit" variant="contained" color="primary">
-              Save and Next
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Save and Next"
+              )}
             </Button>
           )}
           {functionality === "editdetails" && (
-            <Button type="submit" variant="contained" color="primary">
-              Update
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Update"
+              )}
             </Button>
           )}
         </Box>

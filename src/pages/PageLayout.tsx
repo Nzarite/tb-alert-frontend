@@ -4,16 +4,23 @@ import Navbar from "../components/Navbar";
 
 const breadcrumbNameMap: { [key: string]: string } = {
   "/": "Home",
+
   "/register": "Register",
   "/register/caregiver": "Caregiver",
   "/register/patient": "Patient",
-  "/register/state-coordinator": "State Coordinator",
-  "/register/telecommunicator": "Telecommunicator",
+  "/register/statehead": "State Head",
+  "/register/telecaller": "Telecaller",
+
   "/visit": "Visit Follow-Up",
   "/patient-dashboard": "Patient Search",
   "/reports": "Reports",
   "/settings": "Settings",
   "/profile": "Profile",
+  "/sms-module": "SMS Module",
+
+  "/user": "User",
+  "/user/statehead": "State head",
+  "/user/telecaller": "Telecaller",
 };
 
 const PageLayout = () => {

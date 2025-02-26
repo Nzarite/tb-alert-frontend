@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { Box, Grid, Paper, Typography } from "@mui/material";
+import { useState } from "react";
 import {
   MdAssessment,
   MdLocalHospital,
@@ -9,14 +8,15 @@ import {
   MdVaccines,
 } from "react-icons/md";
 import { RiPencilLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
+import axiosInstance from "../../components/axiosInstance";
 import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
 import PatientFollowUpDetails from "./PatientFollowUpDetails";
 import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
-import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
@@ -39,12 +39,26 @@ const PatientDashboardPage = () => {
     setSelectedPatientData(null);
   };
 
+  const handlePatientDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this patient?"))
+      return;
+    try {
+      await axiosInstance.delete(`/patient/${patientId}`);
+      alert("Patient deleted successfully.");
+      console.log(`Patient ${patientId} deleted successfully.`);
+    } catch (Error) {
+      alert("Failed to delete patient. Please try again.");
+      console.log(Error);
+    }
+  };
+
   if (!patientId) {
     return <Typography variant="h6">No patient selected</Typography>;
   }
 
   return (
     <>
+      {/* <Button onClick={handlePatientDelete}>Delete Patient</Button> */}
       <Grid container spacing={2} sx={{ p: 2 }}>
         {[
           {

@@ -1,34 +1,34 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createRoot } from "react-dom/client";
+import { AuthProvider } from "react-oidc-context";
 import { Provider } from "react-redux";
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
 } from "react-router-dom";
+import ProtectedRoute from "./components/Authorization/ProtectedRoute";
+import PrivateRoute from "./components/PrivateRoute.tsx";
 import "./index.css";
 import ErrorPage from "./pages/Error/ErrorPage";
 import VisitFollowUpPage from "./pages/FollowUp/VisitFollowUpPage";
 import LandingPage from "./pages/Homepage/LandingPage";
 import PageLayout from "./pages/PageLayout";
 import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
-import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
-import RegisterWrapper from "./pages/Registration/RegisterWrapper";
-import StateCoordinatorRegistrationPage from "./pages/Registration/StateCoordinator/StateCoordinatorRegistrationPage";
-import TeleCommunicatorRegistration from "./pages/Registration/Telecommunicator/TeleCommunicatorRegistration";
+import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
+import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
+import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
+import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
-import PrivateRoute from "./components/PrivateRoute";
-import { store } from "./redux/store";
-import ProtectedRoute from "./components/Authorization/ProtectedRoute";
-import UnauthorizedPage from "./pages/Unauthorized/UnauthorizedPage";
-import UserProfile from "./pages/UserProfile";
-import { AuthProvider } from "react-oidc-context";
-import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
-import UserSearch from "./pages/UserDashBoard/UserSearch.tsx";
+import SmsModulePage from "./pages/SmsModulePage";
 import UserDashBoard from "./pages/UserDashBoard/UserDashBoard.tsx";
+import UserSearch from "./pages/UserDashBoard/UserSearch.tsx";
+import UserProfile from "./pages/UserProfile";
+import { store } from "./redux/store";
 
 const oidcConfig = {
   authority: import.meta.env.VITE_OIDC_AUTHORITY,
@@ -39,7 +39,6 @@ const oidcConfig = {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
 };
-
 
 const theme = createTheme({
   palette: {
@@ -69,71 +68,55 @@ const theme = createTheme({
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<PageLayout />}>
-      {/* Routes accessible by all logged in users */}
       <Route path="/" element={<LandingPage />} />
-
       <Route path="/register/patient" element={<PatientRegistrationPage />} />
       <Route
         path="/register/caregiver"
         element={<CaregiverRegistrationPage />}
       />
-      <Route path="register" element={<RegisterWrapper />} />
+      <Route path="/visit" element={<VisitFollowUpPage />} />
+      <Route path="/patient-dashboard" element={<PatientSearchPage />} />
+      <Route
+        path="/patient-dashboard/:patientId"
+        element={<PatientDashboardPage />}
+      />
+      <Route path="/reports" element={<Reports />} />
+      <Route path="/profile" element={<UserProfile />} />
+      <Route path="*" element={<ErrorPage />} />
+
+      <Route path="/register" element={<Navigate to={"/"} />} />
+      <Route path="/user" element={<Navigate to={"/"} />} />
+      <Route path="/unauthorized" element={<Navigate to={"/"} />} />
+
       <Route
         element={
           <ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />
         }
       >
         <Route
-          path="/register/telecommunicator"
-          element={<TeleCommunicatorRegistration />}
+          path="/register/telecaller"
+          element={<TelecallerRegistrationPage />}
+        />
+        <Route path="/user/telecaller" element={<UserSearch />} />
+        <Route
+          path="/user/telecaller/:userId"
+          element={<UserDashBoard role="telecaller" />}
         />
       </Route>
+
       <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
         <Route
-          path="/register/state-coordinator"
-          element={<StateCoordinatorRegistrationPage />}
+          path="/register/statehead"
+          element={<StateHeadRegistrationPage />}
         />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/user/statehead" element={<UserSearch />} />
+        <Route
+          path="/user/statehead/:userId"
+          element={<UserDashBoard role="statehead" />}
+        />
+        <Route path="/sms-module" element={<SmsModulePage />} />
       </Route>
-
-      <Route path="/visit" element={<VisitFollowUpPage />} />
-      <Route path="patient-dashboard" element={<PatientSearchPage />} />
-      <Route
-        path="patient-dashboard/:patientId"
-        element={<PatientDashboardPage />}
-      />
-      <Route path="/dashboard/patient" element={<PatientSearchPage />} />
-      <Route
-        path="/dashboard/patient/:patientId"
-        element={<PatientDashboardPage />}
-      />
-      <Route path="/reports" element={<Reports />} />
-      <Route path="*" element={<ErrorPage />} />
-      <Route path="/unauthorized" element={<UnauthorizedPage />} />
-      <Route path="profile" element={<UserProfile />} />
-
-      <Route element = {<ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />}>
-        <Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
-      </Route>
-
-      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
-        <Route path="/register/state-coordinator" element={<StateCoordinatorRegistrationPage />} />
-        <Route path="/settings" element={<Settings />} />
-      </Route>
-
-      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]}/>}>
-        <Route path="/user/statehead" element={<UserSearch/>}/>
-      </Route>
-      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin","StateCoordinator"]}/>}>
-        <Route path="/user/telecaller" element={<UserSearch/>}/>
-      </Route>
-      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]}/>}>
-        <Route path="/dashboard/statehead/:userId" element={<UserDashBoard role="statehead" />}/>
-      </Route>
-      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin","StateCoordinator"]}/>}>
-        <Route path="/dashboard/telecaller/:userId" element={<UserDashBoard role="telecaller"/>}/>
-      </Route>
-
     </Route>
   )
 );

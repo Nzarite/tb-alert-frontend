@@ -2,14 +2,17 @@ import { Box, Button, Chip, Paper, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import { useState } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
 import FollowUpStatus from "../../components/Json/FollowUpStatus.json";
+import AddFollowupDialog from "./AddFollowupDialog";
 
 interface FollowUpSidebarProps {
   selectedIndex: number;
   setIndex: (index: number) => void;
   data: VisitDataInterface;
+  getPatientData: (input: string) => void;
 }
 
 export const getStatusColor = (
@@ -45,7 +48,12 @@ export default function FollowUpSidebar({
   selectedIndex,
   setIndex,
   data,
+  getPatientData,
 }: FollowUpSidebarProps) {
+  // State for toggling add followup dialog
+  const [open, setOpen] = useState(false);
+
+  // Enables/disables list button based on followup status and date
   const isEditable = (followUpStatus: string, dateOfFollowUp: string) => {
     if (followUpStatus === FollowUpStatus.Cancelled) return false;
 
@@ -200,31 +208,40 @@ export default function FollowUpSidebar({
             </List>
 
             {selectedIndex === data.followUpDetails.length - 1 && (
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 1,
-                  borderRadius: 2,
-                  fontWeight: 600,
-                  fontSize: "0.875rem",
-                  textTransform: "none",
-                  mt: 1.5,
-                  transition: "all 0.2s ease-in-out",
-                  "&:hover": {
-                    backgroundColor: "primary.dark",
-                  },
-                }}
-              >
-                <FaPlusCircle size={10} />
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  Add a Follow-up
-                </Typography>
-              </Button>
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => setOpen(true)}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    fontSize: "0.875rem",
+                    textTransform: "none",
+                    mt: 1.5,
+                    transition: "all 0.2s ease-in-out",
+                    "&:hover": {
+                      backgroundColor: "primary.dark",
+                    },
+                  }}
+                >
+                  <FaPlusCircle size={10} />
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    Add a Follow-up
+                  </Typography>
+                </Button>
+                <AddFollowupDialog
+                  open={open}
+                  handleClose={() => setOpen(false)}
+                  getPatientData={getPatientData}
+                  data={data}
+                />
+              </>
             )}
           </>
         ) : (

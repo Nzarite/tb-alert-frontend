@@ -1,29 +1,34 @@
-import { Box, Grid } from "@mui/material";
+import { Box, CircularProgress, Container, Grid, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
+import FollowUPStatus from "../../components/Json/FollowUpStatus.json";
 import SearchBox from "../../components/SearchBox";
 import FollowUpFormComponent from "./FollowUpMain";
 import FollowUpSidebar from "./FollowUpSidebar";
-import FollowUPStatus from "../../components/Json/FollowUpStatus.json";
-import { useAuth } from "react-oidc-context";
 
 const VisitFollowUpPage = () => {
+  // For redirection of a patient
   const location = useLocation();
   const initialState = location.state?.prop || null;
   const [search, setSearch] = useState<string | null>(initialState);
 
+  // Patient's Visit Data
   const [data, setData] = useState<VisitDataInterface | null>(null);
+  // Open Follow up
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const auth = useAuth();
     const handleListItemClick = (index: number) => {
     if (data && index >= 0 && index < data?.followUpDetails.length)
       setSelectedIndex(index);
   };
 
   const getPatientData = async (search: string) => {
+    setLoading(true);
+    setError(null);
     try {
       const res = await axiosInstance.get(`/followup/${search}`);
       const res2 = await axiosInstance.get(`/patientmedication/${search}`);
@@ -33,8 +38,10 @@ const VisitFollowUpPage = () => {
         if (!followup.followUpStatus) followup.medicationDetails = res2.data;
       });
       setData(newData);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setError(error.response?.data || "Failed to fetch data.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,6 +85,7 @@ const VisitFollowUpPage = () => {
               selectedIndex={selectedIndex}
               setIndex={handleListItemClick}
               data={data}
+              getPatientData={(input) => getPatientData(input)}
             />
           </Grid>
         )}

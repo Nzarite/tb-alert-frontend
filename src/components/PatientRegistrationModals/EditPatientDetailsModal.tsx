@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Modal, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
@@ -24,10 +24,13 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user.profile.email) ||
-    auth.user?.profile.email;
+    useSelector((state) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
 
   const [originalData, setOriginalData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [updating, setUpdating] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -36,6 +39,8 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
   }, [open, prop]);
 
   const fetchFormData = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await axiosInstance.get(`/${prop}/${patientId}`);
       setFormData((prevData) => ({
@@ -43,8 +48,27 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
         [`${prop}Details`]: response.data,
       }));
       setOriginalData(response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching form data:", error);
+      setError(
+        error.response?.data ||
+          "Failed to fetch form data. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+const getPostUrl = (prop: string) => {
+    switch (prop) {
+      case "tbdetails":
+        return `/tbdetails/register`;
+      case "nikshaymitra":
+        return `/nikshaymitra/register`;
+      case "contactscreening":
+        return `/contactscreening/${patientId}`;
+      default:
+        return "";
     }
   };
 
@@ -64,36 +88,66 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
   };
 
   const handleUpdate = async (updatedData: any) => {
+    setUpdating(true);
+    setError(null);
+
     setFormData((prevData) => ({
       ...prevData,
       [`${prop}Details`]: updatedData,
       updatedBy: userEmail,
     }));
 
-    // Check if data has changed
-    if (JSON.stringify(updatedData) === JSON.stringify(originalData)) {
-      onClose(); // Close modal if no changes
-      return;
-    }
-
-    const url = getUpdateUrl(prop, patientId);
-    if (!url) {
-      console.error("Invalid update URL");
+    const updateurl = getUpdateUrl(prop, patientId);
+    const posturl = prop === "patient" ? "" : getPostUrl(prop);
+    if (!updateurl || (prop !== "patient" && !posturl)) {
+      console.error("Invalid API URL");
+      setError("Invalid API URL");
+      setUpdating(false);
       return;
     }
 
     try {
-      await axiosInstance.put(url, updatedData);
-      onClose(); // Close modal after successful update
-    } catch (error) {
-      console.error("Error updating data:", error);
+      let response;
+      if (!originalData) {
+        response = await axiosInstance.post(posturl, {
+          ...updatedData,
+          patientId,
+        });
+        console.log("Data created successfully!", response.data);
+      } else if (JSON.stringify(updatedData) !== JSON.stringify(originalData)) {
+        response = await axiosInstance.put(updateurl, updatedData);
+        console.log("Data updated successfully!", response.data);
+      } else {
+        console.log("No changes detected. Skipping update.");
+      }
+      onClose();
+    } catch (error: any) {
+      console.error("Error saving data:", error);
+      setError(
+        error.response?.data ||
+          "Failed to save data. Please try again."
+      );
+    } finally {
+      setUpdating(false);
     }
   };
 
-  const language = useSelector((state: any) => state.language);
+  const language = useSelector((state: any) => state.language.language);
   console.log(language);
 
   const renderForm = () => {
+    if (loading) {
+      return (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height={200}
+        >
+          <CircularProgress />
+        </Box>
+      );
+    }
     switch (prop) {
       case "patient":
         return (
@@ -102,6 +156,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
             data={formData.patientDetails}
             onSave={handleUpdate}
             functionality="editdetails"
+            loading={updating}
           />
         );
       case "tbdetails":
@@ -111,6 +166,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
             data={formData.tbdetailsDetails}
             onSave={handleUpdate}
             functionality="editdetails"
+            loading={updating}
           />
         );
       case "nikshaymitra":
@@ -120,6 +176,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
             data={formData.nikshaymitraDetails}
             onSave={handleUpdate}
             functionality="editdetails"
+            loading={updating}
           />
         );
       case "contactscreening":
@@ -129,8 +186,11 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
             data={formData.contactscreeningDetails}
             onSave={handleUpdate}
             functionality="editdetails"
+            loading={updating}
           />
         );
+      default:
+        return null;
     }
   };
 
@@ -165,13 +225,11 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
           <Button onClick={onClose} variant="outlined" color="secondary">
             Cancel
           </Button>
-          {/* <Button
-            onClick={handleUpdate}
-            variant="contained"
-            color="primary"
-          >
-            Update
-          </Button> */}
+          {error && (
+            <Alert severity="error" sx={{ mt: 3, mb: 2 }}>
+              {error}
+            </Alert>
+          )}
         </Box>
       </Box>
     </Modal>
