@@ -26,10 +26,6 @@ axiosInstance.interceptors.request.use(
       // Retrieve the session data from sessionStorage
       const sessionData = sessionStorage.getItem(oidcSessionKey);
 
-      if (!localStorage.getItem("userState")) {
-        window.dispatchEvent(new Event("logout"));
-      }
-
       if (sessionData) {
         const parsedSessionData = JSON.parse(sessionData);
         const accessToken = parsedSessionData.access_token; // Extract the access token
@@ -52,18 +48,26 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// async function getNewAccessAndRefreshToken() {
-// 	try {
-// 		const res = await axios.post(
-// 			"http://localhost:8080/refresh-token",
-// 			{},
-// 			{ withCredentials: true }
-// 		);
-// 		return res;
-// 	} catch (err) {
-// 		store.dispatch(deleteTokens());
-// 		return Promise.reject(err);
-// 	}
-// }
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response && error.response.status === 401) {
+      console.warn("Unauthorized request detected. Logging out...");
+
+      // Remove token from storage
+      sessionStorage.removeItem(
+        `oidc.user:${import.meta.env.VITE_OIDC_AUTHORITY}:${
+          import.meta.env.VITE_OIDC_CLIENT_ID
+        }`
+      );
+
+      // Redirect to Keycloak logout URL
+      window.location.href = `${import.meta.env.VITE_POST_LOGOUT_REDIRECT_URI}`;
+
+      return Promise.reject(error);
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;

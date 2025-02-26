@@ -1,27 +1,24 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
-  Box,
+  Alert,
   Container,
-  Typography,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
   Grid,
   Paper,
+  Snackbar,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography
 } from "@mui/material";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import PatientDetailsForm from "../../../components/PatientDetailsForm/PatientDetailsForm";
-import TbDetailsForm from "../../../components/TbDetailsForm/TbDetailsForm";
-import NikshayDetailsForm from "../../../components/NikshayDetailsForm/NikshayDetailsForm";
-import ContactScreeningDetailsForm from "../../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
-import { PatientDetailsData } from "../../../components/PatientDetailsForm/PatientDetailsForm";
-import { TbDetailsData } from "../../../components/TbDetailsForm/TbDetailsForm";
-import { NikshayDetailsData } from "../../../components/NikshayDetailsForm/NikshayDetailsForm";
-import { ContactScreeningData } from "../../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
-import axiosInstance from "../../../components/axiosInstance";
+import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import ContactScreeningDetailsForm, { ContactScreeningData } from "../../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
+import NikshayDetailsForm, { NikshayDetailsData } from "../../../components/NikshayDetailsForm/NikshayDetailsForm";
+import PatientDetailsForm, { PatientDetailsData } from "../../../components/PatientDetailsForm/PatientDetailsForm";
+import TbDetailsForm, { TbDetailsData } from "../../../components/TbDetailsForm/TbDetailsForm";
+import axiosInstance from "../../../components/axiosInstance";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -30,6 +27,15 @@ const PatientRegistrationPage = () => {
     location.state?.initialStep || 0
   );
   const [patientId, setPatientId] = useState<string | null>(null);
+  const [patientName, setPatientName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const auth = useAuth();
+  const userEmail =
+    useSelector((state) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
 
   const steps = [
     "Patient Details",
@@ -38,7 +44,6 @@ const PatientRegistrationPage = () => {
     "Contact Screening Details",
   ];
 
-  // const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     patientDetails: {} as PatientDetailsData,
     tbDetails: {} as TbDetailsData,
@@ -46,10 +51,7 @@ const PatientRegistrationPage = () => {
     contactScreeningDetails: {} as ContactScreeningData,
   });
 
-  const [language, setLanguage] = useState("en");
-
-  // const language = useSelector((state: any) => state.language);
-  // console.log(language);
+  const language = useSelector((state: any) => state.language.language);
 
   const { handleSubmit } = useForm();
 
@@ -57,30 +59,20 @@ const PatientRegistrationPage = () => {
     console.log("Final Submitted Data:", data);
   };
 
-  console.log(activeStep);
-
   const handleSave = async (stepData: any) => {
-    // if (activeStep === 0) {
-    //   setFormData({ ...formData, patientDetails: stepData });
-    //   console.log("Patient Details Saved:", stepData);
-    // } else if (activeStep === 1) {
-    //   setFormData({ ...formData, tbDetails: stepData });
-    //   console.log("TB Details Saved:", stepData);
-    // } else if (activeStep === 2) {
-    //   setFormData({ ...formData, nikshayDetails: stepData });
-    //   console.log("Nikshay Details Saved:", stepData);
-    // } else if (activeStep === 3) {
-    //   setFormData({ ...formData, contactScreeningDetails: stepData });
-    //   console.log("Contact Screening Details Saved:", stepData);
-    // }
-
+      setLoading(true);
+    setError(null);
     try {
       let response;
 
       if (activeStep === 0) {
-        response = await axiosInstance.post("/patient/register", stepData);
+        response = await axiosInstance.post("/patient/register", {...stepData, createdBy: userEmail});
         if (response.status === 200 || 201 || 202) {
           setPatientId(response.data.patientId);
+          setPatientName(
+            response.data.firstName +
+              (response.data.lastName ? " " + response.data.lastName : "")
+          );
           setFormData({ ...formData, patientDetails: stepData });
           setActiveStep(activeStep + 1);
         }
@@ -118,12 +110,20 @@ const PatientRegistrationPage = () => {
         });
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, contactScreeningDetails: stepData });
-          navigate(`/dashboard/patient/${patientId}`);
+          setOpenSnackbar(true);
+          setTimeout(() => {
+              navigate(`/patient-dashboard/${patientId}`);
+          }, 4000);
         }
       }
     } catch (error: any) {
       console.error("Error saving data:", error);
-      alert(`Error: ${error.response?.data?.message || error.message}`);
+      setError(
+        error.response?.data ||
+          "There was an error submitting the form, please try again"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,7 +135,7 @@ const PatientRegistrationPage = () => {
   //   if (activeStep < steps.length - 1) {
   //     setActiveStep(activeStep + 1);
   //   } else {
-  //     console.log("Final Data Submitted:", formData);
+  //     console.log("Final Data Submitted:", stepData);
   //   }
   // };
 
@@ -167,6 +167,7 @@ const PatientRegistrationPage = () => {
                   onSave={handleSave}
                   // onNext={handleNext}
                   functionality="register"
+                  loading={loading}
                 />
               )}
               {activeStep === 1 && (
@@ -177,6 +178,8 @@ const PatientRegistrationPage = () => {
                   // onNext={handleNext}
                   onBack={handleBack}
                   functionality="register"
+                  patientName={patientName}
+                  loading={loading}
                 />
               )}
               {activeStep === 2 && (
@@ -187,6 +190,8 @@ const PatientRegistrationPage = () => {
                   // onNext={handleNext}
                   onBack={handleBack}
                   functionality="register"
+                  patientName={patientName}
+                  loading={loading}
                 />
               )}
               {activeStep === 3 && (
@@ -197,8 +202,26 @@ const PatientRegistrationPage = () => {
                   onSubmit={handleSubmit(onSubmit)}
                   onBack={handleBack}
                   functionality="register"
+                  patientName={patientName}
+                  loading={loading}
                 />
               )}
+              {error && (
+                <Alert severity="error" sx={{ mt: 3, mb: 2 }}>
+                  {error}
+                </Alert>
+              )}
+              <Snackbar
+                open={openSnackbar}
+                autoHideDuration={4000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+              >
+                <Alert severity="success" variant="filled">
+                  Patient registered successfully with Personal, TB, Nikshay & Contact
+                  Screening details.
+                </Alert>
+              </Snackbar>
             </Paper>
           </Grid>
         </Grid>
