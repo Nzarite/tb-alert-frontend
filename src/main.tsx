@@ -22,7 +22,6 @@ import Settings from "./pages/Settings";
 import PrivateRoute from "./components/PrivateRoute";
 
 import { AuthProvider } from "react-oidc-context";
-import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 
 const oidcConfig = {
   authority: import.meta.env.VITE_OIDC_AUTHORITY,
@@ -72,11 +71,17 @@ const router = createBrowserRouter(
 
       <Route path="/register/patient" element={<PatientRegistrationPage />} />
 
-      <Route path="/register/caregiver" element={<CaregiverRegistrationPage />} />
+      <Route
+        path="/register/caregiver"
+        element={<CaregiverRegistrationPage />}
+      />
 
       <Route path="/visit" element={<VisitFollowUpPage />} />
-        <Route path="/dashboard/patient" element={<PatientSearchPage />} />
-        <Route path="/dashboard/patient/:patientId" element={<PatientSearchPage />} />
+      <Route path="/dashboard/patient" element={<PatientSearchPage />} />
+      <Route
+        path="/dashboard/patient/:patientId"
+        element={<PatientSearchPage />}
+      />
       <Route
         path="/dashboard/patient/:patientId"
         element={<PatientDashboardPage />}
@@ -90,12 +95,22 @@ const router = createBrowserRouter(
 
       <Route path="profile" element={<UserProfile />} />
 
-      <Route element = {<ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />}>
-        <Route path="/register/telecommunicator" element={<TeleCommunicatorRegistration />} />
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />
+        }
+      >
+        <Route
+          path="/register/telecommunicator"
+          element={<TeleCommunicatorRegistration />}
+        />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
-        <Route path="/register/state-coordinator" element={<StateCoordinatorRegistrationPage />} />
+        <Route
+          path="/register/state-coordinator"
+          element={<StateCoordinatorRegistrationPage />}
+        />
         <Route path="/settings" element={<Settings />} />
       </Route>
     </Route>
@@ -104,12 +119,12 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-  <AuthProvider {...oidcConfig}>
-    <ThemeProvider theme={theme}>
-      <PrivateRoute>
-        <RouterProvider router={router} />
-      </PrivateRoute>
-    </ThemeProvider>
-  </AuthProvider>
+    <AuthProvider {...oidcConfig}>
+      <ThemeProvider theme={theme}>
+        <PrivateRoute>
+          <RouterProvider router={router} />
+        </PrivateRoute>
+      </ThemeProvider>
+    </AuthProvider>
   </Provider>
 );
