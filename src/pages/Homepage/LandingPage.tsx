@@ -12,7 +12,7 @@ import axiosInstance from "../../components/axiosInstance";
 
 const LandingPage = () => {
   const auth = useAuth();
-  console.log(auth);
+  // console.log(auth);
   const user = auth?.user;
   const profile = user?.profile;
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ const LandingPage = () => {
           const response = await axiosInstance.get(
             `/person/email/${profile.email}`
           );
-          console.log("Fetched user details:", response.data);
+          // console.log("Fetched user details:", response.data);
 
           if (response.data.state) {
             dispatch(setUserState(response.data.state));
@@ -56,8 +56,8 @@ const LandingPage = () => {
     }
   }, [profile, dispatch]);
 
-  const state = useSelector((state: RootState) => state);
-  console.log("Redux State:", state);
+  // const state = useSelector((state: RootState) => state);
+  // console.log("Redux State:", state);
 
   const userRoles: Role[] = (auth?.user?.profile?.client_roles || []) as Role[];
 
