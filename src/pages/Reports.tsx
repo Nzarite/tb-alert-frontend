@@ -20,7 +20,8 @@ const Reports = () => {
   const userEmail =
     useSelector((state: any) => state.user?.profile?.email) ||
     auth.user?.profile.email;
-    const userRole = auth.user?.profile.client_roles || [];
+    const userRole = auth.user?.profile.client_roles || {};
+  
   const userState=useSelector((state:any)=>state.user?.userState)||"";
   console.log(userState,userRole);
 
