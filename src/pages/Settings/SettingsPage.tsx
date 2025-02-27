@@ -1,11 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import axiosInstance from "../../components/axiosInstance";
 import categories from "../../components/Json/settings.json";
 import SettingField from "./SettingsField";
 
 const createSchema = (categories) => {
+	if (!categories) return z.object({});
 	const schemaObj = {};
 
 	categories.forEach((category) => {
@@ -42,29 +45,69 @@ const createSchema = (categories) => {
 
 	return z.object(schemaObj);
 };
-const validationSchema = createSchema(categories);
 
 const SettingsPage = () => {
+	const [data, setData] = useState(categories);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchSettings = async () => {
+			try {
+				const response = await axiosInstance.get("/setting/all");
+				setData(response.data);
+			} catch (error) {
+				console.error("Failed to fetch settings:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchSettings();
+	}, []);
+
+	const validationSchema = data ? createSchema(data) : null;
+
 	const {
 		control,
 		setValue,
 		reset,
 		formState: { errors },
 	} = useForm({
-		resolver: zodResolver(validationSchema),
-		defaultValues: categories.reduce((acc, category) => {
-			category.settings.forEach((setting) => {
-				acc[setting.keyName] = setting.value || "";
-			});
-			return acc;
-		}, {}),
+		resolver: validationSchema ? zodResolver(validationSchema) : undefined,
+		defaultValues: data
+			? data.reduce((acc, category) => {
+					category.settings.forEach((setting) => {
+						acc[setting.keyName] = setting.value || "";
+					});
+					return acc;
+			  }, {})
+			: {},
 	});
+
+	if (loading) {
+		return (
+			<Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+				<CircularProgress />
+			</Box>
+		);
+	}
+
+	if (!data || data.length === 0) {
+		return (
+			<Box sx={{ textAlign: "center", mt: 5 }}>
+				<Typography variant="h6" color="textSecondary">
+					No settings available.
+				</Typography>
+			</Box>
+		);
+	}
+
 	return (
 		<Box sx={{ maxWidth: 1000, margin: "auto", padding: 1 }}>
 			<Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
 				Settings
 			</Typography>
-			{categories.map((category) => (
+			{data.map((category) => (
 				<Box
 					key={category.name}
 					sx={{ p: 2, mb: 2, border: "1px solid #ddd", borderRadius: 2 }}>
