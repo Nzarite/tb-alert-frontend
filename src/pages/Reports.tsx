@@ -20,10 +20,10 @@ const Reports = () => {
   const userEmail =
     useSelector((state: any) => state.user?.profile?.email) ||
     auth.user?.profile.email;
-    const userRole = auth.user?.profile.client_roles || {};
-  
-  const userState=useSelector((state:any)=>state.user?.userState)||"";
-  console.log(userState,userRole);
+  const userRole = auth.user?.profile.client_roles || {};
+
+  const userState = useSelector((state: any) => state.user?.userState) || "";
+  console.log(userState, userRole);
 
   const [currentRole, setCurrentRole] = useState("patient");
   const [age, setAge] = useState("");
@@ -36,22 +36,36 @@ const Reports = () => {
   const [udstStatus, setUdstStatus] = useState<boolean | "">("");
   const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
   const [createdBy, setCreatedBy] = useState<string>("");
-  const [isDeleted,setIsDeleted]=useState("");
+  const [isDeleted, setIsDeleted] = useState("");
 
-
-  useEffect(()=>{
-    if(userRole.length===1 && userRole.includes("Telecaller") || (userRole.length==2 && userRole.includes("StateCoordinator")))
+  useEffect(() => {
+    if (
+      (userRole.length === 1 && userRole.includes("Telecaller")) ||
+      (userRole.length == 2 && userRole.includes("StateCoordinator"))
+    )
       setState(userState);
-    if(userRole.includes("SuperAdmin") || userRole.includes("StateCoordinator"))
+    if (
+      userRole.includes("SuperAdmin") ||
+      userRole.includes("StateCoordinator")
+    )
       setCreatedBy("");
-  },[userRole])
+  }, [userRole]);
 
   const handleTeleCallerReport = async () => {
     try {
-      const body = {
+      const filters = {
+        age: age ? parseInt(age) : 0,
+        gender: gender || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+        currentStatus: currentStatus || null,
         state: state,
+        dstbOrDrtb: dsOrDr,
+        udstStatus: udstStatus,
+        dbtStatus: dbtStatus,
+        isDeleted: isDeleted,
       };
-      const response = await axiosInstance.post("/report/telecaller", body, {
+      const response = await axiosInstance.post("/report/telecaller", filters, {
         responseType: "blob",
       });
       blodHandler(response.data, "TelecallerReports.xlsx");
@@ -62,11 +76,21 @@ const Reports = () => {
 
   const handleStateHeadReports = async () => {
     try {
-      const response = await axiosInstance.post(
-        "/report/statehead",
-        {},
-        { responseType: "blob" }
-      );
+      const filters = {
+        age: age ? parseInt(age) : 0,
+        gender: gender || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+        currentStatus: currentStatus || null,
+        state: state,
+        dstbOrDrtb: dsOrDr,
+        udstStatus: udstStatus,
+        dbtStatus: dbtStatus,
+        isDeleted: isDeleted,
+      };
+      const response = await axiosInstance.post("/report/statehead", filters, {
+        responseType: "blob",
+      });
       blodHandler(response.data, "StateHeadDetails.xlsx");
     } catch (error) {
       console.error(error);
@@ -93,7 +117,7 @@ const Reports = () => {
         dstbOrDrtb: dsOrDr,
         udstStatus: udstStatus,
         dbtStatus: dbtStatus,
-        isDeleted:isDeleted
+        isDeleted: isDeleted,
       };
 
       const response = await axiosInstance.post(endpoint, filters, {
@@ -129,12 +153,18 @@ const Reports = () => {
     setStartDate("");
     setEndDate("");
     setCurrentStatus("");
-    if(!(userRole.length===1 && userRole.includes("Telecaller")) && !(userRole.length==2 && userRole.includes("StateCoordinator")))
+    if (
+      !(userRole.length === 1 && userRole.includes("Telecaller")) &&
+      !(userRole.length == 2 && userRole.includes("StateCoordinator"))
+    )
       setState("");
     setDsOrDr("");
     setUdstStatus("");
     setDbtStatus("");
-    if(!(userRole.includes("SuperAdmin")) && !userRole.includes("StateCoordinator"))
+    if (
+      !userRole.includes("SuperAdmin") &&
+      !userRole.includes("StateCoordinator")
+    )
       setCreatedBy("");
     setIsDeleted("");
   };
@@ -144,7 +174,7 @@ const Reports = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 3, height: "100%" }}>
-            <Typography variant="h5" gutterBottom sx={{mb:3}}> 
+            <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
               Report Generation
             </Typography>
             <TextField
@@ -156,7 +186,6 @@ const Reports = () => {
               variant="outlined"
               InputLabelProps={{ shrink: true }}
             >
-              
               <MenuItem value="patient">Patient</MenuItem>
 
               {(userRole.includes("StateCoordinator") ||
@@ -266,7 +295,12 @@ const Reports = () => {
                   label="State"
                   InputLabelProps={{ shrink: true }}
                   value={state}
-                  disabled={userRole.length===1 && userRole.includes("Telecaller")|| (userRole.length==2 && userRole.includes("StateCoordinator"))}
+                  disabled={
+                    (userRole.length === 1 &&
+                      userRole.includes("Telecaller")) ||
+                    (userRole.length == 2 &&
+                      userRole.includes("StateCoordinator"))
+                  }
                   onChange={(e) => setState(e.target.value)}
                   variant="outlined"
                 >
@@ -375,7 +409,10 @@ const Reports = () => {
                   select
                   label="Created By"
                   value={createdBy}
-                  disabled={userRole.includes("SuperAdmin") || userRole.includes("StateCoordinator")}
+                  disabled={
+                    userRole.includes("SuperAdmin") ||
+                    userRole.includes("StateCoordinator")
+                  }
                   onChange={(e) => setCreatedBy(e.target.value)}
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
@@ -388,14 +425,19 @@ const Reports = () => {
                 item
                 xs={12}
                 sm={6}
-                sx={{ display: currentRole === "patient" || "statehead" || "telecaller"? "block" : "none" }}
+                sx={{
+                  display:
+                    currentRole === "patient" || "statehead" || "telecaller"
+                      ? "block"
+                      : "none",
+                }}
               >
                 <TextField
                   fullWidth
                   select
-                  label={currentRole==="patient"?"Deleted":"Active"}
+                  label={currentRole === "patient" ? "Deleted" : "Removed"}
                   value={isDeleted}
-                  disabled={currentRole==="followup"}
+                  disabled={currentRole === "followup"}
                   onChange={(e) => setIsDeleted(e.target.value)}
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
@@ -403,7 +445,6 @@ const Reports = () => {
                   <MenuItem value="">All</MenuItem>
                   <MenuItem value="true">Yes</MenuItem>
                   <MenuItem value="false">No</MenuItem>
-
                 </TextField>
               </Grid>
               <Grid item xs={12}>
@@ -411,13 +452,13 @@ const Reports = () => {
                   sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
                 >
                   <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={handleClearFilters}
-                        size="large"
-                      >
-                        Clear Filters
-                      </Button>
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleClearFilters}
+                    size="large"
+                  >
+                    Clear Filters
+                  </Button>
                   {currentRole === "patient" && (
                     <>
                       <Button
@@ -446,7 +487,6 @@ const Reports = () => {
                       >
                         Download Patients FollowUp Reports
                       </Button>
-                      
                     </>
                   )}
                   {currentRole === "telecaller" && (
