@@ -36,8 +36,7 @@ const SettingField = ({ setting, control, errors, setValue, reset }) => {
 			value: control._formValues[setting.keyName] ?? "",
 		};
 		try {
-			console.log(formData);
-			await axiosInstance.post("/setting", formData);
+			await axiosInstance.put("/setting", formData);
 		} catch (error) {
 			console.error("Error saving setting:", error);
 		}
