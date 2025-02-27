@@ -21,7 +21,8 @@ const Reports = () => {
     useSelector((state: any) => state.user?.profile?.email) ||
     auth.user?.profile.email;
     const userRole = auth.user?.profile.client_roles || [];
-    console.log(auth);
+  const userState=useSelector((state:any)=>state.user?.userState)||"";
+  console.log(userState,userRole);
 
   const [currentRole, setCurrentRole] = useState("patient");
   const [age, setAge] = useState("");
@@ -34,6 +35,12 @@ const Reports = () => {
   const [udstStatus, setUdstStatus] = useState<boolean | "">("");
   const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
   const [createdBy, setCreatedBy] = useState<string>("");
+
+
+  useEffect(()=>{
+    if(userRole.length===1 && userRole.includes("Telecaller"))
+      setState(userState);
+  },[userRole])
 
   const handleTeleCallerReport = async () => {
     try {
@@ -117,7 +124,8 @@ const Reports = () => {
     setStartDate("");
     setEndDate("");
     setCurrentStatus("");
-    setState("");
+    if(!(userRole.length===1 && userRole.includes("Telecaller")))
+      setState("");
     setDsOrDr("");
     setUdstStatus("");
     setDbtStatus("");
@@ -251,6 +259,7 @@ const Reports = () => {
                   label="State"
                   InputLabelProps={{ shrink: true }}
                   value={state}
+                  disabled={userRole.length===1 && userRole.includes("Telecaller")}
                   onChange={(e) => setState(e.target.value)}
                   variant="outlined"
                 >
