@@ -28,7 +28,7 @@ const Reports = () => {
   const [endDate, setEndDate] = useState("");
   const [currentStatus, setCurrentStatus] = useState("");
   const [cured, setCured] = useState(null);
-  const [state, setState] = useState<String>("");
+  const [state, setState] = useState<string>("");
   const [dsOrDr, setDsOrDr] = useState<string>("");
   const [udstStatus, setUdstStatus] = useState<boolean | "">("");
   const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
@@ -121,7 +121,9 @@ const Reports = () => {
         }
       );
       blodHandler(response.data, "FollowUpsForToday.xlsx");
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

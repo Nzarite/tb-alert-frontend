@@ -104,7 +104,7 @@ const PatientRegistrationPage = () => {
         if (!formData.nikshayDetails) {
           throw new Error("Nikshay Details not found. Please complete step 3.");
         }
-        response = await axiosInstance.post("/contactscreening/save", {
+        response = await axiosInstance.post(`/contactscreening/${patientId}`, {
           ...stepData,
           patientId,
         });
@@ -113,7 +113,7 @@ const PatientRegistrationPage = () => {
           setOpenSnackbar(true);
           setTimeout(() => {
               navigate(`/patient-dashboard/${patientId}`);
-          }, 4000);
+          }, 2000);
         }
       }
     } catch (error: any) {

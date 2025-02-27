@@ -70,6 +70,8 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   // This state toggles if the current followup can be edited or not
   const [isEditable, setIsEditable] = useState(false);
   const [hover, setHover] = useState(-1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     control,

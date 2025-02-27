@@ -2,7 +2,7 @@
   "nikshaydetailsform": {
     "patientNameLabel": "Name of the Patient",
     "contactScreeningDoneLabel": {
-      "label": "Contact Screening Done1",
+      "label": "Contact Screening Done",
       "options": [
         { "label": "Yes", "value": true },
         { "label": "No", "value": false }
