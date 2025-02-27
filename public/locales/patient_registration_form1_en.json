@@ -5,8 +5,8 @@
     "genderLabel": {
       "label": "Gender",
       "options": [
-        { "label": "Male", "value": "Male" },
-        { "label": "Female", "value": "Female" }
+        { "label": "Male", "value": "M" },
+        { "label": "Female", "value": "F" }
       ]
     },
     "phoneNumberLabel": "Contact Number",
