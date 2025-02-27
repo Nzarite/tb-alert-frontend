@@ -1,8 +1,9 @@
 {
   "nikshaydetailsform": {
+    "patientNameLabel": "Name of the Patient",
     "nikshayIdLabel": "Nikshay Id",
     "udstStatusLabel": {
-      "label": "Whether the PwTB done for UDST1",
+      "label": "Whether the PwTB done for UDST",
       "options": [
         { "label": "Yes", "value": true },
         { "label": "No", "value": false }

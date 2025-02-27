@@ -31,12 +31,12 @@ const PatientRegistrationPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
- 
+
   const auth = useAuth();
   const userEmail =
     useSelector((state) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
- 
+
   const steps = [
     "Patient Details",
     "TB Details",
@@ -50,9 +50,9 @@ const PatientRegistrationPage = () => {
     nikshayDetails: {} as NikshayDetailsData,
     contactScreeningDetails: {} as ContactScreeningData,
   });
- 
+
   const language = useSelector((state: any) => state.language.language);
- 
+
   const { handleSubmit } = useForm();
  
   const onSubmit = (data: any) => {
@@ -104,8 +104,7 @@ const PatientRegistrationPage = () => {
         if (!formData.nikshayDetails) {
           throw new Error("Nikshay Details not found. Please complete step 3.");
         }
-        console.log(stepData)
-        response = await axiosInstance.post("/contactscreening/save", {
+        response = await axiosInstance.post(`/contactscreening/${patientId}`, {
           ...stepData,
           patientId,
         });
@@ -114,7 +113,7 @@ const PatientRegistrationPage = () => {
           setOpenSnackbar(true);
           setTimeout(() => {
               navigate(`/patient-dashboard/${patientId}`);
-          }, 4000);
+          }, 2000);
         }
       }
     } catch (error: any) {
@@ -131,7 +130,7 @@ const PatientRegistrationPage = () => {
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
- 
+
   // const handleNext = () => {
   //   if (activeStep < steps.length - 1) {
   //     setActiveStep(activeStep + 1);
@@ -139,7 +138,7 @@ const PatientRegistrationPage = () => {
   //     console.log("Final Data Submitted:", stepData);
   //   }
   // };
- 
+
   return (
     <>
       <Container maxWidth="md">
