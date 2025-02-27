@@ -17,7 +17,6 @@
     "@mui/material": "^6.4.2",
     "@mui/styled-engine-sc": "^6.4.2",
     "@mui/x-date-pickers": "^7.25.0",
-    "antd": "^5.23.4",
     "@reduxjs/toolkit": "^2.5.1",
     "axios": "^1.7.9",
     "antd":"^5.23.4",

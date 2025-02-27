@@ -237,7 +237,17 @@ const PatientDetailsForm = ({
                 defaultValue={data?.name || ""}
                 rules={{ required: `${field.label} is required` }}
                 render={({ field: radioField }) => (
-                  <RadioGroup {...radioField} row>
+                  <RadioGroup
+                    {...radioField}
+                    row
+                    onChange={(e) =>
+                      radioField.onChange(
+                        field.name === "consentForMessage"
+                          ? e.target.value === "true"
+                          : e.target.value
+                      )
+                    }
+                  >
                     {field.options?.map((option) => (
                       <FormControlLabel
                         key={option.value.toString()}

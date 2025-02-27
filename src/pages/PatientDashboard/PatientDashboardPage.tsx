@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useState } from "react";
 import {
   MdAssessment,
@@ -58,7 +58,7 @@ const PatientDashboardPage = () => {
 
   return (
     <>
-      {/* <Button onClick={handlePatientDelete}>Delete Patient</Button> */}
+      <Button onClick={handlePatientDelete}>Delete Patient</Button>
       <Grid container spacing={2} sx={{ p: 2 }}>
         {[
           {
