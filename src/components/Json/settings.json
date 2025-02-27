@@ -33,7 +33,7 @@
         "type": "longtext",
         "keyName": "sms_template",
         "value": "Hi {patientId}:{nikshayId} {firstName} {lastName},\n\nThis is your daily medicine reminder.\nYour scheduled medications for today ({medication_date}) is/are: {medication_names}.\n\nFor any queries, contact us at {org_phone_number}.",
-        "placeholder": "Template for SMS. Don't change the names in the bracket"
+        "placeholder": "Template for SMS. (Don't change the names in the bracket)"
       }
     ]
   },
@@ -81,10 +81,10 @@
     "settings": [
       {
         "label": "State",
-        "type": "multi-input",
+        "type": "text",
         "keyName": "state",
-        "value": null,
-        "placeholder": "Add States and their codes "
+        "value": "",
+        "placeholder": "State and it's code. (eg. TS: Telangana)"
       }
     ]
   }
