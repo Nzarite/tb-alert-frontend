@@ -36,11 +36,14 @@ const Reports = () => {
   const [udstStatus, setUdstStatus] = useState<boolean | "">("");
   const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
   const [createdBy, setCreatedBy] = useState<string>("");
+  const [isDeleted,setIsDeleted]=useState("");
 
 
   useEffect(()=>{
-    if(userRole.length===1 && userRole.includes("Telecaller"))
+    if(userRole.length===1 && userRole.includes("Telecaller") || (userRole.length==2 && userRole.includes("StateCoordinator")))
       setState(userState);
+    if(userRole.includes("SuperAdmin") || userRole.includes("StateCoordinator"))
+      setCreatedBy("");
   },[userRole])
 
   const handleTeleCallerReport = async () => {
@@ -90,6 +93,7 @@ const Reports = () => {
         dstbOrDrtb: dsOrDr,
         udstStatus: udstStatus,
         dbtStatus: dbtStatus,
+        isDeleted:isDeleted
       };
 
       const response = await axiosInstance.post(endpoint, filters, {
@@ -125,12 +129,14 @@ const Reports = () => {
     setStartDate("");
     setEndDate("");
     setCurrentStatus("");
-    if(!(userRole.length===1 && userRole.includes("Telecaller")))
+    if(!(userRole.length===1 && userRole.includes("Telecaller")) && !(userRole.length==2 && userRole.includes("StateCoordinator")))
       setState("");
     setDsOrDr("");
     setUdstStatus("");
     setDbtStatus("");
-    setCreatedBy("");
+    if(!(userRole.includes("SuperAdmin")) && !userRole.includes("StateCoordinator"))
+      setCreatedBy("");
+    setIsDeleted("");
   };
 
   return (
@@ -138,13 +144,13 @@ const Reports = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 3, height: "100%" }}>
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h5" gutterBottom sx={{mb:3}}> 
               Report Generation
             </Typography>
             <TextField
               fullWidth
               select
-              label="Role"
+              label="Type"
               value={currentRole}
               onChange={(e) => setCurrentRole(e.target.value)}
               variant="outlined"
@@ -260,7 +266,7 @@ const Reports = () => {
                   label="State"
                   InputLabelProps={{ shrink: true }}
                   value={state}
-                  disabled={userRole.length===1 && userRole.includes("Telecaller")}
+                  disabled={userRole.length===1 && userRole.includes("Telecaller")|| (userRole.length==2 && userRole.includes("StateCoordinator"))}
                   onChange={(e) => setState(e.target.value)}
                   variant="outlined"
                 >
@@ -369,12 +375,35 @@ const Reports = () => {
                   select
                   label="Created By"
                   value={createdBy}
+                  disabled={userRole.includes("SuperAdmin") || userRole.includes("StateCoordinator")}
                   onChange={(e) => setCreatedBy(e.target.value)}
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
                 >
                   <MenuItem value="">All</MenuItem>
                   <MenuItem value="self">Self</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ display: currentRole === "patient" || "statehead" || "telecaller"? "block" : "none" }}
+              >
+                <TextField
+                  fullWidth
+                  select
+                  label={currentRole==="patient"?"Deleted":"Active"}
+                  value={isDeleted}
+                  disabled={currentRole==="followup"}
+                  onChange={(e) => setIsDeleted(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="true">Yes</MenuItem>
+                  <MenuItem value="false">No</MenuItem>
+
                 </TextField>
               </Grid>
               <Grid item xs={12}>
