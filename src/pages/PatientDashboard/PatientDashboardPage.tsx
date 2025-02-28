@@ -1,4 +1,5 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useState } from "react";
 import {
   MdAssessment,
@@ -9,8 +10,8 @@ import {
 } from "react-icons/md";
 import { RiPencilLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
+import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
 import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
-import axiosInstance from "../../components/axiosInstance";
 import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
 import PatientFollowUpDetails from "./PatientFollowUpDetails";
 import PatientMedicalDetails from "./PatientMedicalDetails";
@@ -24,6 +25,7 @@ const PatientDashboardPage = () => {
   const [selectedPatientData, setSelectedPatientData] = useState(null);
   // const [patientId, setPatientId] = useState<number | null>();
   const navigate = useNavigate();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleEditClick = (section: any) => {
     if (section.editURL) {
@@ -39,26 +41,37 @@ const PatientDashboardPage = () => {
     setSelectedPatientData(null);
   };
 
-  const handlePatientDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this patient?"))
-      return;
-    try {
-      await axiosInstance.delete(`/patient/${patientId}`);
-      alert("Patient deleted successfully.");
-      console.log(`Patient ${patientId} deleted successfully.`);
-    } catch (Error) {
-      alert("Failed to delete patient. Please try again.");
-      console.log(Error);
-    }
-  };
-
   if (!patientId) {
     return <Typography variant="h6">No patient selected</Typography>;
   }
 
   return (
     <>
-      {/* <Button onClick={handlePatientDelete}>Delete Patient</Button> */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          pr: 2,
+        }}
+      >
+        <Button
+          color="error"
+          variant="contained"
+          onClick={() => setDeleteModalOpen(true)}
+        >
+          <DeleteIcon />
+        </Button>
+
+        <DeletePersonModal
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          deleteUrl={`patient/${patientId}`}
+          navigateUrl="/patient-dashboard"
+          person={"Patient"}
+        />
+      </Box>
+
       <Grid container spacing={2} sx={{ p: 2 }}>
         {[
           {
