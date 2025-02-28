@@ -54,15 +54,7 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       console.warn("Unauthorized request detected. Logging out...");
 
-      // Remove token from storage
-      sessionStorage.removeItem(
-        `oidc.user:${import.meta.env.VITE_OIDC_AUTHORITY}:${
-          import.meta.env.VITE_OIDC_CLIENT_ID
-        }`
-      );
-
-      // Redirect to Keycloak logout URL
-      window.location.href = `${import.meta.env.VITE_POST_LOGOUT_REDIRECT_URI}`;
+      
 
       return Promise.reject(error);
     }

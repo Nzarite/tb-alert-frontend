@@ -5,12 +5,13 @@ import {
   CircularProgress,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   MenuItem,
   Radio,
   RadioGroup,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -18,6 +19,7 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { Role } from "../Authorization/Roles/Types";
 import { useAuth } from "react-oidc-context";
+import { LabelOption } from "../datatypes/DataTypes";
 
 export type PatientDetailsData = {
   firstName: string;
@@ -33,10 +35,26 @@ export type PatientDetailsData = {
   consentForMessage: boolean;
 };
 
+export interface PatientDetailsFormLabelsData {
+  patientIdLabel: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  genderLabel: LabelOption;
+  phoneNumberLabel: string;
+  ageLabel: string;
+  districtLabel: string;
+  villageLabel: string;
+  blockLabel: string;
+  gpLabel: string;
+  consentForMessageLabel: LabelOption;
+  currentStatusLabel: string;
+  stateLabel: string;
+}
+
 const patientDetailsSchema = z.object({
   firstName: z.string().min(1, "First Name is required"),
   lastName: z.string().optional(),
-  gender: z.enum(["M", "F"], {
+  gender: z.enum(["Male", "Female"], {
     errorMap: () => ({ message: "Gender is required" }),
   }),
   phoneNumber: z
@@ -54,7 +72,9 @@ const patientDetailsSchema = z.object({
   village: z.string().min(1, "Village Name is required"),
   block: z.string().min(1, "Block Name is required"),
   gp: z.string().min(1, "GP Name is required"),
-  consentForMessage: z.string(),
+  consentForMessage: z.boolean({
+    errorMap: () => ({ message: "Consent for message is required" }),
+  }),
 });
 
 const PatientDetailsForm = ({
@@ -65,10 +85,6 @@ const PatientDetailsForm = ({
   functionality,
   loading,
 }: any) => {
-  interface LabelOption {
-    label: string;
-    options: { label: string; value: any }[];
-  }
 
   const [state, setState] = useState<{ states: LabelOption }>({
     states: { label: "", options: [] },
@@ -85,20 +101,8 @@ const PatientDetailsForm = ({
       state.user?.profile?.client_roles || auth?.user?.profile?.client_roles
   ) as Role[];
 
-  interface PatientDetailsFormLabelsData {
-    firstNameLabel: string;
-    lastNameLabel: string;
-    genderLabel: LabelOption;
-    phoneNumberLabel: string;
-    ageLabel: string;
-    districtLabel: string;
-    villageLabel: string;
-    blockLabel: string;
-    gpLabel: string;
-    consentForMessageLabel: LabelOption;
-  }
-
   const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
+    patientIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
@@ -109,6 +113,8 @@ const PatientDetailsForm = ({
     blockLabel: "",
     gpLabel: "",
     consentForMessageLabel: { label: "", options: [] },
+    currentStatusLabel:"",
+    stateLabel: "",
   });
 
   useEffect(() => {
@@ -271,7 +277,17 @@ const PatientDetailsForm = ({
                 defaultValue={data?.name || ""}
                 rules={{ required: `${field.label} is required` }}
                 render={({ field: radioField }) => (
-                  <RadioGroup {...radioField} row>
+                  <RadioGroup
+                    {...radioField}
+                    row
+                    onChange={(e) =>
+                      radioField.onChange(
+                        field.name === "consentForMessage"
+                          ? e.target.value === "true"
+                          : e.target.value
+                      )
+                    }
+                  >
                     {field.options?.map((option) => (
                       <FormControlLabel
                         key={option.value.toString()}
@@ -283,6 +299,9 @@ const PatientDetailsForm = ({
                   </RadioGroup>
                 )}
               />
+              {errors[field.name] && (
+                <FormHelperText>{errors[field.name]?.message}</FormHelperText>
+              )}
             </FormControl>
           ) : field.type === "number" ? (
             <Controller

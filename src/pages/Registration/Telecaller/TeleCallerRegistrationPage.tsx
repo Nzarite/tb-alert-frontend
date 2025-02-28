@@ -18,6 +18,8 @@ import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
+import { LabelOption } from "../../../components/datatypes/DataTypes";
+import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
 import { Role } from "../../../components/Authorization/Roles/Types";
 
 const schema = z.object({
@@ -55,31 +57,20 @@ const TelecallerRegistrationPage = () => {
     mode: "all",
   });
 
-  interface LabelOption {
-    label: string;
-    options: { label: string; value: any }[];
-  }
-
   const [state, setState] = useState<{ states: LabelOption }>({
     states: { label: "", options: [] },
   });
 
-  interface ScTcRegistrationFormLabelsData {
-    firstNameLabel: string;
-    lastNameLabel: string;
-    genderLabel: LabelOption;
-    phoneNumberLabel: string;
-    emailLabel: string;
-    dateOfJoiningLabel: string;
-  }
-
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
+    userIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
     phoneNumberLabel: "",
     emailLabel: "",
     dateOfJoiningLabel: "",
+    dateOfLeavingLabel: "",
+    stateLabel: "",
   });
 
   const language = useSelector((state: any) => state.language.language);

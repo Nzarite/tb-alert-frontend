@@ -1,6 +1,10 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import useCustomEffect from "../hooks/useCustomEffect";
+import useLogout from "../hooks/useLogout";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const breadcrumbNameMap: { [key: string]: string } = {
   "/": "Home",
@@ -24,6 +28,27 @@ const breadcrumbNameMap: { [key: string]: string } = {
 };
 
 const PageLayout = () => {
+  const logout = useLogout();
+  const userState = useSelector((state: any) => state.userState); // Replace `auth.user` with your actual state path
+
+  useEffect(() => {
+    if (userState !== null) return; // Wait until Redux state is available
+
+    const handleStorageChange = () => {
+      if (!localStorage.getItem("userState")) {
+        logout();
+      }
+    };
+
+    // Check initially and listen for changes
+    handleStorageChange();
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [localStorage.getItem("userState")]); // Run only when userState updates
+
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
 
