@@ -124,8 +124,12 @@ export interface PatientContactScreeningInterface {
   noOfHHCsInitiatedTPT: string;
 }
 
-export interface SettingInputInterface {
-  
+export interface SettingsInterface {
+  keyName: string;
+  label: string;
+  type: "text" | "number" | "longtext" | "time" | "chips" | "button";
+  value: string | number | string[];
+  placeholder?: string;
 }
 
 export interface SettingPutInterface {

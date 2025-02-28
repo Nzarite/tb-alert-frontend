@@ -54,18 +54,18 @@ const SettingsPage = () => {
   const [data, setData] = useState(categories);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        // const response = await axiosInstance.get("/setting/all");
-        // setData(response.data);
-      } catch (error) {
-        console.error("Failed to fetch settings:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchSettings = async () => {
+    try {
+      // const response = await axiosInstance.get("/setting/all");
+      // setData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch settings:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchSettings();
   }, []);
 
@@ -86,6 +86,7 @@ const SettingsPage = () => {
           return acc;
         }, {})
       : {},
+    mode: "all",
   });
 
   if (loading) {
@@ -127,6 +128,7 @@ const SettingsPage = () => {
               errors={errors}
               setValue={setValue}
               reset={reset}
+              fetchSettings={fetchSettings}
             />
           ))}
         </Box>
