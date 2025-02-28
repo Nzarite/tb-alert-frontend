@@ -64,14 +64,28 @@
         "label": "DSTB",
         "type": "chips",
         "keyName": "dstb_medicines",
-        "value": ["Paracetamol", "Dolo", "Crocin", "Medicine A", "Medicine B"],
+        "value": [
+          "Isoniazid",
+          "Rifampin",
+          "Rifapentine",
+          "Pyrazinamide",
+          "Ethambutol",
+          "Moxifloxacin"
+        ],
         "placeholder": "Default medicines for all patients with DSTB"
       },
       {
         "label": "DRTB",
         "type": "chips",
         "keyName": "drtb_medicines",
-        "value": ["Paracetamol", "Dolo", "Crocin", "Medicine A", "Medicine B"],
+        "value": [
+          "Isoniazid",
+          "Rifampin",
+          "Rifapentine",
+          "Pyrazinamide",
+          "Ethambutol",
+          "Moxifloxacin"
+        ],
         "placeholder": "Default medicines for all patients with DRTB"
       }
     ]
