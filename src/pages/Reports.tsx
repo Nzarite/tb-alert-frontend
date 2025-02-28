@@ -22,7 +22,7 @@ const Reports = () => {
     auth.user?.profile.email;
   const userRole = auth.user?.profile.client_roles || {};
 
-  const userState = useSelector((state: any) => state.user?.userState) || "";
+  const userState = useSelector((state: any) => state.user?.userState) || localStorage.getItem("userState");
   console.log(userState, userRole);
 
   const [currentRole, setCurrentRole] = useState("patient");
@@ -37,7 +37,7 @@ const Reports = () => {
   const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
   const [createdBy, setCreatedBy] = useState<string>("");
   const [isDeleted, setIsDeleted] = useState("");
-
+  console.log(userState); 
   useEffect(() => {
     if (
       (userRole.length === 1 && userRole.includes("Telecaller")) ||
