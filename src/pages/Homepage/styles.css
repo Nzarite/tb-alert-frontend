@@ -11,8 +11,6 @@ body {
     align-items: center;
     margin-top: 5vh;
     padding: 30px;
-    height: 85vh; 
-    overflow-y: auto; 
 }
 
 .module-container {

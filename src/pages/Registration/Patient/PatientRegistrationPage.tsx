@@ -7,7 +7,7 @@ import {
   Step,
   StepLabel,
   Stepper,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -27,6 +27,7 @@ import TbDetailsForm, {
   TbDetailsData,
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
+import { Role } from "../../../components/Authorization/Roles/Types";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -123,7 +124,7 @@ const PatientRegistrationPage = () => {
           setFormData({ ...formData, contactScreeningDetails: stepData });
           setOpenSnackbar(true);
           setTimeout(() => {
-              navigate(`/patient-dashboard/${patientId}`);
+            navigate(`/patient-dashboard/${patientId}`);
           }, 2000);
         }
       }
@@ -229,8 +230,8 @@ const PatientRegistrationPage = () => {
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
               >
                 <Alert severity="success" variant="filled">
-                  Patient registered successfully with Personal, TB, Nikshay & Contact
-                  Screening details.
+                  Patient registered successfully with Personal, TB, Nikshay &
+                  Contact Screening details.
                 </Alert>
               </Snackbar>
             </Paper>

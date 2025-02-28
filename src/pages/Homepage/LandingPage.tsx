@@ -1,17 +1,18 @@
 import { Box } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Role } from "../../components/Authorization/Roles/Types";
 import { tiles } from "../../components/Tiles";
 import { RootState } from "../../redux/store";
-import { setUserProfile } from "../../redux/userSlice";
+import { setUserProfile, setUserState } from "../../redux/userSlice";
 import "./styles.css";
+import axiosInstance from "../../components/axiosInstance";
 
 const LandingPage = () => {
   const auth = useAuth();
-  console.log(auth);
+  // console.log(auth);
   const user = auth?.user;
   const profile = user?.profile;
   const dispatch = useDispatch();
@@ -35,11 +36,28 @@ const LandingPage = () => {
         email: profile.email,
       };
       dispatch(setUserProfile(userProfile));
-    }
-  }, []);
 
-  const state = useSelector((state: RootState) => state);
-  console.log("Redux State:", state);
+      const fetchUserDetails = async () => {
+        try {
+          const response = await axiosInstance.get(
+            `/person/email/${profile.email}`
+          );
+          // console.log("Fetched user details:", response.data);
+
+          if (response.data.state) {
+            dispatch(setUserState(response.data.state));
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      };
+
+      fetchUserDetails();
+    }
+  }, [profile, dispatch]);
+
+  // const state = useSelector((state: RootState) => state);
+  // console.log("Redux State:", state);
 
   const userRoles: Role[] = (auth?.user?.profile?.client_roles || []) as Role[];
 

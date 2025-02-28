@@ -129,64 +129,43 @@ export interface PatientContactScreeningInterface {
   noOfHHCsInitiatedTPT: string;
 }
 
-export interface SettingListItemProps {
-	keyName: string;
-	value: string;
-	type: string;
-	settings: SettingType[];
-	getSettings: () => void;
-	setSettings: React.Dispatch<React.SetStateAction<SettingType[]>>
-  }
+export interface SettingInputInterface {
+  
+}
 
-  export interface SettingStringItemProps {
-	keyName: string;
-	value: string;
-	type: string;
-	settings: SettingType[];
-	getSettings: () => void;
-	setSettings: React.Dispatch<React.SetStateAction<SettingType[]>>
-  }
+export interface SettingPutInterface {
+  keyName: string;
+  value: string;
+}
 
-  export interface DBEntryType {
-	id: string,
-	name:string
-  }
+export interface TeleCaller {
+  createdBy: string;
+  createdOn: string;
+  dateOfJoining: string;
+  email: string;
+  firstName: string;
+  gender: string;
+  lastName: string;
+  personId: number;
+  phoneNumber: string;
+  state: string;
+  teleCallerId: number;
+  updatedBy: string;
+  dateOfLeaving: string;
+}
 
-  export interface SettingType {
-	keyName: string;
-	value: string;
-	type: string;
-  }
-
-  export interface TeleCaller{
-	createdBy:string;
-	createdOn:string;
-	dateOfJoining:string;
-	email:string;
-	firstName:string;
-	gender:string;
-	lastName:string;
-	personId:number
-	phoneNumber:string;
-	state:string;
-	teleCallerId:number;	
-	updatedBy:string;
-	dateOfLeaving:string;
-  }
-
-  export interface StateHead{
-	createdBy:string;
-	createdOn:string;
-	dateOfJoining:string;
-	email:string;
-	firstName:string;
-	gender:string;
-	lastName:string;
-	personId:number
-	phoneNumber:string;
-	state:string;
-	stateHeadId:number;	
-	updatedBy:string;
-	dateOfLeaving:string;
-
-  }
+export interface StateHead {
+  createdBy: string;
+  createdOn: string;
+  dateOfJoining: string;
+  email: string;
+  firstName: string;
+  gender: string;
+  lastName: string;
+  personId: number;
+  phoneNumber: string;
+  state: string;
+  stateHeadId: number;
+  updatedBy: string;
+  dateOfLeaving: string;
+}

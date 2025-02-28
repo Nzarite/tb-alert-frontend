@@ -11,11 +11,14 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { z } from "zod";
+import { Role } from "../Authorization/Roles/Types";
+import { useAuth } from "react-oidc-context";
 import { LabelOption } from "../datatypes/DataTypes";
 
 export type PatientDetailsData = {
@@ -86,6 +89,19 @@ const PatientDetailsForm = ({
   const [state, setState] = useState<{ states: LabelOption }>({
     states: { label: "", options: [] },
   });
+
+  const auth = useAuth();
+
+  const userState =
+    useSelector((state) => state.userState) ||
+    localStorage.getItem("userState");
+
+  const userEmail =
+    useSelector((state) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
+
+  const userRoles: Role[] = (state.user?.profile?.client_roles ||
+    auth?.user?.profile?.client_roles) as Role[];
 
   const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
     patientIdLabel: "",
@@ -170,7 +186,9 @@ const PatientDetailsForm = ({
       name: "state",
       type: "select",
       label: state.states.label,
-      options: state.states.options,
+      options: userRoles.includes("SuperAdmin")
+        ? state.states.options
+        : state.states.options.filter((option) => option.value === userState),
     },
     { name: "district", type: "text", label: labels.districtLabel },
     { name: "village", type: "text", label: labels.villageLabel },
@@ -214,9 +232,10 @@ const PatientDetailsForm = ({
               variant="outlined"
               fullWidth
               margin="normal"
-              defaultValue={data?.name || ""}
+              defaultValue={field.options?.length === 1 ? field.options[0].value : data?.name || ""}
+              value={field.options?.length === 1 ? field.options[0].value : data?.name || ""}
               slotProps={{ inputLabel: { shrink: true } }}
-              disabled={loading}
+              disabled={field.options?.length === 1 || loading}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             >
