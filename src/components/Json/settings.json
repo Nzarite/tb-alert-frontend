@@ -1,0 +1,91 @@
+[
+  {
+    "name": "General",
+    "settings": [
+      {
+        "label": "Contact Us",
+        "type": "text",
+        "keyName": "org_contact",
+        "value": "7982241975",
+        "placeholder": "Organisation contact info (eg. Phone number, email)"
+      },
+      {
+        "label": "Plivo Console",
+        "type": "button",
+        "keyName": "plivo_console",
+        "value": "https://console.plivo.com/sms/reporting/",
+        "placeholder": "Go to Plivo Console"
+      }
+    ]
+  },
+  {
+    "name": "SMS",
+    "settings": [
+      {
+        "label": "Preferred Time",
+        "type": "time",
+        "keyName": "sms_reminder_time",
+        "value": "08:00",
+        "placeholder": "Preferred time for reminder"
+      },
+      {
+        "label": "Template",
+        "type": "longtext",
+        "keyName": "sms_template",
+        "value": "Hi {patientId}:{nikshayId} {firstName} {lastName},\n\nThis is your daily medicine reminder.\nYour scheduled medications for today ({medication_date}) is/are: {medication_names}.\n\nFor any queries, contact us at {org_phone_number}.",
+        "placeholder": "Template for SMS. (Don't change the names in the bracket)"
+      }
+    ]
+  },
+  {
+    "name": "Followup",
+    "settings": [
+      {
+        "label": "DSTB",
+        "type": "number",
+        "keyName": "dstb_followup",
+        "value": "8",
+        "placeholder": "Number of followups for DSTB"
+      },
+      {
+        "label": "DRTB",
+        "type": "number",
+        "keyName": "drtb_followup",
+        "value": "8",
+        "placeholder": "Number of followups for DRTB"
+      }
+    ]
+  },
+
+  {
+    "name": "Medication",
+    "settings": [
+      {
+        "label": "DSTB",
+        "type": "chips",
+        "keyName": "dstb_medicines",
+        "value": ["Paracetamol", "Dolo", "Crocin", "Medicine A", "Medicine B"],
+        "placeholder": "Default medicines for all patients with DSTB"
+      },
+      {
+        "label": "DRTB",
+        "type": "chips",
+        "keyName": "drtb_medicines",
+        "value": ["Paracetamol", "Dolo", "Crocin", "Medicine A", "Medicine B"],
+        "placeholder": "Default medicines for all patients with DRTB"
+      }
+    ]
+  },
+  {
+    "name": "State",
+    "settings": [
+      {
+        "label": "State",
+        "type": "text",
+        "keyName": "state",
+        "value": "",
+        "placeholder": "State and it's code. (eg. TS: Telangana)"
+      }
+    ]
+  }
+]

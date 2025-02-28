@@ -23,7 +23,7 @@ import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistr
 import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
 import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
 import Reports from "./pages/Reports";
-import Settings from "./pages/Settings";
+import Settings from "./pages/Settings/SettingsPage.tsx";
 import SmsModulePage from "./pages/SmsModulePage";
 import UserDashBoard from "./pages/UserDashBoard/UserDashBoard.tsx";
 import UserSearch from "./pages/UserDashBoard/UserSearch.tsx";
