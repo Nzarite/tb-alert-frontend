@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { LabelOption } from "../datatypes/DataTypes";
 
 export type PatientDetailsData = {
   firstName: string;
@@ -30,6 +31,22 @@ export type PatientDetailsData = {
   gp: string;
   consentForMessage: boolean;
 };
+
+export interface PatientDetailsFormLabelsData {
+  patientIdLabel: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  genderLabel: LabelOption;
+  phoneNumberLabel: string;
+  ageLabel: string;
+  districtLabel: string;
+  villageLabel: string;
+  blockLabel: string;
+  gpLabel: string;
+  consentForMessageLabel: LabelOption;
+  currentStatusLabel: string;
+  stateLabel: string;
+}
 
 const patientDetailsSchema = z.object({
   firstName: z.string().min(1, "First Name is required"),
@@ -65,29 +82,13 @@ const PatientDetailsForm = ({
   functionality,
   loading,
 }: any) => {
-  interface LabelOption {
-    label: string;
-    options: { label: string; value: any }[];
-  }
 
   const [state, setState] = useState<{ states: LabelOption }>({
     states: { label: "", options: [] },
   });
 
-  interface PatientDetailsFormLabelsData {
-    firstNameLabel: string;
-    lastNameLabel: string;
-    genderLabel: LabelOption;
-    phoneNumberLabel: string;
-    ageLabel: string;
-    districtLabel: string;
-    villageLabel: string;
-    blockLabel: string;
-    gpLabel: string;
-    consentForMessageLabel: LabelOption;
-  }
-
   const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
+    patientIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
@@ -98,6 +99,8 @@ const PatientDetailsForm = ({
     blockLabel: "",
     gpLabel: "",
     consentForMessageLabel: { label: "", options: [] },
+    currentStatusLabel:"",
+    stateLabel: "",
   });
 
   useEffect(() => {

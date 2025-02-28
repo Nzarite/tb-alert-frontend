@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { LabelOption } from "../datatypes/DataTypes";
 
 export type TbDetailsData = {
   typeOfPwtb: string;
@@ -19,6 +20,16 @@ export type TbDetailsData = {
   typeOfTb: string;
   dstbOrDrtb: string;
 };
+
+export interface TbDetailsFormLabelsData {
+  patientNameLabel: string;
+  typeOfPwtbLabel: LabelOption;
+  clinicalOrMicrobiologicalLabel: LabelOption;
+  dateOfDiagnosisLabel: string;
+  dateOfTreatmentInitiationLabel: string;
+  typeOfTbLabel: LabelOption;
+  dstbOrDrtbLabel: LabelOption;
+}
 
 const tbDetailsSchema = z.object({
   typeOfPwtb: z.enum(["Identified by Project", "Received from NTEP"], {
@@ -52,20 +63,6 @@ const TbDetailsForm = ({
   patientName,
   loading,
 }: any) => {
-  interface LabelOption {
-    label: string;
-    options: { label: string; value: any }[];
-  }
-
-  interface TbDetailsFormLabelsData {
-    patientNameLabel: string;
-    typeOfPwtbLabel: LabelOption;
-    clinicalOrMicrobiologicalLabel: LabelOption;
-    dateOfDiagnosisLabel: string;
-    dateOfTreatmentInitiationLabel: string;
-    typeOfTbLabel: LabelOption;
-    dstbOrDrtbLabel: LabelOption;
-  }
 
   const [labels, setLabels] = useState<TbDetailsFormLabelsData>({
     patientNameLabel: "",

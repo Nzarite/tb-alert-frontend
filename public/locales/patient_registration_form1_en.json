@@ -1,6 +1,7 @@
 {
   "patientdetailsform": {
-    "firstNameLabel": "First Name",
+    "patientIdLabel": "Patient ID",
+    "firstNameLabel": "First Name1",
     "lastNameLabel": "Last Name",
     "genderLabel": {
       "label": "Gender",
@@ -15,12 +16,14 @@
     "villageLabel": "Name of the Village",
     "blockLabel": "Name of the Block",
     "gpLabel": "Name of the GP",
-    "consentForMessageLabel":{
-      "label":"Consent For Message",
-      "options":[
-        {"label":"Yes","value":true},
-        {"label":"No","value":false}
+    "consentForMessageLabel": {
+      "label": "Consent For Message",
+      "options": [
+        { "label": "Yes", "value": true },
+        { "label": "No", "value": false }
       ]
-    }
+    },
+    "currentStatusLabel": "Status",
+    "stateLabel": "State"
   }
 }

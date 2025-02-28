@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import { LabelOption } from "../datatypes/DataTypes";
 
 export type NikshayDetailsData = {
   nikshayId: string;
@@ -23,6 +24,19 @@ export type NikshayDetailsData = {
   nikshayMitraDate?: string;
   nikshayMitraName?: string;
 };
+
+export interface NikshayDetailsFormLabelsData {
+  patientNameLabel: string;
+  nikshayIdLabel: string;
+  udstStatusLabel: LabelOption;
+  dateOfUdstLabel: string;
+  resultOfUdstLabel: LabelOption;
+  dbtStatusLabel: LabelOption;
+  dateOfDbtLabel: string;
+  nikshayMitraStatusLabel: LabelOption;
+  nikshayMitraDateLabel: string;
+  nikshayMitraNameLabel: string;
+}
 
 const nikshayDetailsSchema = z
   .object({
@@ -98,23 +112,6 @@ const NikshayDetailsForm = ({
   patientName,
   loading,
 }: any) => {
-  interface LabelOption {
-    label: string;
-    options: { label: string; value: any }[];
-  }
-
-  interface NikshayDetailsFormLabelsData {
-    patientNameLabel: string;
-    nikshayIdLabel: string;
-    udstStatusLabel: LabelOption;
-    dateOfUdstLabel: string;
-    resultOfUdstLabel: LabelOption;
-    dbtStatusLabel: LabelOption;
-    dateOfDbtLabel: string;
-    nikshayMitraStatusLabel: LabelOption;
-    nikshayMitraDateLabel: string;
-    nikshayMitraNameLabel: string;
-  }
 
   const [labels, setLabels] = useState<NikshayDetailsFormLabelsData>({
     patientNameLabel: "",

@@ -2,6 +2,8 @@ import { Alert, Box, Divider, Grid, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
 import { DashboardFieldsProp } from "../../components/datatypes/DataTypes";
+import { useSelector } from "react-redux";
+import { NikshayDetailsFormLabelsData } from "../../components/NikshayDetailsForm/NikshayDetailsForm";
 
 export const renderField = (data, item: DashboardFieldsProp, index: number) => {
   const fieldValue = data[item.name];
@@ -13,11 +15,13 @@ export const renderField = (data, item: DashboardFieldsProp, index: number) => {
       : fieldValue !== null && fieldValue !== undefined && fieldValue !== ""
       ? fieldValue
       : "N/A";
+  const labelText =
+    typeof item.label === "string" ? item.label : item.label.label;
 
   return (
     <Grid item xs={item.size} key={index}>
       <Typography variant="subtitle2" fontWeight="bold" sx={{ color: "gray" }}>
-        {item.label.toUpperCase()}:
+        {labelText.toUpperCase()}:
       </Typography>
       <Typography variant="body1" sx={{ fontWeight: "medium", color: "#333" }}>
         {typeof displayValue === "string" || typeof displayValue === "number"
@@ -32,17 +36,44 @@ const PatientNikshayDetails = ({ patientId }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const language = useSelector((state: any) => state.language.language);
+  const [labels, setLabels] = useState<NikshayDetailsFormLabelsData>({
+    patientNameLabel: "",
+    nikshayIdLabel: "",
+    udstStatusLabel: { label: "", options: [] },
+    dateOfUdstLabel: "",
+    resultOfUdstLabel: { label: "", options: [] },
+    dbtStatusLabel: { label: "", options: [] },
+    dateOfDbtLabel: "",
+    nikshayMitraStatusLabel: { label: "", options: [] },
+    nikshayMitraDateLabel: "",
+    nikshayMitraNameLabel: "",
+  });
+
+  useEffect(() => {
+    fetch(`/locales/patient_registration_form3_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.nikshaydetailsform || {}))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
 
   const fields = [
-    { name: "nikshayId", label: "Nikshay ID", size: 12 },
-    { name: "nikshayMitraName", label: "Nikshay Mitra Name", size: 6 },
-    { name: "nikshayMitraDate", label: "Nikshay Mitra Date", size: 6 },
-    { name: "nikshayMitraStatus", label: "Nikshay Mitra Status", size: 12 },
-    { name: "dateOfUdst", label: "UDST Date", size: 6 },
-    { name: "udstStatus", label: "UDST Status", size: 6 },
-    { name: "resultOfUdst", label: "Result", size: 12 },
-    { name: "dateOfDbt", label: "DBT Date", size: 6 },
-    { name: "dbtStatus", label: "DBT Status", size: 6 },
+    { name: "nikshayId", label: labels.nikshayIdLabel, size: 12 },
+    { name: "udstStatus", label: labels.udstStatusLabel, size: 12 },
+    { name: "dateOfUdst", label: labels.dateOfUdstLabel, size: 6 },
+    { name: "resultOfUdst", label: labels.resultOfUdstLabel, size: 6 },
+    { name: "dbtStatus", label: labels.dbtStatusLabel, size: 12 },
+    { name: "dateOfDbt", label: labels.dateOfDbtLabel, size: 6 },
+    {
+      name: "nikshayMitraStatus",
+      label: labels.nikshayMitraStatusLabel,
+      size: 12,
+    },
+    { name: "nikshayMitraDate", label: labels.nikshayMitraDateLabel, size: 6 },
+    { name: "nikshayMitraName", label: labels.nikshayMitraNameLabel, size: 6 },
   ];
 
   useEffect(() => {
