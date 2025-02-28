@@ -10,11 +10,14 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { z } from "zod";
+import { Role } from "../Authorization/Roles/Types";
+import { useAuth } from "react-oidc-context";
 
 export type PatientDetailsData = {
   firstName: string;
@@ -27,7 +30,7 @@ export type PatientDetailsData = {
   village: string;
   block: string;
   gp: string;
-  consentForMessage:boolean;
+  consentForMessage: boolean;
 };
 
 const patientDetailsSchema = z.object({
@@ -51,7 +54,7 @@ const patientDetailsSchema = z.object({
   village: z.string().min(1, "Village Name is required"),
   block: z.string().min(1, "Block Name is required"),
   gp: z.string().min(1, "GP Name is required"),
-  consentForMessage:z.string(),
+  consentForMessage: z.string(),
 });
 
 const PatientDetailsForm = ({
@@ -71,6 +74,19 @@ const PatientDetailsForm = ({
     states: { label: "", options: [] },
   });
 
+  const auth = useAuth();
+
+  const userState =
+    useSelector((state) => state.userState) ||
+    localStorage.getItem("userState");
+
+  const userEmail =
+    useSelector((state) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
+
+  const userRoles: Role[] = (state.user?.profile?.client_roles ||
+    auth?.user?.profile?.client_roles) as Role[];
+
   interface PatientDetailsFormLabelsData {
     firstNameLabel: string;
     lastNameLabel: string;
@@ -81,7 +97,7 @@ const PatientDetailsForm = ({
     villageLabel: string;
     blockLabel: string;
     gpLabel: string;
-    consentForMessageLabel:LabelOption;
+    consentForMessageLabel: LabelOption;
   }
 
   const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
@@ -94,7 +110,7 @@ const PatientDetailsForm = ({
     villageLabel: "",
     blockLabel: "",
     gpLabel: "",
-    consentForMessageLabel:{label:"",options:[]},
+    consentForMessageLabel: { label: "", options: [] },
   });
 
   useEffect(() => {
@@ -164,13 +180,20 @@ const PatientDetailsForm = ({
       name: "state",
       type: "select",
       label: state.states.label,
-      options: state.states.options,
+      options: userRoles.includes("SuperAdmin")
+        ? state.states.options
+        : state.states.options.filter((option) => option.value === userState),
     },
     { name: "district", type: "text", label: labels.districtLabel },
     { name: "village", type: "text", label: labels.villageLabel },
     { name: "block", type: "text", label: labels.blockLabel },
     { name: "gp", type: "text", label: labels.gpLabel },
-    { name: "consentForMessage", type:"radio", label:labels.consentForMessageLabel.label, options:labels.consentForMessageLabel.options}
+    {
+      name: "consentForMessage",
+      type: "radio",
+      label: labels.consentForMessageLabel.label,
+      options: labels.consentForMessageLabel.options,
+    },
   ];
 
   if (!labels || !state.states) return <CircularProgress />;
@@ -203,9 +226,10 @@ const PatientDetailsForm = ({
               variant="outlined"
               fullWidth
               margin="normal"
-              defaultValue={data?.name || ""}
+              defaultValue={field.options?.length === 1 ? field.options[0].value : data?.name || ""}
+              value={field.options?.length === 1 ? field.options[0].value : data?.name || ""}
               slotProps={{ inputLabel: { shrink: true } }}
-              disabled={loading}
+              disabled={field.options?.length === 1 || loading}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             >
