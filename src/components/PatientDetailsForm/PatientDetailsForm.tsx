@@ -77,15 +77,13 @@ const PatientDetailsForm = ({
   const auth = useAuth();
 
   const userState =
-    useSelector((state) => state.userState) ||
+    useSelector((state: any) => state.userState) ||
     localStorage.getItem("userState");
 
-  const userEmail =
-    useSelector((state) => state.user?.profile?.email) ||
-    auth.user?.profile?.email;
-
-  const userRoles: Role[] = (state.user?.profile?.client_roles ||
-    auth?.user?.profile?.client_roles) as Role[];
+  const userRoles: Role[] = useSelector(
+    (state: any) =>
+      state.user?.profile?.client_roles || auth?.user?.profile?.client_roles
+  ) as Role[];
 
   interface PatientDetailsFormLabelsData {
     firstNameLabel: string;
@@ -196,6 +194,17 @@ const PatientDetailsForm = ({
     },
   ];
 
+  // const len = {
+  //   name: "state",
+  //   type: "select",
+  //   label: state.states.label,
+  //   options: userRoles.includes("SuperAdmin")
+  //     ? state.states.options
+  //     : state.states.options.filter((option) => option.value === userState),
+  // }.options.length;
+
+  // console.log(len);
+
   if (!labels || !state.states) return <CircularProgress />;
 
   return (
@@ -218,27 +227,36 @@ const PatientDetailsForm = ({
               helperText={errors[field.name]?.message}
             />
           ) : field.type === "select" ? (
-            <TextField
-              key={field.name}
-              {...register(field.name)}
-              select
-              label={field.label}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              defaultValue={field.options?.length === 1 ? field.options[0].value : data?.name || ""}
-              value={field.options?.length === 1 ? field.options[0].value : data?.name || ""}
-              slotProps={{ inputLabel: { shrink: true } }}
-              disabled={field.options?.length === 1 || loading}
-              error={!!errors[field.name]}
-              helperText={errors[field.name]?.message}
-            >
-              {field.options?.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name={field.name}
+              control={control}
+              defaultValue={data?.[field.name] || ""}
+              render={({ field: controllerField }) => (
+                <TextField
+                  {...controllerField}
+                  select
+                  label={field.label}
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  slotProps={{ inputLabel: { shrink: true } }}
+                  // value={
+                  //   field.options?.length === 1
+                  //     ? field.options[0].value
+                  //     : controllerField.value || ""
+                  // }
+                  onChange={(e) => controllerField.onChange(e.target.value)}
+                  error={!!errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                >
+                  {field.options?.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
           ) : field.type === "radio" ? (
             <FormControl
               key={field.name}
