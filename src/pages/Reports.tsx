@@ -19,7 +19,6 @@ const Reports = () => {
 
   const auth=useAuth();
   const userEmail=useSelector((state:any)=> state.user?.profile?.email)||auth.user?.profile.email;
-  console.log(userEmail);
 
   const [currentRole, setCurrentRole] = useState("patient");
   const [age, setAge] = useState("");

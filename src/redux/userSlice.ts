@@ -41,8 +41,5 @@ export const userSlice = createSlice({
   },
 });
 
-console.log(userSlice);
-
-
 export const { setUserProfile, clearUserProfile } = userSlice.actions;
 export default userSlice.reducer;
