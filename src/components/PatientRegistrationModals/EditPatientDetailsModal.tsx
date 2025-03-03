@@ -58,7 +58,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
 			case "nikshaymitra":
 				return `/nikshaymitra/register`;
 			case "contactscreening":
-				return `/contactscreening/${patientId}`;
+				return `/contactscreening`;
 			default:
 				return "";
 		}
