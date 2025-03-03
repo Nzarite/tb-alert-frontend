@@ -1,54 +1,27 @@
 import { Divider, Grid, Typography } from "@mui/material";
-import { renderField } from "../PatientDashboard/PatientNikshayDetails";
 import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
-import { useEffect, useState } from "react";
-import { ScTcRegistrationFormLabelsData } from "../Registration/StateHead/StateHeadRegistrationPage";
-import { useSelector } from "react-redux";
+import { renderField } from "../PatientDashboard/PatientNikshayDetails";
 
 interface SearchProps {
   user: TeleCaller | StateHead;
 }
 
 const UserPersonalDetails = ({ user }: SearchProps) => {
-  const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
-    userIdLabel: "",
-    firstNameLabel: "",
-    lastNameLabel: "",
-    genderLabel: { label: "", options: [] },
-    phoneNumberLabel: "",
-    emailLabel: "",
-    dateOfJoiningLabel: "",
-    dateOfLeavingLabel: "",
-    stateLabel: "",
-  });
-  const language = useSelector((state: any) => state.language.language);
-
-  useEffect(() => {
-    fetch(`/locales/sc_tc_registration_form_${language}.json`)
-      .then((response) => response.json())
-      .then((data) => setLabels(data.scandtcregistrationform))
-      .catch((error) => {
-        console.error("Error loading form labels file:", error);
-        alert("Failed to load form labels data. Please try again.");
-      });
-  }, [language]);
-
   let fields = [
     {
       name: user.hasOwnProperty("stateHeadId") ? "stateHeadId" : "teleCallerId",
-      label: labels.userIdLabel,
+      label: "User ID",
       size: 12,
     },
-    { name: "firstName", label: labels.firstNameLabel, size: 6 },
-    { name: "lastName", label: labels.lastNameLabel, size: 6 },
-    { name: "gender", label: labels.genderLabel, size: 6 },
-    { name: "state", label: labels.stateLabel, size: 6 },
-    { name: "phoneNumber", label: labels.phoneNumberLabel, size: 6 },
-    { name: "dateOfJoining", label: labels.dateOfJoiningLabel, size: 6 },
-    { name: "email", label: labels.emailLabel, size: 6 },
-    { name: "dateOfLeaving", label: labels.dateOfLeavingLabel, size: 6 },
+    { name: "firstName", label: "First Name", size: 6 },
+    { name: "lastName", label: "Last Name", size: 6 },
+    { name: "gender", label: "Gender", size: 6 },
+    { name: "state", label: "State", size: 6 },
+    { name: "phoneNumber", label: "Contact", size: 6 },
+    { name: "dateOfJoining", label: "Date of Joining", size: 6 },
+    { name: "email", label: "Email", size: 6 },
+    { name: "dateOfLeaving", label: "Date of Leaving", size: 6 },
   ];
-
   return (
     <>
       <Divider sx={{ mb: 4 }} />

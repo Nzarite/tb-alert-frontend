@@ -1,5 +1,6 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import Navbar from "../components/Navbar";
 import useCustomEffect from "../hooks/useCustomEffect";
 import useLogout from "../hooks/useLogout";
@@ -54,6 +55,7 @@ const PageLayout = () => {
 
   return (
     <>
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
       <Navbar />
       {/* Breadcrumbs Section */}
       <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2, mb: 1, ml: 2 }}>
