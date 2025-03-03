@@ -24,11 +24,13 @@ export const getStatusColor = (
   const today = new Date();
   const dof = new Date(dateOfFollowUp);
 
-  // Setting hours to 0 (to compare just by date value)
+  // Normalize both dates to midnight for accurate date-only comparison
   today.setHours(0, 0, 0, 0);
   dof.setHours(0, 0, 0, 0);
 
-  if (today <= dof) return "warning";
+  if (dof.getTime() > today.getTime()) return "warning";
+  if (dof.getTime() === today.getTime())
+    return followUpStatus === FollowUpStatus.Missed ? "warning" : "success";
   return followUpStatus === FollowUpStatus.Missed ? "error" : "success";
 };
 
@@ -42,11 +44,16 @@ export const getStatusName = (
   const today = new Date();
   const dof = new Date(dateOfFollowUp);
 
-  // Setting hours to 0 (to compare just by date value)
+  // Normalize both dates to midnight
   today.setHours(0, 0, 0, 0);
   dof.setHours(0, 0, 0, 0);
 
-  if (today <= dof) return FollowUpStatus.Scheduled;
+  if (dof.getTime() > today.getTime()) return FollowUpStatus.Scheduled;
+  if (dof.getTime() === today.getTime()) {
+    return followUpStatus === FollowUpStatus.Missed
+      ? FollowUpStatus.Scheduled
+      : FollowUpStatus.Captured;
+  }
   return followUpStatus === FollowUpStatus.Missed
     ? FollowUpStatus.Missed
     : FollowUpStatus.Captured;
