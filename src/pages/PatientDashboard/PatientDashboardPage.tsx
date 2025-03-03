@@ -9,6 +9,7 @@ import {
   MdVaccines,
 } from "react-icons/md";
 import { RiPencilLine } from "react-icons/ri";
+import { useAuth } from "react-oidc-context";
 import { useNavigate, useParams } from "react-router-dom";
 import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
 import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
@@ -26,6 +27,8 @@ const PatientDashboardPage = () => {
   // const [patientId, setPatientId] = useState<number | null>();
   const navigate = useNavigate();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const roles: string[] = useAuth().user?.profile.client_roles as string[];
+  const canEdit = roles.includes("SuperAdmin");
 
   const handleEditClick = (section: any) => {
     if (section.editURL) {
@@ -47,30 +50,32 @@ const PatientDashboardPage = () => {
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-          pr: 2,
-        }}
-      >
-        <Button
-          color="error"
-          variant="contained"
-          onClick={() => setDeleteModalOpen(true)}
+      {canEdit && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            pr: 2,
+          }}
         >
-          <DeleteIcon />
-        </Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => setDeleteModalOpen(true)}
+          >
+            <DeleteIcon />
+          </Button>
 
-        <DeletePersonModal
-          open={deleteModalOpen}
-          onClose={() => setDeleteModalOpen(false)}
-          deleteUrl={`patient/${patientId}`}
-          navigateUrl="/patient-dashboard"
-          person={"Patient"}
-        />
-      </Box>
+          <DeletePersonModal
+            open={deleteModalOpen}
+            onClose={() => setDeleteModalOpen(false)}
+            deleteUrl={`patient/${patientId}`}
+            navigateUrl="/patient-dashboard"
+            person={"Patient"}
+          />
+        </Box>
+      )}
 
       <Grid container spacing={2} sx={{ p: 2 }}>
         {[
@@ -141,10 +146,12 @@ const PatientDashboardPage = () => {
                     {section.title}
                   </Typography>
                 </Box>
-                <RiPencilLine
-                  style={{ fontSize: "20px" }}
-                  onClick={() => handleEditClick(section)}
-                />
+                {canEdit && (
+                  <RiPencilLine
+                    style={{ fontSize: "20px" }}
+                    onClick={() => handleEditClick(section)}
+                  />
+                )}
               </Box>
               {section.component}
             </Paper>

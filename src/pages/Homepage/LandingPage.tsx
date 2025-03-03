@@ -1,18 +1,16 @@
 import { Box } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "react-oidc-context";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Role } from "../../components/Authorization/Roles/Types";
+import axiosInstance from "../../components/axiosInstance";
 import { tiles } from "../../components/Tiles";
-import { RootState } from "../../redux/store";
 import { setUserProfile, setUserState } from "../../redux/userSlice";
 import "./styles.css";
-import axiosInstance from "../../components/axiosInstance";
 
 const LandingPage = () => {
   const auth = useAuth();
-  // console.log(auth);
   const user = auth?.user;
   const profile = user?.profile;
   const dispatch = useDispatch();

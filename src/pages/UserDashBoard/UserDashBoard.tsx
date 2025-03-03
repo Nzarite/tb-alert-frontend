@@ -4,6 +4,7 @@ import { Typography } from "antd";
 import { useEffect, useState } from "react";
 import { MdPerson } from "react-icons/md";
 import { RiPencilLine } from "react-icons/ri";
+import { useAuth } from "react-oidc-context";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
 import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
@@ -48,6 +49,8 @@ const UserDashBoard = ({ role }: SearchProps) => {
     : `telecaller/${userData?.teleCallerId}`;
   const navigateUrl = isStateHead ? "/user/statehead" : "/user/telecaller";
   const person = isStateHead ? "StateHead" : "TeleCaller";
+  const roles: string[] = useAuth().user?.profile.client_roles as string[];
+  const canEdit = roles.includes("SuperAdmin");
 
   return (
     <div>
@@ -66,26 +69,28 @@ const UserDashBoard = ({ role }: SearchProps) => {
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
-            <DeleteIcon
-              sx={{ cursor: "pointer" }}
-              color="error"
-              onClick={() => setDeleteModalOpen(true)}
-            />
+          {canEdit && (
+            <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+              <DeleteIcon
+                sx={{ cursor: "pointer" }}
+                color="error"
+                onClick={() => setDeleteModalOpen(true)}
+              />
 
-            <DeletePersonModal
-              open={deleteModalOpen}
-              onClose={() => setDeleteModalOpen(false)}
-              deleteUrl={deleteUrl}
-              navigateUrl={navigateUrl}
-              person={person}
-            />
+              <DeletePersonModal
+                open={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                deleteUrl={deleteUrl}
+                navigateUrl={navigateUrl}
+                person={person}
+              />
 
-            <RiPencilLine
-              style={{ fontSize: "20px", cursor: "pointer" }}
-              onClick={() => setModalOpen(true)}
-            />
-          </Box>
+              <RiPencilLine
+                style={{ fontSize: "20px", cursor: "pointer" }}
+                onClick={() => setModalOpen(true)}
+              />
+            </Box>
+          )}
         </Box>
         {userData && <UserPersonalDetails user={userData} />}
       </Paper>
