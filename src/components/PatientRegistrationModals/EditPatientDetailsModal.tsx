@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Modal,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, CircularProgress, Modal, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
@@ -58,8 +51,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
     } catch (error: any) {
       console.error("Error fetching form data:", error);
       setError(
-        error.response?.data ||
-          "Failed to fetch form data. Please try again."
+        error.response?.data || "Failed to fetch form data. Please try again."
       );
     } finally {
       setLoading(false);
@@ -74,10 +66,10 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
         return `/nikshaymitra/register`;
       case "contactscreening":
         return `/contactscreening`;
-			default:
-				return "";
-		}
-	};
+      default:
+        return "";
+    }
+  };
 
   const getUpdateUrl = (prop: string, patientId: any) => {
     switch (prop) {
@@ -131,8 +123,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
     } catch (error: any) {
       console.error("Error saving data:", error);
       setError(
-        error.response?.data ||
-          "Failed to save data. Please try again."
+        error.response?.data || "Failed to save data. Please try again."
       );
     } finally {
       setUpdating(false);
@@ -219,28 +210,28 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
           boxShadow: 24,
           p: 4,
           borderRadius: 2,
-				}}>
-				<Typography variant="h6" mb={2}>
-					{prop === "patient"
-						? "Update Patient Details"
-						: prop === "tbdetails"
-						? "Update TB Details"
-						: prop === "nikshaymitra"
-						? "Update Nikshay Details"
-						: "Update Contact Screening Details"}
-				</Typography>
-				{renderForm()}
-				<Box mt={2} display="flex" justifyContent="space-between">
+        }}
+      >
+        <Typography variant="h6" mb={2}>
+          {prop === "patient"
+            ? "Update Patient Details"
+            : prop === "tbdetails"
+            ? "Update TB Details"
+            : prop === "nikshaymitra"
+            ? "Update Nikshay Details"
+            : "Update Contact Screening Details"}
+        </Typography>
+        {renderForm()}
         <Box mt={2} display="flex" justifyContent="space-between">
-					{error && (
-						<Alert severity="error" sx={{ mt: 3, mb: 2 }}>
-							{error}
-						</Alert>
-					)}
-				</Box>
-			</Box>
-		</Modal>
-	);
+          {error && (
+            <Alert severity="error" sx={{ mt: 3, mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+        </Box>
+      </Box>
+    </Modal>
+  );
 };
 
 export default EditPatientDetailsModal;
