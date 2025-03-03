@@ -21,10 +21,14 @@ export const getStatusColor = (
 ) => {
   if (followUpStatus === FollowUpStatus.Cancelled) return "primary";
 
-  const today = Date.now();
-  const dof = Date.parse(dateOfFollowUp);
+  const today = new Date();
+  const dof = new Date(dateOfFollowUp);
 
-  if (today < dof) return "warning";
+  // Setting hours to 0 (to compare just by date value)
+  today.setHours(0, 0, 0, 0);
+  dof.setHours(0, 0, 0, 0);
+
+  if (today <= dof) return "warning";
   return followUpStatus === FollowUpStatus.Missed ? "error" : "success";
 };
 
@@ -35,10 +39,14 @@ export const getStatusName = (
   if (followUpStatus === FollowUpStatus.Cancelled)
     return FollowUpStatus.Cancelled;
 
-  const today = Date.now();
-  const dof = Date.parse(dateOfFollowUp);
+  const today = new Date();
+  const dof = new Date(dateOfFollowUp);
 
-  if (today < dof) return FollowUpStatus.Scheduled;
+  // Setting hours to 0 (to compare just by date value)
+  today.setHours(0, 0, 0, 0);
+  dof.setHours(0, 0, 0, 0);
+
+  if (today <= dof) return FollowUpStatus.Scheduled;
   return followUpStatus === FollowUpStatus.Missed
     ? FollowUpStatus.Missed
     : FollowUpStatus.Captured;
