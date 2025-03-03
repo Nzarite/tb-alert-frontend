@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   Grid,
@@ -16,10 +16,14 @@ import { useSelector } from "react-redux";
 import { useAuth } from "react-oidc-context";
 
 const Reports = () => {
+  const auth = useAuth();
+  const userEmail =
+    useSelector((state: any) => state.user?.profile?.email) ||
+    auth.user?.profile.email;
+  const userRole = auth.user?.profile.client_roles || {};
 
-  const auth=useAuth();
-  const userEmail=useSelector((state:any)=> state.user?.profile?.email)||auth.user?.profile.email;
-  console.log(userEmail);
+  const userState = useSelector((state: any) => state.user?.userState) || localStorage.getItem("userState");
+  console.log(userState, userRole);
 
   const [currentRole, setCurrentRole] = useState("patient");
   const [age, setAge] = useState("");
@@ -27,19 +31,41 @@ const Reports = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentStatus, setCurrentStatus] = useState("");
-  const [cured, setCured] = useState(null);
   const [state, setState] = useState<string>("");
   const [dsOrDr, setDsOrDr] = useState<string>("");
   const [udstStatus, setUdstStatus] = useState<boolean | "">("");
   const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
-  const [createdBy,setCreatedBy]=useState<string>("")
+  const [createdBy, setCreatedBy] = useState<string>("");
+  const [isDeleted, setIsDeleted] = useState("");
+  console.log(userState); 
+  useEffect(() => {
+    if (
+      (userRole.length === 1 && userRole.includes("Telecaller")) ||
+      (userRole.length == 2 && userRole.includes("StateCoordinator"))
+    )
+      setState(userState);
+    if (
+      userRole.includes("SuperAdmin") ||
+      userRole.includes("StateCoordinator")
+    )
+      setCreatedBy("");
+  }, [userRole]);
 
   const handleTeleCallerReport = async () => {
     try {
-      const body = {
+      const filters = {
+        age: age ? parseInt(age) : 0,
+        gender: gender || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+        currentStatus: currentStatus || null,
         state: state,
+        dstbOrDrtb: dsOrDr,
+        udstStatus: udstStatus,
+        dbtStatus: dbtStatus,
+        isDeleted: isDeleted,
       };
-      const response = await axiosInstance.post("/report/telecaller", body, {
+      const response = await axiosInstance.post("/report/telecaller", filters, {
         responseType: "blob",
       });
       blodHandler(response.data, "TelecallerReports.xlsx");
@@ -50,11 +76,21 @@ const Reports = () => {
 
   const handleStateHeadReports = async () => {
     try {
-      const response = await axiosInstance.post(
-        "/report/statehead",
-        {},
-        { responseType: "blob" }
-      );
+      const filters = {
+        age: age ? parseInt(age) : 0,
+        gender: gender || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+        currentStatus: currentStatus || null,
+        state: state,
+        dstbOrDrtb: dsOrDr,
+        udstStatus: udstStatus,
+        dbtStatus: dbtStatus,
+        isDeleted: isDeleted,
+      };
+      const response = await axiosInstance.post("/report/statehead", filters, {
+        responseType: "blob",
+      });
       blodHandler(response.data, "StateHeadDetails.xlsx");
     } catch (error) {
       console.error(error);
@@ -71,33 +107,18 @@ const Reports = () => {
   };
   const handleDownloadReport = async (endpoint: string, filename: string) => {
     try {
-      let filters = {
+      const filters = {
         age: age ? parseInt(age) : 0,
         gender: gender || null,
         startDate: startDate || null,
         endDate: endDate || null,
         currentStatus: currentStatus || null,
-        cured: cured,
         state: state,
         dstbOrDrtb: dsOrDr,
         udstStatus: udstStatus,
         dbtStatus: dbtStatus,
+        isDeleted: isDeleted,
       };
-
-      if (filename === "All_Patient_Reports.xlsx") {
-        filters = {
-          age: 0,
-          gender: null,
-          startDate: null,
-          endDate: null,
-          currentStatus: null,
-          cured: null,
-          state: "",
-          dstbOrDrtb: "",
-          udstStatus: "",
-          dbtStatus: "",
-        };
-      }
 
       const response = await axiosInstance.post(endpoint, filters, {
         responseType: "blob",
@@ -113,8 +134,8 @@ const Reports = () => {
       const response = await axiosInstance.post(
         "/report/patient/followup/today",
         {
-          state:state,
-          createdBy:createdBy==="self"?userEmail:"",
+          state: state,
+          createdBy: createdBy === "self" ? userEmail : "",
         },
         {
           responseType: "blob",
@@ -126,26 +147,56 @@ const Reports = () => {
     }
   };
 
+  const handleClearFilters = () => {
+    setAge("");
+    setGender("");
+    setStartDate("");
+    setEndDate("");
+    setCurrentStatus("");
+    if (
+      !(userRole.length === 1 && userRole.includes("Telecaller")) &&
+      !(userRole.length == 2 && userRole.includes("StateCoordinator"))
+    )
+      setState("");
+    setDsOrDr("");
+    setUdstStatus("");
+    setDbtStatus("");
+    if (
+      !userRole.includes("SuperAdmin") &&
+      !userRole.includes("StateCoordinator")
+    )
+      setCreatedBy("");
+    setIsDeleted("");
+  };
+
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 3, height: "100%" }}>
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
               Report Generation
             </Typography>
             <TextField
               fullWidth
               select
-              label="Role"
+              label="Type"
               value={currentRole}
               onChange={(e) => setCurrentRole(e.target.value)}
               variant="outlined"
               InputLabelProps={{ shrink: true }}
             >
               <MenuItem value="patient">Patient</MenuItem>
-              <MenuItem value="telecaller">TeleCaller</MenuItem>
-              <MenuItem value="statehead">State Head</MenuItem>
+
+              {(userRole.includes("StateCoordinator") ||
+                userRole.includes("SuperAdmin")) && (
+                <MenuItem value="telecaller">TeleCaller</MenuItem>
+              )}
+
+              {/* Show State Head only for superadmin */}
+              {userRole.includes("SuperAdmin") && (
+                <MenuItem value="statehead">State Head</MenuItem>
+              )}
               <MenuItem value="followup">Follow Up</MenuItem>
             </TextField>
           </Paper>
@@ -231,7 +282,9 @@ const Reports = () => {
                 sm={6}
                 sx={{
                   display:
-                    currentRole === "patient" || currentRole === "telecaller" || currentRole==="followup"
+                    currentRole === "patient" ||
+                    currentRole === "telecaller" ||
+                    currentRole === "followup"
                       ? "block"
                       : "none",
                 }}
@@ -242,6 +295,12 @@ const Reports = () => {
                   label="State"
                   InputLabelProps={{ shrink: true }}
                   value={state}
+                  disabled={
+                    (userRole.length === 1 &&
+                      userRole.includes("Telecaller")) ||
+                    (userRole.length == 2 &&
+                      userRole.includes("StateCoordinator"))
+                  }
                   onChange={(e) => setState(e.target.value)}
                   variant="outlined"
                 >
@@ -268,6 +327,7 @@ const Reports = () => {
                 >
                   <MenuItem value="dead">Deceased</MenuItem>
                   <MenuItem value="alive">Under Treatment</MenuItem>
+                  <MenuItem value="cured">Cured </MenuItem>
                 </TextField>
               </Grid>
               <Grid
@@ -342,23 +402,6 @@ const Reports = () => {
                 item
                 xs={12}
                 sm={6}
-                sx={{ display: currentRole === "patient" ? "block" : "none" }}
-              >
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={cured}
-                      onChange={(e) => setCured(e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Cured"
-                />
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={6}
                 sx={{ display: currentRole === "followup" ? "block" : "none" }}
               >
                 <TextField
@@ -366,6 +409,10 @@ const Reports = () => {
                   select
                   label="Created By"
                   value={createdBy}
+                  disabled={
+                    userRole.includes("SuperAdmin") ||
+                    userRole.includes("StateCoordinator")
+                  }
                   onChange={(e) => setCreatedBy(e.target.value)}
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
@@ -374,10 +421,44 @@ const Reports = () => {
                   <MenuItem value="self">Self</MenuItem>
                 </TextField>
               </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{
+                  display:
+                    currentRole === "patient" || "statehead" || "telecaller"
+                      ? "block"
+                      : "none",
+                }}
+              >
+                <TextField
+                  fullWidth
+                  select
+                  label={currentRole === "patient" ? "Deleted" : "Removed"}
+                  value={isDeleted}
+                  disabled={currentRole === "followup"}
+                  onChange={(e) => setIsDeleted(e.target.value)}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="true">Yes</MenuItem>
+                  <MenuItem value="false">No</MenuItem>
+                </TextField>
+              </Grid>
               <Grid item xs={12}>
                 <Box
                   sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
                 >
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleClearFilters}
+                    size="large"
+                  >
+                    Clear Filters
+                  </Button>
                   {currentRole === "patient" && (
                     <>
                       <Button
@@ -392,19 +473,6 @@ const Reports = () => {
                         size="large"
                       >
                         Download Patients Report
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() =>
-                          handleDownloadReport(
-                            "/report/patient/filter",
-                            "All_Patient_Reports.xlsx"
-                          )
-                        }
-                        size="large"
-                      >
-                        Download All Patients Reports
                       </Button>
                       <Button
                         variant="contained"
@@ -431,12 +499,10 @@ const Reports = () => {
                       >
                         Download TeleCaller Reports
                       </Button>
-                     
                     </>
                   )}
-                  {
-                    currentRole==="followup" && (
-                      <Button
+                  {currentRole === "followup" && (
+                    <Button
                       variant="contained"
                       color="secondary"
                       onClick={() => handleFollowUpForToday()}
@@ -444,8 +510,7 @@ const Reports = () => {
                     >
                       Download FollowUps for Today
                     </Button>
-                    )
-                  }
+                  )}
                   {currentRole === "statehead" && (
                     <Button
                       variant="contained"
