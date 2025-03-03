@@ -116,7 +116,7 @@ const PatientRegistrationPage = () => {
         if (!formData.nikshayDetails) {
           throw new Error("Nikshay Details not found. Please complete step 3.");
         }
-        response = await axiosInstance.post(`/contactscreening/${patientId}`, {
+        response = await axiosInstance.post(`/contactscreening`, {
           ...stepData,
           patientId,
         });
