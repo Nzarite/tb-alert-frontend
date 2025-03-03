@@ -22,6 +22,7 @@ const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPatientData, setSelectedPatientData] = useState(null);
+  const [refreshData, setRefreshData] = useState(false);
   // const [patientId, setPatientId] = useState<number | null>();
   const navigate = useNavigate();
 
@@ -37,6 +38,7 @@ const PatientDashboardPage = () => {
   const handleModalClose = () => {
     setModalOpen(false);
     setSelectedPatientData(null);
+    setRefreshData((prev) => !prev);
   };
 
   const handlePatientDelete = async () => {
@@ -63,7 +65,7 @@ const PatientDashboardPage = () => {
         {[
           {
             title: "Personal Details",
-            component: <PatientPersonalDetails patientId={patientId} />,
+            component: <PatientPersonalDetails patientId={patientId} refresh={refreshData}/>,
             icon: <MdPerson style={{ fontSize: "24px" }} />,
             size: 6,
             editURL: null,
@@ -71,7 +73,7 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Nikshay Details",
-            component: <PatientNikshayDetails patientId={patientId} />,
+            component: <PatientNikshayDetails patientId={patientId} refresh={refreshData}/>,
             icon: <MdMobileFriendly style={{ fontSize: "20px" }} />,
             size: 6,
             editURL: null,
@@ -79,7 +81,7 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Medical Report",
-            component: <PatientMedicalDetails patientId={patientId} />,
+            component: <PatientMedicalDetails patientId={patientId} refresh={refreshData}/>,
             icon: <MdLocalHospital style={{ fontSize: "25px" }} />,
             size: 6,
             editURL: null,
@@ -87,7 +89,7 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Contact Screening",
-            component: <PatientContactScreeningDetails patientId={patientId} />,
+            component: <PatientContactScreeningDetails patientId={patientId} refresh={refreshData}/>,
             icon: <MdAssessment style={{ fontSize: "22px" }} />,
             size: 6,
             editURL: null,
