@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
 export interface UserProfile {
   exp: number;
   iat: number;
@@ -20,12 +19,13 @@ export interface UserProfile {
 
 interface UserState {
   profile: UserProfile | null;
+  userState: string | null;
 }
 
 const initialState: UserState = {
   profile: null,
+  userState: localStorage.getItem("userState"),
 };
-
 
 export const userSlice = createSlice({
   name: "user",
@@ -33,16 +33,21 @@ export const userSlice = createSlice({
   reducers: {
     setUserProfile: (state, action: PayloadAction<UserProfile>) => {
       state.profile = action.payload;
-      
+    },
+    setUserState: (state, action: PayloadAction<string>) => {
+      state.userState = action.payload;
+      localStorage.setItem("userState", state.userState);
     },
     clearUserProfile: (state) => {
       state.profile = null;
+      state.userState = null;
+      localStorage.removeItem("userState");
     },
   },
 });
 
-console.log(userSlice);
+// console.log(userSlice);
 
-
-export const { setUserProfile, clearUserProfile } = userSlice.actions;
+export const { setUserProfile, setUserState, clearUserProfile } =
+  userSlice.actions;
 export default userSlice.reducer;

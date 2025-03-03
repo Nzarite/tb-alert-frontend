@@ -16,6 +16,7 @@ import { useForm, Controller, useWatch } from "react-hook-form";
 import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { LabelOption } from "../datatypes/DataTypes";
 
 export type ContactScreeningData = {
   contactScreeningDone: boolean;
@@ -30,6 +31,21 @@ export type ContactScreeningData = {
   noOfEligibleForTPT: number;
   noOfHHCsInitiatedTPT: number;
 };
+
+export interface ContactScreeningDetailsFormLabelsData {
+  patientNameLabel: string;
+  contactScreeningDoneLabel: LabelOption;
+  dateOfContactScreeningLabel: string;
+  noOfHHCsAvailableLabel: string;
+  noOfHHCsScreenedLabel: string;
+  noOfHHCsWithTBSymptomsLabel: string;
+  noOfHHCsReferredTBTestingLabel: string;
+  noOfHHCsDiagnosedTBLabel: string;
+  noOfHHCsTBInitiatedATTLabel: string;
+  noOfHHCsUndergoneLTBITestLabel: string;
+  noOfEligibleForTPTLabel: string;
+  noOfHHCsInitiatedTPTLabel: string;
+}
 
 const contactScreeningDetailsSchema = z.object({
   contactScreeningDone: z.boolean(),
@@ -49,31 +65,13 @@ const ContactScreeningDetailsForm = ({
   language,
   data,
   onSave,
+  onClose,
   onSubmit,
   onBack,
   functionality,
   patientName,
   loading,
 }: any) => {
-  interface LabelOption {
-    label: string;
-    options?: { label: string; value: boolean }[];
-  }
-
-  interface ContactScreeningDetailsFormLabelsData {
-    patientNameLabel: string;
-    contactScreeningDoneLabel: LabelOption;
-    dateOfContactScreeningLabel: string;
-    noOfHHCsAvailableLabel: string;
-    noOfHHCsScreenedLabel: string;
-    noOfHHCsWithTBSymptomsLabel: string;
-    noOfHHCsReferredTBTestingLabel: string;
-    noOfHHCsDiagnosedTBLabel: string;
-    noOfHHCsTBInitiatedATTLabel: string;
-    noOfHHCsUndergoneLTBITestLabel: string;
-    noOfEligibleForTPTLabel: string;
-    noOfHHCsInitiatedTPTLabel: string;
-  }
 
   const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
     patientNameLabel: "",
@@ -238,6 +236,16 @@ const ContactScreeningDetailsForm = ({
               disabled
             >
               Back
+            </Button>
+          )}
+          {functionality === "editdetails" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
             </Button>
           )}
           {functionality === "register" && (

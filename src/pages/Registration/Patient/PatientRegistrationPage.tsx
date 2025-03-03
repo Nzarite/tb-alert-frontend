@@ -27,6 +27,7 @@ import TbDetailsForm, {
   TbDetailsData,
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
+import { Role } from "../../../components/Authorization/Roles/Types";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();

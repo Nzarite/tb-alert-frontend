@@ -11,12 +11,12 @@
     "dateOfContactScreeningLabel": "Date of Contact Screening",
     "noOfHHCsAvailableLabel": "No of HHCs available",
     "noOfHHCsScreenedLabel": "No of HHCs screened",
-    "noOfHHCsWithTBSymptomsLabel": "No of HHCs found with TB Sympotoms",
-    "noOfHHCsReferredTBTestingLabel": "No of HHCs found with TB Sympotoms referred for TB testing",
-    "noOfHHCsDiagnosedTBLabel": "No.of HHCs diagnosed TB",
+    "noOfHHCsWithTBSymptomsLabel": "No of HHCs with TB Sympotoms",
+    "noOfHHCsReferredTBTestingLabel": "No of HHCs referred for TB testing",
+    "noOfHHCsDiagnosedTBLabel": "No.of HHCs diagnosed with TB",
     "noOfHHCsTBInitiatedATTLabel": "No of HHCs diagnosed with TB initiated on ATT",
-    "noOfHHCsUndergoneLTBITestLabel": "No of HHCs undergone for LTBI test",
-    "noOfEligibleForTPTLabel": "No.of eligible for TPT",
+    "noOfHHCsUndergoneLTBITestLabel": "No of HHCs undergone LTBI test",
+    "noOfEligibleForTPTLabel": "No.of HHCs eligible for TPT",
     "noOfHHCsInitiatedTPTLabel": "No of HHCs initiated on TPT"
   }
 }

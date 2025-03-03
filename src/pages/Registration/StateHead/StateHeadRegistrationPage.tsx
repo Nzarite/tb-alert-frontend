@@ -18,6 +18,7 @@ import axiosInstance from "../../../components/axiosInstance";
 import { useSelector } from "react-redux";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
+import { LabelOption } from "../../../components/datatypes/DataTypes";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -37,6 +38,18 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+export interface ScTcRegistrationFormLabelsData {
+  userIdLabel: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  genderLabel: LabelOption;
+  phoneNumberLabel: string;
+  emailLabel: string;
+  dateOfJoiningLabel: string;
+  dateOfLeavingLabel:  string;
+  stateLabel: string;
+}
+
 const StateHeadRegistrationPage = () => {
   const auth = useAuth();
   const userEmail =
@@ -54,31 +67,20 @@ const StateHeadRegistrationPage = () => {
     mode: "all",
   });
 
-  interface LabelOption {
-    label: string;
-    options: { label: string; value: any }[];
-  }
-
   const [state, setState] = useState<{ states: LabelOption }>({
     states: { label: "", options: [] },
   });
 
-  interface ScTcRegistrationFormLabelsData {
-    firstNameLabel: string;
-    lastNameLabel: string;
-    genderLabel: LabelOption;
-    phoneNumberLabel: string;
-    emailLabel: string;
-    dateOfJoiningLabel: string;
-  }
-
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
+    userIdLabel:"",
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
     phoneNumberLabel: "",
     emailLabel: "",
     dateOfJoiningLabel: "",
+    dateOfLeavingLabel: "",
+    stateLabel: "",
   });
 
   const language = useSelector((state: any) => state.language.language);
