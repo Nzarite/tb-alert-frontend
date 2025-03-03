@@ -9,9 +9,9 @@ import {
 import { useEffect, useState } from "react";
 import { ControllerRenderProps, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { SettingsInterface } from "../../components/datatypes/DataTypes";
-import medications from "../../components/Json/medicines.json";
 import stateList from "../../components/Json/states.json";
 import AddMedicationDialog from "./AddMedicationDialog";
+import { fetchMedications } from "./settingsService";
 
 interface Props {
 	field: ControllerRenderProps<any, string>;
@@ -20,11 +20,12 @@ interface Props {
 	errors: FieldErrors;
 	editable: boolean;
 	setValue: UseFormSetValue<any>;
+	loadSettings: () => void;
 }
 
 const filter = createFilterOptions();
 
-const RenderSettingItem = ({ field, setting, errors, editable, setValue }: Props) => {
+const RenderSettingItem = ({ field, setting, errors, editable, setValue, loadSettings }: Props) => {
 	const [options, setOptions] = useState([]);
 	const [confirmOpen, setConfirmOpen] = useState(false);
 	const [newMedication, setNewMedication] = useState("");
@@ -33,8 +34,8 @@ const RenderSettingItem = ({ field, setting, errors, editable, setValue }: Props
 		const loadOptions = async () => {
 			if (setting.keyName.includes("medicines")) {
 				try {
-					// const medications = await fetchMedications();
-					setOptions(medications.map((med) => med.name));
+					const medications = await fetchMedications();
+					setOptions(medications);
 				} catch (error) {
 					console.error("Error fetching medications:", error);
 					setOptions([]);
@@ -137,6 +138,7 @@ const RenderSettingItem = ({ field, setting, errors, editable, setValue }: Props
 						setValue={setValue}
 						setting={setting}
 						field={field}
+						loadSettings={loadSettings}
 					/>
 				</>
 			);
@@ -149,7 +151,7 @@ const RenderSettingItem = ({ field, setting, errors, editable, setValue }: Props
 						disabled={!editable}
 						onChange={(event) =>
 							setValue(setting.keyName, {
-								stateName: event.target.selectedOptions[0].textContent,
+								stateName: event.target.selectedOptions[0].textContent.toUpperCase(),
 								stateCode: event.target.value,
 							})
 						}

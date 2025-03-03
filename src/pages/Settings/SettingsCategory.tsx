@@ -9,9 +9,10 @@ interface Props {
 	errors: FieldErrors;
 	setValue: UseFormSetValue<any>;
 	reset: UseFormReset<any>;
+	loadSettings: () => void;
 }
 
-const SettingCategory = ({ category, control, errors, setValue, reset }: Props) => {
+const SettingCategory = ({ category, control, errors, setValue, reset, loadSettings }: Props) => {
 	return (
 		<Box sx={{ p: 2, mb: 2, backgroundColor: "white" }}>
 			<Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
@@ -25,6 +26,7 @@ const SettingCategory = ({ category, control, errors, setValue, reset }: Props) 
 					errors={errors}
 					setValue={setValue}
 					reset={reset}
+					loadSettings={loadSettings}
 				/>
 			))}
 		</Box>
