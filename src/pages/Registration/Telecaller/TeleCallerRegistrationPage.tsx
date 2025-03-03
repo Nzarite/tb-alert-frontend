@@ -20,6 +20,7 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 import { LabelOption } from "../../../components/datatypes/DataTypes";
 import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
+import { Role } from "../../../components/Authorization/Roles/Types";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -43,7 +44,7 @@ const TelecallerRegistrationPage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const userEmail =
-    useSelector((state) => state.user?.profile?.email) ||
+    useSelector((state: any) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
 
   const {
@@ -76,6 +77,15 @@ const TelecallerRegistrationPage = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const userState =
+    useSelector((state: any) => state.userState) ||
+    localStorage.getItem("userState");
+
+  const userRoles: Role[] = useSelector(
+    (state: any) =>
+      state.user?.profile?.client_roles || auth?.user?.profile?.client_roles
+  ) as Role[];
 
   useEffect(() => {
     fetch(`/locales/sc_tc_registration_form_${language}.json`)
@@ -138,7 +148,9 @@ const TelecallerRegistrationPage = () => {
     {
       name: "state",
       label: state.states.label,
-      options: state.states.options,
+      options: userRoles.includes("SuperAdmin")
+        ? state.states.options
+        : state.states.options.filter((option) => option.value === userState),
       type: "select",
       disabled: loading,
     },
