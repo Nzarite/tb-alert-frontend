@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
 import { updateLanguage } from "../redux/langSlice";
 import "./Navbar.css";
+import logo from "../../public/TB_Alert_India_Logo-removebg-preview.png";
 
 const Navbar = () => {
   const language = useSelector((state: any) => state.language.language);
@@ -21,8 +22,9 @@ const Navbar = () => {
   return (
     <Box id="navbar">
       <Box className="navbar-left">
-        <Link to="/" className="navbar-text app-logo">
-          TB Alert
+        <Link to="/" className="logo-wrapper">
+          <img src={logo} alt="TB Alert Logo" className="app-logo" />
+          <span className="navbar-text">TB Alert</span>
         </Link>
       </Box>
       <Box className="navbar-right">
