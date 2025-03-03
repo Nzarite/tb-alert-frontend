@@ -19,16 +19,16 @@ interface Props {
 	errors: FieldErrors;
 	setValue: UseFormSetValue<any>;
 	reset: UseFormReset<any>;
+	loadSettings: () => void;
 }
 
-const SettingField = ({ setting, control, errors, setValue, reset }: Props) => {
+const SettingField = ({ setting, control, errors, setValue, reset, loadSettings }: Props) => {
 	const fieldValue = useWatch({ control, name: setting.keyName });
 	const [editable, setEditable] = useState(false);
 
 	const handleFieldSubmit = async () => {
 		try {
-			if (setting.endpoint) await postSetting(fieldValue, setting.endpoint);
-			if (setting.keyName !== "state") await updateSetting(setting.keyName, fieldValue);
+			await setting.keyName === "state" ? postSetting(fieldValue, setting.endpoint) : updateSetting(setting.keyName, fieldValue);
 			setEditable(false);
 		} catch (error) {
 			console.error("Error saving setting:", error);
@@ -60,6 +60,7 @@ const SettingField = ({ setting, control, errors, setValue, reset }: Props) => {
 									errors={errors}
 									editable={editable}
 									setValue={setValue}
+									loadSettings={loadSettings}
 								/>
 							)}
 						/>
