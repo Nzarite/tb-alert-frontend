@@ -13,13 +13,6 @@ const useLogout = () => {
     // Clear Redux state
     dispatch(clearUserProfile());
 
-    // Clear session and local storage
-    // sessionStorage.removeItem(
-    //   `oidc.user:${import.meta.env.VITE_OIDC_AUTHORITY}:${
-    //     import.meta.env.VITE_OIDC_CLIENT_ID
-    //   }`
-    // );
-
     // Keycloak logout
     await auth.signoutRedirect();
   }, [auth, dispatch]);

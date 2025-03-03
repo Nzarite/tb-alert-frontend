@@ -5,16 +5,21 @@ import {
   CircularProgress,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   MenuItem,
   Radio,
   RadioGroup,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { z } from "zod";
+import { Role } from "../Authorization/Roles/Types";
+import { useAuth } from "react-oidc-context";
+import { LabelOption } from "../datatypes/DataTypes";
 
 export type PatientDetailsData = {
   firstName: string;
@@ -27,13 +32,29 @@ export type PatientDetailsData = {
   village: string;
   block: string;
   gp: string;
-  consentForMessage:boolean;
+  consentForMessage: boolean;
 };
+
+export interface PatientDetailsFormLabelsData {
+  patientIdLabel: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  genderLabel: LabelOption;
+  phoneNumberLabel: string;
+  ageLabel: string;
+  districtLabel: string;
+  villageLabel: string;
+  blockLabel: string;
+  gpLabel: string;
+  consentForMessageLabel: LabelOption;
+  currentStatusLabel: string;
+  stateLabel: string;
+}
 
 const patientDetailsSchema = z.object({
   firstName: z.string().min(1, "First Name is required"),
   lastName: z.string().optional(),
-  gender: z.enum(["M", "F"], {
+  gender: z.enum(["Male", "Female"], {
     errorMap: () => ({ message: "Gender is required" }),
   }),
   phoneNumber: z
@@ -51,40 +72,37 @@ const patientDetailsSchema = z.object({
   village: z.string().min(1, "Village Name is required"),
   block: z.string().min(1, "Block Name is required"),
   gp: z.string().min(1, "GP Name is required"),
-  consentForMessage:z.string(),
+  consentForMessage: z.boolean({
+    errorMap: () => ({ message: "Consent for message is required" }),
+  }),
 });
 
 const PatientDetailsForm = ({
   language,
   data,
   onSave,
+  onClose,
   // onNext,
   functionality,
   loading,
 }: any) => {
-  interface LabelOption {
-    label: string;
-    options: { label: string; value: any }[];
-  }
-
   const [state, setState] = useState<{ states: LabelOption }>({
     states: { label: "", options: [] },
   });
 
-  interface PatientDetailsFormLabelsData {
-    firstNameLabel: string;
-    lastNameLabel: string;
-    genderLabel: LabelOption;
-    phoneNumberLabel: string;
-    ageLabel: string;
-    districtLabel: string;
-    villageLabel: string;
-    blockLabel: string;
-    gpLabel: string;
-    consentForMessageLabel:LabelOption;
-  }
+  const auth = useAuth();
+
+  const userState =
+    useSelector((state: any) => state.userState) ||
+    localStorage.getItem("userState");
+
+  const userRoles: Role[] = useSelector(
+    (state: any) =>
+      state.user?.profile?.client_roles || auth?.user?.profile?.client_roles
+  ) as Role[];
 
   const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
+    patientIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
@@ -94,7 +112,9 @@ const PatientDetailsForm = ({
     villageLabel: "",
     blockLabel: "",
     gpLabel: "",
-    consentForMessageLabel:{label:"",options:[]},
+    consentForMessageLabel: { label: "", options: [] },
+    currentStatusLabel: "",
+    stateLabel: "",
   });
 
   useEffect(() => {
@@ -164,14 +184,32 @@ const PatientDetailsForm = ({
       name: "state",
       type: "select",
       label: state.states.label,
-      options: state.states.options,
+      options: userRoles.includes("SuperAdmin")
+        ? state.states.options
+        : state.states.options.filter((option) => option.value === userState),
     },
     { name: "district", type: "text", label: labels.districtLabel },
     { name: "village", type: "text", label: labels.villageLabel },
     { name: "block", type: "text", label: labels.blockLabel },
     { name: "gp", type: "text", label: labels.gpLabel },
-    { name: "consentForMessage", type:"radio", label:labels.consentForMessageLabel.label, options:labels.consentForMessageLabel.options}
+    {
+      name: "consentForMessage",
+      type: "radio",
+      label: labels.consentForMessageLabel.label,
+      options: labels.consentForMessageLabel.options,
+    },
   ];
+
+  // const len = {
+  //   name: "state",
+  //   type: "select",
+  //   label: state.states.label,
+  //   options: userRoles.includes("SuperAdmin")
+  //     ? state.states.options
+  //     : state.states.options.filter((option) => option.value === userState),
+  // }.options.length;
+
+  // console.log(len);
 
   if (!labels || !state.states) return <CircularProgress />;
 
@@ -195,26 +233,36 @@ const PatientDetailsForm = ({
               helperText={errors[field.name]?.message}
             />
           ) : field.type === "select" ? (
-            <TextField
-              key={field.name}
-              {...register(field.name)}
-              select
-              label={field.label}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              defaultValue={data?.name || ""}
-              slotProps={{ inputLabel: { shrink: true } }}
-              disabled={loading}
-              error={!!errors[field.name]}
-              helperText={errors[field.name]?.message}
-            >
-              {field.options?.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name={field.name}
+              control={control}
+              defaultValue={data?.[field.name] || ""}
+              render={({ field: controllerField }) => (
+                <TextField
+                  {...controllerField}
+                  select
+                  label={field.label}
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  slotProps={{ inputLabel: { shrink: true } }}
+                  // value={
+                  //   field.options?.length === 1
+                  //     ? field.options[0].value
+                  //     : controllerField.value || ""
+                  // }
+                  onChange={(e) => controllerField.onChange(e.target.value)}
+                  error={!!errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                >
+                  {field.options?.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
           ) : field.type === "radio" ? (
             <FormControl
               key={field.name}
@@ -229,7 +277,17 @@ const PatientDetailsForm = ({
                 defaultValue={data?.name || ""}
                 rules={{ required: `${field.label} is required` }}
                 render={({ field: radioField }) => (
-                  <RadioGroup {...radioField} row>
+                  <RadioGroup
+                    {...radioField}
+                    row
+                    onChange={(e) =>
+                      radioField.onChange(
+                        field.name === "consentForMessage"
+                          ? e.target.value === "true"
+                          : e.target.value
+                      )
+                    }
+                  >
                     {field.options?.map((option) => (
                       <FormControlLabel
                         key={option.value.toString()}
@@ -241,6 +299,9 @@ const PatientDetailsForm = ({
                   </RadioGroup>
                 )}
               />
+              {errors[field.name] && (
+                <FormHelperText>{errors[field.name]?.message}</FormHelperText>
+              )}
             </FormControl>
           ) : field.type === "number" ? (
             <Controller
@@ -267,7 +328,17 @@ const PatientDetailsForm = ({
             />
           ) : null
         )}
-        <Box mt={3}>
+        <Box mt={3} display="flex" justifyContent="space-between">
+          {functionality === "editdetails" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+          )}
           {functionality === "register" && (
             <Button
               type="submit"

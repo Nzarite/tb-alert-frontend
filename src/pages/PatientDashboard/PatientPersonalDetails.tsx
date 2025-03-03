@@ -2,23 +2,58 @@ import { Alert, Box, Divider, Grid, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
 import { renderField } from "./PatientNikshayDetails";
+import { PatientDetailsFormLabelsData } from "../../components/PatientDetailsForm/PatientDetailsForm";
+import { useSelector } from "react-redux";
 
 const PatientPersonalDetails = ({ patientId }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const language = useSelector((state: any) => state.language.language);
+  const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
+    patientIdLabel: "",
+    firstNameLabel: "",
+    lastNameLabel: "",
+    genderLabel: { label: "", options: [] },
+    phoneNumberLabel: "",
+    ageLabel: "",
+    districtLabel: "",
+    villageLabel: "",
+    blockLabel: "",
+    gpLabel: "",
+    consentForMessageLabel: { label: "", options: [] },
+    currentStatusLabel: "",
+    stateLabel: "",
+  });
+
+  useEffect(() => {
+    fetch(`/locales/patient_registration_form1_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.patientdetailsform))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
+
   const fields = [
-    { name: "patientId", label: "Patient ID", size: 12 },
-    { name: "firstName", label: "First Name", size: 6 },
-    { name: "lastName", label: "Last Name", size: 6 },
-    { name: "gender", label: "Gender", size: 6 },
-    { name: "dateOfBirth", label: "DOB", size: 6 },
-    { name: "phone", label: "Contact", size: 6 },
-    { name: "block", label: "Block", size: 6 },
-    { name: "gp", label: "Gram Panchayat", size: 6 },
-    { name: "village", label: "Village", size: 6 },
-    { name: "district", label: "District", size: 6 },
-    { name: "currentStatus", label: "Status", size: 6 },
+    { name: "patientId", label: labels.patientIdLabel, size: 12 },
+    { name: "firstName", label: labels.firstNameLabel, size: 6 },
+    { name: "lastName", label: labels.lastNameLabel, size: 6 },
+    { name: "gender", label: labels.genderLabel, size: 6 },
+    { name: "phoneNumber", label: labels.phoneNumberLabel, size: 6 },
+    { name: "age", label: labels.ageLabel, size: 6 },
+    { name: "state", label: labels.stateLabel, size: 6 },
+    { name: "district", label: labels.districtLabel, size: 6 },
+    { name: "village", label: labels.villageLabel, size: 6 },
+    { name: "block", label: labels.blockLabel, size: 6 },
+    { name: "gp", label: labels.gpLabel, size: 6 },
+    {
+      name: "consentForMessage",
+      label: labels.consentForMessageLabel,
+      size: 6,
+    },
+    { name: "currentStatus", label: labels.currentStatusLabel, size: 6 },
   ];
 
   useEffect(() => {

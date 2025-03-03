@@ -21,7 +21,7 @@ const VisitFollowUpPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-    const handleListItemClick = (index: number) => {
+  const handleListItemClick = (index: number) => {
     if (data && index >= 0 && index < data?.followUpDetails.length)
       setSelectedIndex(index);
   };
@@ -92,7 +92,10 @@ const VisitFollowUpPage = () => {
         {data ? (
           <Grid item xs={12} md={9}>
             {/* Search Bar */}
-            <SearchBox changeSearch={(input) => setSearch(input.value)} role="patient"/>
+            <SearchBox
+              changeSearch={(input) => setSearch(input.value)}
+              role="patient"
+            />
             <FollowUpFormComponent
               index={selectedIndex}
               data={data}
@@ -102,7 +105,10 @@ const VisitFollowUpPage = () => {
         ) : (
           <Grid item xs={12}>
             {/* Search Bar */}
-            <SearchBox changeSearch={(input) => setSearch(input.value)} role="patient"/>
+            <SearchBox
+              changeSearch={(input) => setSearch(input.value)}
+              role="patient"
+            />
           </Grid>
         )}
       </Grid>

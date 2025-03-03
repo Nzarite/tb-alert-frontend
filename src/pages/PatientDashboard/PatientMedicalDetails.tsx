@@ -2,21 +2,45 @@ import { Alert, Box, Divider, Grid, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
 import { renderField } from "./PatientNikshayDetails";
+import { useSelector } from "react-redux";
+import { TbDetailsFormLabelsData } from "../../components/TbDetailsForm/TbDetailsForm";
 
 const PatientMedicalDetails = ({ patientId }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const language = useSelector((state: any) => state.language.language);
+  const [labels, setLabels] = useState<TbDetailsFormLabelsData>({
+    patientNameLabel: "",
+    typeOfPwtbLabel: { label: "", options: [] },
+    clinicalOrMicrobiologicalLabel: { label: "", options: [] },
+    dateOfDiagnosisLabel: "",
+    dateOfTreatmentInitiationLabel: "",
+    typeOfTbLabel: { label: "", options: [] },
+    dstbOrDrtbLabel: { label: "", options: [] },
+  });
+  
+  useEffect(() => {
+    fetch(`/locales/patient_registration_form2_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.tbdetailsform))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
+
   const fields = [
-    { name: "dateOfDiagnosis", label: "Date of Diagnosis", size: 6 },
+    { name: "dateOfDiagnosis", label: labels.dateOfDiagnosisLabel, size: 6 },
     {
       name: "dateOfTreatmentInitiation",
-      label: "Date of Treatment Initiation",
+      label: labels.dateOfTreatmentInitiationLabel,
       size: 6,
     },
-    { name: "typeOfPwtb", label: "Type of PwTB", size: 6 },
-    { name: "typeOfTb", label: "Type of TB", size: 6 },
-    { name: "dstbOrDrtb", label: "DSTB/DRTB", size: 6 },
+    { name: "typeOfPwtb", label: labels.typeOfPwtbLabel, size: 6 },
+    { name: "clinicalOrMicrobiological", label: labels.clinicalOrMicrobiologicalLabel, size: 6 },
+    { name: "typeOfTb", label: labels.typeOfTbLabel, size: 6 },
+    { name: "dstbOrDrtb", label: labels.dstbOrDrtbLabel, size: 6 },
   ];
 
   useEffect(() => {
