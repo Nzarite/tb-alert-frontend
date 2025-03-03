@@ -65,6 +65,7 @@ const ContactScreeningDetailsForm = ({
   language,
   data,
   onSave,
+  onClose,
   onSubmit,
   onBack,
   functionality,
@@ -235,6 +236,16 @@ const ContactScreeningDetailsForm = ({
               disabled
             >
               Back
+            </Button>
+          )}
+          {functionality === "editdetails" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
             </Button>
           )}
           {functionality === "register" && (

@@ -11,7 +11,7 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -81,11 +81,11 @@ const PatientDetailsForm = ({
   language,
   data,
   onSave,
+  onClose,
   // onNext,
   functionality,
   loading,
 }: any) => {
-
   const [state, setState] = useState<{ states: LabelOption }>({
     states: { label: "", options: [] },
   });
@@ -115,7 +115,7 @@ const PatientDetailsForm = ({
     blockLabel: "",
     gpLabel: "",
     consentForMessageLabel: { label: "", options: [] },
-    currentStatusLabel:"",
+    currentStatusLabel: "",
     stateLabel: "",
   });
 
@@ -232,8 +232,16 @@ const PatientDetailsForm = ({
               variant="outlined"
               fullWidth
               margin="normal"
-              defaultValue={field.options?.length === 1 ? field.options[0].value : data?.name || ""}
-              value={field.options?.length === 1 ? field.options[0].value : data?.name || ""}
+              defaultValue={
+                field.options?.length === 1
+                  ? field.options[0].value
+                  : data?.name || ""
+              }
+              value={
+                field.options?.length === 1
+                  ? field.options[0].value
+                  : data?.name || ""
+              }
               slotProps={{ inputLabel: { shrink: true } }}
               disabled={field.options?.length === 1 || loading}
               error={!!errors[field.name]}
@@ -310,7 +318,17 @@ const PatientDetailsForm = ({
             />
           ) : null
         )}
-        <Box mt={3}>
+        <Box mt={3} display="flex" justifyContent="space-between">
+          {functionality === "editdetails" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+          )}
           {functionality === "register" && (
             <Button
               type="submit"

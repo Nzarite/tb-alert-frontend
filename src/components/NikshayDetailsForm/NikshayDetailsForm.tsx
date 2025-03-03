@@ -106,6 +106,7 @@ const NikshayDetailsForm = ({
   language,
   data,
   onSave,
+  onClose,
   // onNext,
   onBack,
   functionality,
@@ -455,6 +456,16 @@ const NikshayDetailsForm = ({
               disabled
             >
               Back
+            </Button>
+          )}
+          {functionality === "editdetails" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
             </Button>
           )}
           {functionality === "register" && (

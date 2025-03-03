@@ -155,6 +155,7 @@ const getPostUrl = (prop: string) => {
             language={language}
             data={formData.patientDetails}
             onSave={handleUpdate}
+            onClose={onClose}
             functionality="editdetails"
             loading={updating}
           />
@@ -165,6 +166,7 @@ const getPostUrl = (prop: string) => {
             language={language}
             data={formData.tbdetailsDetails}
             onSave={handleUpdate}
+            onClose={onClose}
             functionality="editdetails"
             loading={updating}
           />
@@ -175,6 +177,7 @@ const getPostUrl = (prop: string) => {
             language={language}
             data={formData.nikshaymitraDetails}
             onSave={handleUpdate}
+            onClose={onClose}
             functionality="editdetails"
             loading={updating}
           />
@@ -185,6 +188,7 @@ const getPostUrl = (prop: string) => {
             language={language}
             data={formData.contactscreeningDetails}
             onSave={handleUpdate}
+            onClose={onClose}
             functionality="editdetails"
             loading={updating}
           />
@@ -222,9 +226,6 @@ const getPostUrl = (prop: string) => {
         </Typography>
         {renderForm()}
         <Box mt={2} display="flex" justifyContent="space-between">
-          <Button onClick={onClose} variant="outlined" color="secondary">
-            Cancel
-          </Button>
           {error && (
             <Alert severity="error" sx={{ mt: 3, mb: 2 }}>
               {error}

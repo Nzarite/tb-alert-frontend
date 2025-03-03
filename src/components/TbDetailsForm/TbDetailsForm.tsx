@@ -58,6 +58,7 @@ const TbDetailsForm = ({
   language,
   data,
   onSave,
+  onClose,
   onBack,
   functionality,
   patientName,
@@ -259,6 +260,16 @@ const TbDetailsForm = ({
               disabled
             >
               Back
+            </Button>
+          )}
+          {functionality === "editdetails" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
             </Button>
           )}
           {functionality === "register" && (

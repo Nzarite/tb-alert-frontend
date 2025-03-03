@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import axiosInstance from "./axiosInstance";
 import { TeleCaller, StateHead } from "./datatypes/DataTypes";
+import { useSelector } from "react-redux";
+import { Role } from "./Authorization/Roles/Types";
 
 interface SearchProps {
   changeSearch: (text: { value: string; label: string }) => void;
@@ -24,10 +26,18 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const userRoles: Role[] = useSelector(
+    (state: any) => state.user?.profile?.client_roles
+  );
+  const userState: string = useSelector((state: any) => state.user?.userState);
 
   const roleToUrlMap: Record<SearchProps["role"], string> = {
-    patient: "/patient/name/",
-    telecaller: "/telecaller/name/",
+    patient: `${
+      userRoles.includes("SuperAdmin") && "/patient/state/" + userState
+    }/name`,
+    telecaller: `${
+      userRoles.includes("SuperAdmin") && "/telecaller/state/" + userState
+    }/name`,
     statehead: "/statehead/name/",
   };
 
