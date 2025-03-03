@@ -32,12 +32,12 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
   const userState: string = useSelector((state: any) => state.user?.userState);
 
   const roleToUrlMap: Record<SearchProps["role"], string> = {
-    patient: `${
-      userRoles.includes("SuperAdmin") && "/patient/state/" + userState
-    }/name`,
-    telecaller: `${
-      userRoles.includes("SuperAdmin") && "/telecaller/state/" + userState
-    }/name`,
+    patient: userRoles.includes("SuperAdmin")
+      ? `/patient/name/`
+      : `/patient/state/${userState}/name/`,
+    telecaller: userRoles.includes("SuperAdmin")
+      ? `/telecaller/name/`
+      : `/telecaller/state/${userState}/name/`,
     statehead: "/statehead/name/",
   };
 
