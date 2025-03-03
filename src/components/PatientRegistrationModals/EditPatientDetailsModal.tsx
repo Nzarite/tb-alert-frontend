@@ -1,4 +1,11 @@
-import { Alert, Box, Button, CircularProgress, Modal, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Modal,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
@@ -51,15 +58,14 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
     } catch (error: any) {
       console.error("Error fetching form data:", error);
       setError(
-        error.response?.data ||
-          "Failed to fetch form data. Please try again."
+        error.response?.data || "Failed to fetch form data. Please try again."
       );
     } finally {
       setLoading(false);
     }
   };
 
-const getPostUrl = (prop: string) => {
+  const getPostUrl = (prop: string) => {
     switch (prop) {
       case "tbdetails":
         return `/tbdetails/register`;
@@ -124,8 +130,7 @@ const getPostUrl = (prop: string) => {
     } catch (error: any) {
       console.error("Error saving data:", error);
       setError(
-        error.response?.data ||
-          "Failed to save data. Please try again."
+        error.response?.data || "Failed to save data. Please try again."
       );
     } finally {
       setUpdating(false);
