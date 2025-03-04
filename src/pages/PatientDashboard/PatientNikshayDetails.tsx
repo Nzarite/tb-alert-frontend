@@ -1,11 +1,24 @@
-import { Alert, Box, Divider, Grid, Skeleton, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axiosInstance from "../../components/axiosInstance";
 import { DashboardFieldsProp } from "../../components/datatypes/DataTypes";
-import { useSelector } from "react-redux";
 import { NikshayDetailsFormLabelsData } from "../../components/NikshayDetailsForm/NikshayDetailsForm";
+import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 
-export const renderField = (data, item: DashboardFieldsProp, index: number) => {
+export const renderField = (
+  data: any,
+  item: DashboardFieldsProp,
+  index: number
+) => {
   const fieldValue = data[item.name];
   const displayValue =
     fieldValue === true
@@ -49,6 +62,8 @@ const PatientNikshayDetails = ({ patientId }: any) => {
     nikshayMitraDateLabel: "",
     nikshayMitraNameLabel: "",
   });
+  const [areDetailsNull, setAreDetailsNull] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     fetch(`/locales/patient_registration_form3_${language}.json`)
@@ -76,22 +91,25 @@ const PatientNikshayDetails = ({ patientId }: any) => {
     { name: "nikshayMitraName", label: labels.nikshayMitraNameLabel, size: 6 },
   ];
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const res = await axiosInstance.get(`nikshaymitra/${patientId}`);
-        setPatientData(res.data);
-        setError(null);
-      } catch (err: any) {
-        setError(
-          err.response?.data?.message || "Failed to fetch nikshay details"
-        );
-      } finally {
-        setLoading(false);
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.get(`nikshaymitra/${patientId}`);
+      setPatientData(res.data);
+      setError(null);
+    } catch (err: any) {
+      if (err.status == 400) {
+        setAreDetailsNull(true);
       }
-    };
+      setError(
+        err.response?.data?.message || "Failed to fetch nikshay details"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     getData();
   }, [patientId]);
 
@@ -101,6 +119,25 @@ const PatientNikshayDetails = ({ patientId }: any) => {
         <Skeleton variant="rectangular" width="100%" height={100} />
         <Skeleton variant="text" sx={{ mt: 1, width: "60%" }} />
       </Box>
+    );
+  }
+
+  if (areDetailsNull) {
+    return (
+      <>
+        <Button variant="contained" onClick={() => setModalOpen(true)}>
+          Set Nikshay Details
+        </Button>
+        {modalOpen && (
+          <EditPatientDetailsModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            prop={"nikshaymitra"}
+            patientId={patientId}
+            getData={getData}
+          />
+        )}
+      </>
     );
   }
 

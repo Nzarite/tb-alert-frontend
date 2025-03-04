@@ -15,7 +15,13 @@ import PatientDetailsForm, {
 } from "../PatientDetailsForm/PatientDetailsForm";
 import TbDetailsForm, { TbDetailsData } from "../TbDetailsForm/TbDetailsForm";
 
-const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
+const EditPatientDetailsModal = ({
+  open,
+  onClose,
+  prop,
+  patientId,
+  getData,
+}: any) => {
   const [formData, setFormData] = useState({
     patientDetails: {} as PatientDetailsData,
     tbdetailsDetails: {} as TbDetailsData,
@@ -128,6 +134,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
       );
     } finally {
       setUpdating(false);
+      getData();
     }
   };
 

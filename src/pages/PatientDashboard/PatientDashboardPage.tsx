@@ -31,6 +31,7 @@ const PatientDashboardPage = () => {
   const canEdit = roles.includes("SuperAdmin");
 
   const handleEditClick = (section: any) => {
+    console.log(section);
     if (section.editURL) {
       navigate(section.editURL, { state: { prop: section.prop } });
     } else {
