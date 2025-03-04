@@ -28,6 +28,7 @@ import {
   VisitDataInterface,
 } from "../../components/datatypes/DataTypes";
 import axiosInstance from "../../components/axiosInstance";
+import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 
 interface Props {
   index: number;
@@ -72,6 +73,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   const [hover, setHover] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const {
     control,
@@ -122,6 +124,13 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
     }`;
   }
 
+  const handleModalClose = async() => {
+    setModalOpen(false);
+    if (data?.patient.patientId) {
+      await getPatientData(data.patient.patientId.toString());
+    }
+  };
+
   const formSubmitHandler = async (formData: FormData) => {
     setLoading(true);
     setError(null);
@@ -136,11 +145,10 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
         submitData
       );
       await getPatientData(data?.patient.patientId?.toString());
-    } catch (error:any) {
+    } catch (error: any) {
       console.error(Error);
       setError(
-        error.response?.data ||
-          "Failed to update follow-up. Please try again."
+        error.response?.data || "Failed to update follow-up. Please try again."
       );
     } finally {
       setLoading(false);
@@ -408,11 +416,19 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
           }}
         >
           <Typography align="center" variant="body1" color="textSecondary">
-            Please complete Patient Registration
+            Please complete Patient TB details Registration
           </Typography>
-          <Link to={`/patient-dashboard/${data?.patient.patientId}`}>
-            <Button variant="contained">Go to Dashboard</Button>
-          </Link>
+          <Button variant="contained" onClick={() => setModalOpen(true)}>
+            Register TB details
+          </Button>
+          {modalOpen && (
+            <EditPatientDetailsModal
+              open={modalOpen}
+              onClose={handleModalClose}
+              prop="tbdetails"
+              patientId={data?.patient.patientId}
+            />
+          )}
         </div>
       )}
     </Paper>
