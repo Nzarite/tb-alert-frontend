@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Select from "react-select";
-import axiosInstance from "./axiosInstance";
-import { TeleCaller, StateHead } from "./datatypes/DataTypes";
 import { useSelector } from "react-redux";
+import Select from "react-select";
 import { Role } from "./Authorization/Roles/Types";
+import axiosInstance from "./axiosInstance";
+import { StateHead, TeleCaller } from "./datatypes/DataTypes";
 
 interface SearchProps {
   changeSearch: (text: { value: string; label: string }) => void;
@@ -30,6 +30,27 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
     (state: any) => state.user?.profile?.client_roles
   );
   const userState: string = useSelector((state: any) => state.user?.userState);
+  const getPersons = (role: any) => {
+    switch (role) {
+      case "patient":
+        return "Patients";
+
+      case "telecaller":
+        return "Telecallers";
+
+      case "statehead":
+        return "State Heads";
+
+      case "fieldcoordinator":
+        return "Field Coordinators";
+
+      case "gphead":
+        return "Gram Panchayat Heads";
+
+      default:
+        return "";
+    }
+  };
 
   const roleToUrlMap: Record<SearchProps["role"], string> = {
     patient: userRoles.includes("SuperAdmin")
@@ -150,13 +171,7 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
         filterOption={() => true}
         components={{ Option: CustomOption }}
         styles={customStyles}
-        placeholder={`Search ${
-          role === "patient"
-            ? "Patients"
-            : role === "telecaller"
-            ? "Telecallers"
-            : "State heads"
-        } ...`}
+        placeholder={`Search ${getPersons(role)} ...`}
       />
       {error && <p style={{ color: "red", marginTop: "5px" }}>{error}</p>}
     </>

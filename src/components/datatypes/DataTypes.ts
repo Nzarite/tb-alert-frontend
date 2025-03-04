@@ -169,3 +169,35 @@ export interface StateHead {
   updatedBy: string;
   dateOfLeaving: string;
 }
+
+export interface FieldCoordinator {
+  createdBy: string;
+  createdOn: string;
+  dateOfJoining: string;
+  email: string;
+  firstName: string;
+  gender: string;
+  lastName: string;
+  personId: number;
+  phoneNumber: string;
+  state: string;
+  fieldCoordinatorId: number;
+  updatedBy: string;
+  dateOfLeaving: string;
+}
+
+export interface GPHead {
+  createdBy: string;
+  createdOn: string;
+  dateOfJoining: string;
+  email: string;
+  firstName: string;
+  gender: string;
+  lastName: string;
+  personId: number;
+  phoneNumber: string;
+  state: string;
+  gpHeadId: number;
+  updatedBy: string;
+  dateOfLeaving: string;
+}

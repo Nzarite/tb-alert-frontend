@@ -19,6 +19,8 @@ import PageLayout from "./pages/PageLayout";
 import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
 import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
+import FieldCoordinatorRegistrationPage from "./pages/Registration/FieldCoordinator/FieldCoordinatorRegistrationPage.tsx";
+import GPHeadRegistrationPage from "./pages/Registration/GPHead/GPHeadRegistrationPage.tsx";
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
 import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
 import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
@@ -102,6 +104,13 @@ const router = createBrowserRouter(
           path="/user/telecaller/:userId"
           element={<UserDashBoard role="telecaller" />}
         />
+        <Route
+          path="/register/fieldcoordinator"
+          element={<FieldCoordinatorRegistrationPage />}
+        />
+        <Route path="/register/gphead" element={<GPHeadRegistrationPage />} />
+        <Route path="/user/fieldcoordinator" element={<UserSearch />} />
+        <Route path="/user/gphead" element={<UserSearch />} />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>

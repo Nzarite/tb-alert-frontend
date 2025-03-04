@@ -7,7 +7,12 @@ import { RiPencilLine } from "react-icons/ri";
 import { useAuth } from "react-oidc-context";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
-import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
+import {
+  FieldCoordinator,
+  GPHead,
+  StateHead,
+  TeleCaller,
+} from "../../components/datatypes/DataTypes";
 import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
 import UserDetailsModal from "./UserDetailsModal";
 import UserPersonalDetails from "./UserPersonalDetails";
@@ -19,7 +24,9 @@ interface SearchProps {
 const UserDashBoard = ({ role }: SearchProps) => {
   const { userId } = useParams<{ userId: string }>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [userData, setUserData] = useState<TeleCaller | StateHead | null>(null);
+  const [userData, setUserData] = useState<
+    TeleCaller | StateHead | FieldCoordinator | GPHead | null
+  >(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
@@ -43,12 +50,27 @@ const UserDashBoard = ({ role }: SearchProps) => {
     setUserData(updatedUser);
   };
 
-  const isStateHead = userData?.hasOwnProperty("stateHeadId");
-  const deleteUrl = isStateHead
-    ? `statehead/${userData?.stateHeadId}`
-    : `telecaller/${userData?.teleCallerId}`;
-  const navigateUrl = isStateHead ? "/user/statehead" : "/user/telecaller";
-  const person = isStateHead ? "StateHead" : "TeleCaller";
+  let deleteUrl = "",
+    navigateUrl = "",
+    person = "";
+  if (userData?.hasOwnProperty("stateHeadId")) {
+    deleteUrl = `statehead/${userData?.stateHeadId}`;
+    navigateUrl = "/user/statehead";
+    person = "StateHead";
+  } else if (userData?.hasOwnProperty("teleCallerId")) {
+    deleteUrl = `telecaller/${userData?.teleCallerId}`;
+    navigateUrl = "/user/telecaller";
+    person = "TeleCaller";
+  } else if (userData?.hasOwnProperty("fieldCoordinatorId")) {
+    deleteUrl = `fieldcoordinator/${userData?.fieldCoordinatorId}`;
+    navigateUrl = "/user/fieldcoordinator";
+    person = "FieldCoordinator";
+  } else if (userData?.hasOwnProperty("gpHeadId")) {
+    deleteUrl = `gphead/${userData?.gpHeadId}`;
+    navigateUrl = "/user/gphead";
+    person = "GPHead";
+  }
+
   const roles: string[] = useAuth().user?.profile.client_roles as string[];
   const canEdit = roles.includes("SuperAdmin");
 

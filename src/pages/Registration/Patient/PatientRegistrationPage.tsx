@@ -27,7 +27,7 @@ import TbDetailsForm, {
   TbDetailsData,
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
-import { Role } from "../../../components/Authorization/Roles/Types";
+import { RootState } from "../../../redux/store";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -43,7 +43,7 @@ const PatientRegistrationPage = () => {
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user?.profile?.email) ||
+    useSelector((state: RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
 
   const steps = [
@@ -52,7 +52,7 @@ const PatientRegistrationPage = () => {
     "Nikshay Details",
     "Contact Screening Details",
   ];
- 
+
   const [formData, setFormData] = useState({
     patientDetails: {} as PatientDetailsData,
     tbDetails: {} as TbDetailsData,
@@ -63,17 +63,17 @@ const PatientRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
 
   const { handleSubmit } = useForm();
- 
+
   const onSubmit = (data: any) => {
     console.log("Final Submitted Data:", data);
   };
- 
+
   const handleSave = async (stepData: any) => {
     setLoading(true);
     setError(null);
     try {
       let response;
- 
+
       if (activeStep === 0) {
         response = await axiosInstance.post("/patient/register", {
           ...stepData,
@@ -138,7 +138,7 @@ const PatientRegistrationPage = () => {
       setLoading(false);
     }
   };
- 
+
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
@@ -169,7 +169,7 @@ const PatientRegistrationPage = () => {
               </Stepper>
             </Paper>
           </Grid>
- 
+
           <Grid item xs={8}>
             <Paper sx={{ p: 3 }}>
               {activeStep === 0 && (
@@ -241,5 +241,5 @@ const PatientRegistrationPage = () => {
     </>
   );
 };
- 
+
 export default PatientRegistrationPage;

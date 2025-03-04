@@ -6,33 +6,23 @@ import { Link } from "react-router-dom";
 import { Role } from "../../components/Authorization/Roles/Types";
 import axiosInstance from "../../components/axiosInstance";
 import { tiles } from "../../components/Tiles";
-import { setUserProfile, setUserState } from "../../redux/userSlice";
+import {
+  setUserProfile,
+  setUserState,
+  UserProfile,
+} from "../../redux/userSlice";
 import "./styles.css";
 
 const LandingPage = () => {
   const auth = useAuth();
   const user = auth?.user;
   const profile = user?.profile;
+  console.log(profile);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (profile) {
-      const userProfile = {
-        exp: profile.exp,
-        iat: profile.iat,
-        iss: profile.iss,
-        aud: profile.aud,
-        sub: profile.sub,
-        typ: profile.typ as string,
-        sid: profile.sid,
-        client_roles: profile.client_roles as object,
-        email_verified: profile.email_verified,
-        name: profile.name,
-        preferred_username: profile.preferred_username,
-        given_name: profile.given_name,
-        family_name: profile.family_name,
-        email: profile.email,
-      };
+      const userProfile = profile as unknown as UserProfile;
       dispatch(setUserProfile(userProfile));
 
       const fetchUserDetails = async () => {

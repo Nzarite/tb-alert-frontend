@@ -1,15 +1,27 @@
 import { Divider, Grid, Typography } from "@mui/material";
-import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
+import {
+  FieldCoordinator,
+  GPHead,
+  StateHead,
+  TeleCaller,
+} from "../../components/datatypes/DataTypes";
 import { renderField } from "../PatientDashboard/PatientNikshayDetails";
 
 interface SearchProps {
-  user: TeleCaller | StateHead;
+  user: TeleCaller | StateHead | FieldCoordinator | GPHead;
 }
 
 const UserPersonalDetails = ({ user }: SearchProps) => {
+  const getUserIdFieldName = (user: any) => {
+    if (user.hasOwnProperty("stateHeadId")) return "stateHeadId";
+    else if (user.hasOwnProperty("teleCallerId")) return "teleCallerId";
+    else if (user.hasOwnProperty("fieldCoordinatorId"))
+      return "fieldCoordinatorId";
+    else if (user.hasOwnProperty("gpHeadId")) return "gpHeadId";
+  };
   let fields = [
     {
-      name: user.hasOwnProperty("stateHeadId") ? "stateHeadId" : "teleCallerId",
+      name: getUserIdFieldName(user),
       label: "User ID",
       size: 12,
     },
