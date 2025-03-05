@@ -4,6 +4,7 @@ import axiosInstance from "./axiosInstance";
 import { TeleCaller, StateHead } from "./datatypes/DataTypes";
 import { useSelector } from "react-redux";
 import { Role } from "./Authorization/Roles/Types";
+import { useAuth } from "react-oidc-context";
 
 interface SearchProps {
   changeSearch: (text: { value: string; label: string }) => void;
@@ -26,8 +27,12 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const auth = useAuth();
   const userRoles: Role[] = useSelector(
-    (state: any) => state.user?.profile?.client_roles || []
+    (state: any) =>
+      state.user?.profile?.client_roles ||
+      auth.user?.profile?.client_roles ||
+      []
   );
   const userState: string = useSelector((state: any) => state.user?.userState);
 

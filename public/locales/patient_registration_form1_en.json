@@ -1,7 +1,7 @@
 {
   "patientdetailsform": {
     "patientIdLabel": "Patient ID",
-    "firstNameLabel": "First Name1",
+    "firstNameLabel": "First Name",
     "lastNameLabel": "Last Name",
     "genderLabel": {
       "label": "Gender",
@@ -24,6 +24,7 @@
       ]
     },
     "currentStatusLabel": "Status",
+    "reminderTimeLabel": "Reminder Time",
     "stateLabel": "State"
   }
 }

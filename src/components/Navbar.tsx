@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
 import { updateLanguage } from "../redux/langSlice";
 import "./Navbar.css";
-import logo from "../../public/TB_Alert_India_Logo-removebg-preview.png";
+import logo from "/TB_Alert_India_Logo-removebg-preview.png";
 
 const Navbar = () => {
   const language = useSelector((state: any) => state.language.language);

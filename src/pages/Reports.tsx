@@ -16,9 +16,10 @@ import { useSelector } from "react-redux";
 import { useAuth } from "react-oidc-context";
 
 const Reports = () => {
-
-  const auth=useAuth();
-  const userEmail=useSelector((state:any)=> state.user?.profile?.email)||auth.user?.profile.email;
+  const auth = useAuth();
+  const userEmail =
+    useSelector((state: any) => state.user?.profile?.email) ||
+    auth.user?.profile.email;
   console.log(userEmail);
 
   const [currentRole, setCurrentRole] = useState("patient");
@@ -32,7 +33,7 @@ const Reports = () => {
   const [dsOrDr, setDsOrDr] = useState<string>("");
   const [udstStatus, setUdstStatus] = useState<boolean | "">("");
   const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
-  const [createdBy,setCreatedBy]=useState<string>("")
+  const [createdBy, setCreatedBy] = useState<string>("");
 
   const handleTeleCallerReport = async () => {
     try {
@@ -113,8 +114,8 @@ const Reports = () => {
       const response = await axiosInstance.post(
         "/report/patient/followup/today",
         {
-          state:state,
-          createdBy:createdBy==="self"?userEmail:"",
+          state: state,
+          createdBy: createdBy === "self" ? userEmail : "",
         },
         {
           responseType: "blob",
@@ -231,7 +232,9 @@ const Reports = () => {
                 sm={6}
                 sx={{
                   display:
-                    currentRole === "patient" || currentRole === "telecaller" || currentRole==="followup"
+                    currentRole === "patient" ||
+                    currentRole === "telecaller" ||
+                    currentRole === "followup"
                       ? "block"
                       : "none",
                 }}
@@ -431,12 +434,10 @@ const Reports = () => {
                       >
                         Download TeleCaller Reports
                       </Button>
-                     
                     </>
                   )}
-                  {
-                    currentRole==="followup" && (
-                      <Button
+                  {currentRole === "followup" && (
+                    <Button
                       variant="contained"
                       color="secondary"
                       onClick={() => handleFollowUpForToday()}
@@ -444,8 +445,7 @@ const Reports = () => {
                     >
                       Download FollowUps for Today
                     </Button>
-                    )
-                  }
+                  )}
                   {currentRole === "statehead" && (
                     <Button
                       variant="contained"

@@ -27,7 +27,6 @@ import TbDetailsForm, {
   TbDetailsData,
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
-import { Role } from "../../../components/Authorization/Roles/Types";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -43,7 +42,7 @@ const PatientRegistrationPage = () => {
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user?.profile?.email) ||
+    useSelector((state: any) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
 
   const steps = [

@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { Role } from "../Authorization/Roles/Types";
@@ -33,6 +33,7 @@ export type PatientDetailsData = {
   block: string;
   gp: string;
   consentForMessage: boolean;
+  reminderTime?: string;
 };
 
 export interface PatientDetailsFormLabelsData {
@@ -49,33 +50,54 @@ export interface PatientDetailsFormLabelsData {
   consentForMessageLabel: LabelOption;
   currentStatusLabel: string;
   stateLabel: string;
+  reminderTimeLabel: string;
 }
 
-const patientDetailsSchema = z.object({
-  firstName: z.string().min(1, "First Name is required"),
-  lastName: z.string().optional(),
-  gender: z.enum(["Male", "Female"], {
-    errorMap: () => ({ message: "Gender is required" }),
-  }),
-  phoneNumber: z
-    .string()
-    .regex(/^\d+$/, "Contact number must contain only numbers")
-    .min(10, "Contact number must be at least 10 digits")
-    .max(15, "Contact number can't exceed 15 digits"),
-  age: z
-    .number()
-    .int("Age must be an integer")
-    .min(1, "Age must be at least 1")
-    .max(150, "Age must be at most 150"),
-  state: z.string().min(1, "State Name is required"),
-  district: z.string().min(1, "District Name is required"),
-  village: z.string().min(1, "Village Name is required"),
-  block: z.string().min(1, "Block Name is required"),
-  gp: z.string().min(1, "GP Name is required"),
-  consentForMessage: z.boolean({
-    errorMap: () => ({ message: "Consent for message is required" }),
-  }),
-});
+const patientDetailsSchema = z
+  .object({
+    firstName: z.string().min(1, "First Name is required"),
+    lastName: z.string().optional(),
+    gender: z.enum(["Male", "Female"], {
+      errorMap: () => ({ message: "Gender is required" }),
+    }),
+    phoneNumber: z
+      .string()
+      .regex(/^\d+$/, "Contact number must contain only numbers")
+      .min(10, "Contact number must be at least 10 digits")
+      .max(15, "Contact number can't exceed 15 digits"),
+    age: z
+      .number()
+      .int("Age must be an integer")
+      .min(1, "Age must be at least 1")
+      .max(150, "Age must be at most 150"),
+    state: z.string().min(1, "State Name is required"),
+    district: z.string().min(1, "District Name is required"),
+    village: z.string().min(1, "Village Name is required"),
+    block: z.string().min(1, "Block Name is required"),
+    gp: z.string().min(1, "GP Name is required"),
+    consentForMessage: z.boolean({
+      errorMap: () => ({ message: "Consent for message is required" }),
+    }),
+    reminderTime: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.consentForMessage) {
+      if (!data.reminderTime) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["reminderTime"],
+          message:
+            "Reminder time is required when consent for message is given",
+        });
+      } else if (!/^\d{2}:\d{2}$/.test(data.reminderTime)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["reminderTime"],
+          message: "Reminder time must be in HH:MM format",
+        });
+      }
+    }
+  });
 
 const PatientDetailsForm = ({
   language,
@@ -114,6 +136,7 @@ const PatientDetailsForm = ({
     gpLabel: "",
     consentForMessageLabel: { label: "", options: [] },
     currentStatusLabel: "",
+    reminderTimeLabel: "",
     stateLabel: "",
   });
 
@@ -163,6 +186,8 @@ const PatientDetailsForm = ({
     //   onNext();
     // }
   };
+
+  const consentForMessage = useWatch({ control, name: "consentForMessage" });
 
   const formFields: {
     name: keyof PatientDetailsData;
@@ -327,6 +352,29 @@ const PatientDetailsForm = ({
               )}
             />
           ) : null
+        )}
+        {consentForMessage && (
+          <Controller
+            key="reminderTime"
+            name="reminderTime"
+            control={control}
+            render={({ field: controllerField }) => (
+              <TextField
+                {...controllerField}
+                label={labels.reminderTimeLabel}
+                type="time"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                slotProps={{ inputLabel: { shrink: true } }}
+                // defaultValue={}
+                disabled={loading}
+                error={!!errors.reminderTime}
+                helperText={errors.reminderTime?.message}
+                onChange={(e) => controllerField.onChange(e.target.value)}
+              />
+            )}
+          />
         )}
         <Box mt={3} display="flex" justifyContent="space-between">
           {functionality === "editdetails" && (
