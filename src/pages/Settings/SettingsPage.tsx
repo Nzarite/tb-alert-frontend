@@ -36,6 +36,7 @@ const SettingsPage = () => {
       );
 
       setDefaultValues(initialValues);
+      reset(initialValues); // Ensure form values update
     } catch (error) {
       console.error("Error fetching settings:", error);
     } finally {

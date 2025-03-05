@@ -6,7 +6,6 @@ import {
   DialogTitle,
   Typography,
 } from "@mui/material";
-import { ControllerRenderProps } from "react-hook-form";
 import { SettingsInterface } from "../../components/datatypes/DataTypes";
 import { postSetting } from "./settingsService";
 
@@ -14,11 +13,7 @@ interface Props {
   confirmOpen: boolean;
   setConfirmOpen: (open: boolean) => void;
   newMedication: string;
-  options: string[];
-  setOptions: (options: string[]) => void;
-  setValue: (key: string, value: string[]) => void;
   setting: SettingsInterface;
-  field: ControllerRenderProps<any, string>;
   loadSettings: () => void;
 }
 
@@ -26,11 +21,7 @@ const AddMedicationDialog = ({
   confirmOpen,
   setConfirmOpen,
   newMedication,
-  options,
-  setOptions,
-  setValue,
   setting,
-  field,
   loadSettings,
 }: Props) => {
   return (
@@ -49,8 +40,6 @@ const AddMedicationDialog = ({
             try {
               await postSetting({ name: newMedication }, setting.endpoint);
               await loadSettings();
-              setOptions([...options, newMedication]); // Update dropdown
-              setValue(setting.keyName, [...field.value, newMedication]); // Add to selection
             } catch (error) {
               console.error("Failed to add medication:", error);
             }
