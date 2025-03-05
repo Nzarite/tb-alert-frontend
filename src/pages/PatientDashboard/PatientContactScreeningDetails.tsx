@@ -14,7 +14,7 @@ import { ContactScreeningDetailsFormLabelsData } from "../../components/ContactS
 import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 import { renderField } from "./PatientNikshayDetails";
 
-const PatientContactScreeningDetails = ({ patientId }: any) => {
+const PatientContactScreeningDetails = ({ patientId, refreshKey }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -121,7 +121,11 @@ const PatientContactScreeningDetails = ({ patientId }: any) => {
 
   useEffect(() => {
     getData();
-  }, [patientId]);
+  }, [patientId, refreshKey]);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   if (loading) {
     return (
@@ -141,7 +145,7 @@ const PatientContactScreeningDetails = ({ patientId }: any) => {
         {modalOpen && (
           <EditPatientDetailsModal
             open={modalOpen}
-            onClose={() => setModalOpen(false)}
+            onClose={handleModalClose}
             prop={"contactscreening"}
             patientId={patientId}
             getData={getData}

@@ -29,6 +29,7 @@ const PatientDashboardPage = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const roles: string[] = useAuth().user?.profile.client_roles as string[];
   const canEdit = roles.includes("SuperAdmin");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleEditClick = (section: any) => {
     console.log(section);
@@ -43,6 +44,7 @@ const PatientDashboardPage = () => {
   const handleModalClose = () => {
     setModalOpen(false);
     setSelectedPatientData(null);
+    setRefreshKey((prevKey: number) => prevKey + 1);
   };
 
   if (!patientId) {
@@ -82,7 +84,12 @@ const PatientDashboardPage = () => {
         {[
           {
             title: "Personal Details",
-            component: <PatientPersonalDetails patientId={patientId} />,
+            component: (
+              <PatientPersonalDetails
+                patientId={patientId}
+                refreshKey={refreshKey}
+              />
+            ),
             icon: <MdPerson style={{ fontSize: "24px" }} />,
             size: 6,
             editURL: null,
@@ -90,7 +97,12 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Nikshay Details",
-            component: <PatientNikshayDetails patientId={patientId} />,
+            component: (
+              <PatientNikshayDetails
+                patientId={patientId}
+                refreshKey={refreshKey}
+              />
+            ),
             icon: <MdMobileFriendly style={{ fontSize: "20px" }} />,
             size: 6,
             editURL: null,
@@ -98,7 +110,12 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Medical Report",
-            component: <PatientMedicalDetails patientId={patientId} />,
+            component: (
+              <PatientMedicalDetails
+                patientId={patientId}
+                refreshKey={refreshKey}
+              />
+            ),
             icon: <MdLocalHospital style={{ fontSize: "25px" }} />,
             size: 6,
             editURL: null,
@@ -106,7 +123,12 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Contact Screening",
-            component: <PatientContactScreeningDetails patientId={patientId} />,
+            component: (
+              <PatientContactScreeningDetails
+                patientId={patientId}
+                refreshKey={refreshKey}
+              />
+            ),
             icon: <MdAssessment style={{ fontSize: "22px" }} />,
             size: 6,
             editURL: null,
@@ -114,14 +136,24 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Medicines",
-            component: <PatientMedicineDetails patientId={patientId} />,
+            component: (
+              <PatientMedicineDetails
+                patientId={patientId}
+                refreshKey={refreshKey}
+              />
+            ),
             icon: <MdVaccines style={{ fontSize: "20px" }} />,
             size: 6,
             editURL: null,
           },
           {
             title: "Follow Up",
-            component: <PatientFollowUpDetails patientId={patientId} />,
+            component: (
+              <PatientFollowUpDetails
+                patientId={patientId}
+                refreshKey={refreshKey}
+              />
+            ),
             icon: <MdAssessment style={{ fontSize: "22px" }} />,
             size: 6,
             editURL: "/visit",

@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
 import { MedicationInterface } from "../../components/datatypes/DataTypes";
 
-const PatientMedicineDetails = ({ patientId }: any) => {
+const PatientMedicineDetails = ({ patientId, refreshKey }: any) => {
   const [patientData, setPatientData] = useState<MedicationInterface[] | null>(
     null
   );
@@ -40,7 +40,7 @@ const PatientMedicineDetails = ({ patientId }: any) => {
     };
 
     getData();
-  }, [patientId]);
+  }, [patientId, refreshKey]);
 
   if (loading) {
     return (

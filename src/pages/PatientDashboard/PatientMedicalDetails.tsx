@@ -14,7 +14,7 @@ import EditPatientDetailsModal from "../../components/PatientRegistrationModals/
 import { TbDetailsFormLabelsData } from "../../components/TbDetailsForm/TbDetailsForm";
 import { renderField } from "./PatientNikshayDetails";
 
-const PatientMedicalDetails = ({ patientId }: any) => {
+const PatientMedicalDetails = ({ patientId, refreshKey }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,7 +78,11 @@ const PatientMedicalDetails = ({ patientId }: any) => {
 
   useEffect(() => {
     getData();
-  }, [patientId]);
+  }, [patientId, refreshKey]);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   if (loading) {
     return (
@@ -98,7 +102,7 @@ const PatientMedicalDetails = ({ patientId }: any) => {
         {modalOpen && (
           <EditPatientDetailsModal
             open={modalOpen}
-            onClose={() => setModalOpen(false)}
+            onClose={handleModalClose}
             prop={"tbdetails"}
             patientId={patientId}
             getData={getData}

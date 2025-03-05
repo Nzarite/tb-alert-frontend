@@ -18,8 +18,10 @@ import { FollowUpsDataInterface } from "../../components/datatypes/DataTypes";
 import { patientConditionLabels } from "../FollowUp/FollowUpMain";
 import { getStatusColor, getStatusName } from "../FollowUp/FollowUpSidebar";
 
-const PatientFollowUpDetails = ({ patientId }: any) => {
-    const [patientData, setPatientData] = useState<FollowUpsDataInterface[] | null>(null);
+const PatientFollowUpDetails = ({ patientId, refreshKey }: any) => {
+  const [patientData, setPatientData] = useState<
+    FollowUpsDataInterface[] | null
+  >(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +42,7 @@ const PatientFollowUpDetails = ({ patientId }: any) => {
     };
 
     getData();
-  }, [patientId]);
+  }, [patientId, refreshKey]);
 
   if (loading) {
     return (

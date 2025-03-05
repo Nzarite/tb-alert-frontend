@@ -45,7 +45,7 @@ export const renderField = (
   );
 };
 
-const PatientNikshayDetails = ({ patientId }: any) => {
+const PatientNikshayDetails = ({ patientId, refreshKey }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -111,7 +111,11 @@ const PatientNikshayDetails = ({ patientId }: any) => {
 
   useEffect(() => {
     getData();
-  }, [patientId]);
+  }, [patientId, refreshKey]);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   if (loading) {
     return (
@@ -131,7 +135,7 @@ const PatientNikshayDetails = ({ patientId }: any) => {
         {modalOpen && (
           <EditPatientDetailsModal
             open={modalOpen}
-            onClose={() => setModalOpen(false)}
+            onClose={handleModalClose}
             prop={"nikshaymitra"}
             patientId={patientId}
             getData={getData}
