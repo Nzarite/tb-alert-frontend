@@ -33,6 +33,7 @@ import TbDetailsForm, {
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
 import DiagnosedWithTB from "../../../components/TbDetailsForm/DiagnosedWithTB";
+import { RootState } from "../../../redux/store";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -51,8 +52,10 @@ const PatientRegistrationPage = () => {
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user?.profile?.email) ||
+    useSelector((state:RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
+  const userRole = auth.user?.profile.client_roles || {};
+  
 
   const steps = [
     "Patient Details",
