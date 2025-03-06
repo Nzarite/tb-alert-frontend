@@ -10,7 +10,6 @@ import {
 import { RiPencilLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
-import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 import axiosInstance from "../../components/axiosInstance";
 import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
 import PatientFollowUpDetails from "./PatientFollowUpDetails";

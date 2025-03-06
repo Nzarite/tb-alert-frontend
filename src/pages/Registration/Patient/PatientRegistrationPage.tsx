@@ -88,10 +88,15 @@ const PatientRegistrationPage = () => {
       let response;
 
       if (activeStep === 0) {
+        let createdBy;
+        if(stepData.createdBy==="") createdBy=userEmail;
+        else createdBy=stepData.createdBy; 
+        
         response = await axiosInstance.post("/patient/register", {
           ...stepData,
-          createdBy: userEmail,
+          createdBy:createdBy
         });
+        console.log(stepData);
         if (response.status === 200 || 201 || 202) {
           setPatientId(response.data.patientId);
           setPatientName(
