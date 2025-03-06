@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { Role } from "../Authorization/Roles/Types";
 import { useAuth } from "react-oidc-context";
-import { LabelOption } from "../datatypes/DataTypes";
+import { LabelOption, StateOption } from "../datatypes/DataTypes";
 import axiosInstance from "../axiosInstance";
 
 export type PatientDetailsData = {
@@ -51,11 +51,6 @@ export interface PatientDetailsFormLabelsData {
   consentForMessageLabel: LabelOption;
   currentStatusLabel: string;
 }
-
-export type StateOption = {
-  label: string;
-  value: string;
-};
 
 const patientDetailsSchema = z.object({
   firstName: z.string().min(1, "First Name is required"),
@@ -166,6 +161,7 @@ const PatientDetailsForm = ({
 
       setBackendStates(stateNames);
     } catch (error) {
+      if(error.status === 401) setBackendStates(userState)
       console.error("Error fetching states:", error);
     }
   };
@@ -305,11 +301,6 @@ const PatientDetailsForm = ({
                       },
                     },
                   }}
-                  // value={
-                  //   field.options?.length === 1
-                  //     ? field.options[0].value
-                  //     : controllerField.value || ""
-                  // }
                   disabled={
                     field.name === "district" && !selectedState ? true : false
                   }

@@ -91,6 +91,11 @@ export interface LabelOption {
   options: { label: string; value: any }[];
 }
 
+export type StateOption = {
+  label: string;
+  value: string;
+};
+
 export interface DashboardFieldsProp {
 	name: string;
   label: string | LabelOption;

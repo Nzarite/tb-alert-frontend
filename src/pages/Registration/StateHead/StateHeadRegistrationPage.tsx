@@ -18,8 +18,7 @@ import axiosInstance from "../../../components/axiosInstance";
 import { useSelector } from "react-redux";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
-import { LabelOption } from "../../../components/datatypes/DataTypes";
-import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
+import { LabelOption, StateOption} from "../../../components/datatypes/DataTypes";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -47,7 +46,7 @@ export interface ScTcRegistrationFormLabelsData {
   phoneNumberLabel: string;
   emailLabel: string;
   dateOfJoiningLabel: string;
-  dateOfLeavingLabel:  string;
+  dateOfLeavingLabel: string;
   stateLabel: string;
 }
 
@@ -69,7 +68,7 @@ const StateHeadRegistrationPage = () => {
   });
 
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
-    userIdLabel:"",
+    userIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
