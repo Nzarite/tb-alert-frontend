@@ -1,4 +1,3 @@
-import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, Grid, Paper, Typography, Switch, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -12,6 +11,7 @@ import { RiPencilLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
 import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
+import axiosInstance from "../../components/axiosInstance";
 import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
 import PatientFollowUpDetails from "./PatientFollowUpDetails";
 import PatientMedicalDetails from "./PatientMedicalDetails";
@@ -19,11 +19,14 @@ import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
 import axiosInstance from "../../components/axiosInstance";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPatientData, setSelectedPatientData] = useState(null);
+  const [refreshData, setRefreshData] = useState(false);
+  // const [patientId, setPatientId] = useState<number | null>();
   const navigate = useNavigate();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [diagnosedWithTB, setDiagnosedWithTB] = useState<boolean>(true);
@@ -53,6 +56,7 @@ const PatientDashboardPage = () => {
   const handleModalClose = () => {
     setModalOpen(false);
     setSelectedPatientData(null);
+    setRefreshData((prev) => !prev);
   };
 
   const handleConfirmDialogClose = (confirm: boolean) => {
@@ -100,55 +104,55 @@ const PatientDashboardPage = () => {
         {[
           {
             title: "Personal Details",
-            component: <PatientPersonalDetails patientId={patientId} />, 
-            icon: <MdPerson style={{ fontSize: "24px" }} />, 
-            size: 6, 
-            editURL: null, 
-            prop: "patient", 
+            component: <PatientPersonalDetails patientId={patientId} refresh={refreshData}/>,
+            icon: <MdPerson style={{ fontSize: "24px" }} />,
+            size: 6,
+            editURL: null,
+            prop: "patient",
             hidden: true
           },
           {
             title: "Nikshay Details",
-            component: <PatientNikshayDetails patientId={patientId} />, 
-            icon: <MdMobileFriendly style={{ fontSize: "20px" }} />, 
-            size: 6, 
-            editURL: null, 
-            prop: "nikshaymitra", 
+            component: <PatientNikshayDetails patientId={patientId} refresh={refreshData}/>,
+            icon: <MdMobileFriendly style={{ fontSize: "20px" }} />,
+            size: 6,
+            editURL: null,
+            prop: "nikshaymitra",
             hidden: diagnosedWithTB
           },
           {
             title: "Medical Report",
-            component: <PatientMedicalDetails patientId={patientId} />, 
-            icon: <MdLocalHospital style={{ fontSize: "25px" }} />, 
-            size: 6, 
-            editURL: null, 
-            prop: "tbdetails", 
+            component: <PatientMedicalDetails patientId={patientId} refresh={refreshData}/>,
+            icon: <MdLocalHospital style={{ fontSize: "25px" }} />,
+            size: 6,
+            editURL: null,
+            prop: "tbdetails",
             hidden: diagnosedWithTB
           },
           {
             title: "Contact Screening",
-            component: <PatientContactScreeningDetails patientId={patientId} />, 
-            icon: <MdAssessment style={{ fontSize: "22px" }} />, 
-            size: 6, 
-            editURL: null, 
-            prop: "contactscreening", 
+            component: <PatientContactScreeningDetails patientId={patientId} refresh={refreshData}/>,
+            icon: <MdAssessment style={{ fontSize: "22px" }} />,
+            size: 6,
+            editURL: null,
+            prop: "contactscreening",
             hidden: diagnosedWithTB
           },
           {
             title: "Medicines",
-            component: <PatientMedicineDetails patientId={patientId} />, 
-            icon: <MdVaccines style={{ fontSize: "20px" }} />, 
-            size: 6, 
-            editURL: null, 
+            component: <PatientMedicineDetails patientId={patientId} />,
+            icon: <MdVaccines style={{ fontSize: "20px" }} />,
+            size: 6,
+            editURL: null,
             hidden: diagnosedWithTB
           },
           {
             title: "Follow Up",
-            component: <PatientFollowUpDetails patientId={patientId} />, 
-            icon: <MdAssessment style={{ fontSize: "22px" }} />, 
-            size: 6, 
-            editURL: "/visit", 
-            prop: patientId, 
+            component: <PatientFollowUpDetails patientId={patientId} />,
+            icon: <MdAssessment style={{ fontSize: "22px" }} />,
+            size: 6,
+            editURL: "/visit",
+            prop: patientId,
             hidden: diagnosedWithTB
           },
         ].map((section, index) => (section.hidden &&

@@ -93,7 +93,7 @@ export interface LabelOption {
 
 export interface DashboardFieldsProp {
 	name: string;
-	label: string;
+  label: string | LabelOption;
 	size: number;
 }
 

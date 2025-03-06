@@ -46,5 +46,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUserProfile, clearUserProfile } = userSlice.actions;
+export const { setUserProfile, setUserState, clearUserProfile } =
+  userSlice.actions;
 export default userSlice.reducer;

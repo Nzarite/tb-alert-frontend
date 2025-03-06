@@ -1,15 +1,15 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, Paper } from "@mui/material";
-import { Typography } from "antd";
 import { useEffect, useState } from "react";
-import { MdPerson } from "react-icons/md";
-import { RiPencilLine } from "react-icons/ri";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../components/axiosInstance";
-import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
-import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
-import UserDetailsModal from "./UserDetailsModal";
 import UserPersonalDetails from "./UserPersonalDetails";
+import { Paper, Box } from "@mui/material";
+import { Typography } from "antd";
+import { RiPencilLine } from "react-icons/ri";
+import { MdPerson } from "react-icons/md";
+import UserDetailsModal from "./UserDetailsModal";
+import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
+import axiosInstance from "../../components/axiosInstance";
+import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
 
 interface SearchProps {
   role: string;
@@ -24,10 +24,7 @@ const UserDashBoard = ({ role }: SearchProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url =
-          role === "telecaller"
-            ? `/telecaller/${userId}`
-            : `/statehead/${userId}`;
+        const url = role === "telecaller" ? `/telecaller/${userId}` : `/statehead/${userId}`;
         const response = await axiosInstance.get(url);
         setUserData(response.data);
       } catch (error) {
