@@ -28,12 +28,12 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const auth = useAuth();
-  const userRoles: Role[] = useSelector(
-    (state: any) =>
-      state.user?.profile?.client_roles ||
-      auth.user?.profile?.client_roles ||
-      []
-  );
+    const userRoles: Role[] = useSelector(
+        (state: any) =>
+            state.user?.profile?.client_roles ||
+            auth.user?.profile?.client_roles ||
+            []
+    );
   const userState: string = useSelector((state: any) => state.user?.userState);
 
   const roleToUrlMap: Record<SearchProps["role"], string> = {

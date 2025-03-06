@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { Role } from "../Authorization/Roles/Types";
 import { useAuth } from "react-oidc-context";
-import { LabelOption } from "../datatypes/DataTypes";
+import { LabelOption, TeleCaller } from "../datatypes/DataTypes";
 import axiosInstance from "../axiosInstance";
 
 export type PatientDetailsData = {
@@ -34,6 +34,7 @@ export type PatientDetailsData = {
   block: string;
   gp: string;
   consentForMessage: boolean;
+  createdBy:string;
   reminderTime?: string;
 };
 
@@ -52,12 +53,15 @@ export interface PatientDetailsFormLabelsData {
   consentForMessageLabel: LabelOption;
   currentStatusLabel: string;
   reminderTimeLabel: string;
+  createdByLabel:string;
 }
 
 export type StateOption = {
   label: string;
   value: string;
 };
+
+const [telecallers, setTelecallers] = useState<TeleCaller[]>();
 
 const patientDetailsSchema = z
   .object({
@@ -84,6 +88,14 @@ const patientDetailsSchema = z
     consentForMessage: z.boolean({
       errorMap: () => ({ message: "Consent for message is required" }),
     }),
+      createdBy: z.string().superRefine((val, ctx) => {
+          if (telecallers && telecallers.length > 0 && !val) {
+              ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  message: "Select a Telecaller",
+              });
+          }
+      }),
     reminderTime: z.string().optional(),
   })
   .superRefine((data, ctx) => {
@@ -122,6 +134,10 @@ const PatientDetailsForm = ({
   >([]);
   const [districts, setDistricts] = useState<string[]>([]);
 
+  const [allTelecaller, setAllTelecaller] = useState<
+    { value: string; telecallers: string[] }[]
+  >([]);
+
   const auth = useAuth();
 
   const userState =
@@ -148,6 +164,7 @@ const PatientDetailsForm = ({
     consentForMessageLabel: { label: "", options: [] },
     currentStatusLabel: "",
     reminderTimeLabel: "",
+    createdByLabel:"",
   });
 
   useEffect(() => {
@@ -189,6 +206,7 @@ const PatientDetailsForm = ({
 
       setBackendStates(stateNames);
     } catch (error) {
+      if(error.status===401) setBackendStates(userState);
       console.error("Error fetching states:", error);
     }
   };
@@ -230,6 +248,21 @@ const PatientDetailsForm = ({
     }
   }, [selectedState, setValue, allDistricts]);
 
+
+  useEffect(()=>{
+    const fetchTelecaller=async()=>{
+      try {
+        const response=await axiosInstance.get(`/telecaller/state/${selectedState}`);
+        setTelecallers(response.data);
+        console.log(telecallers);
+      } catch (error) {
+
+      }
+    }
+    fetchTelecaller();
+  },[selectedState])
+
+
   useEffect(() => {
     if (data) {
       Object.keys(data).forEach((key) => {
@@ -244,6 +277,7 @@ const PatientDetailsForm = ({
     //   onNext();
     // }
   };
+  console.log(selectedState)
 
   const consentForMessage = useWatch({ control, name: "consentForMessage" });
 
@@ -252,17 +286,19 @@ const PatientDetailsForm = ({
     type: "text" | "select" | "date" | "radio" | "number";
     label: string;
     options?: { label: string; value: string }[];
+    disabled:boolean;
   }[] = [
-    { name: "firstName", type: "text", label: labels.firstNameLabel },
-    { name: "lastName", type: "text", label: labels.lastNameLabel },
+    { name: "firstName", type: "text", label: labels.firstNameLabel, disabled:false },
+    { name: "lastName", type: "text", label: labels.lastNameLabel, disabled:false },
     {
       name: "gender",
       type: "radio",
       label: labels.genderLabel.label,
       options: labels.genderLabel.options,
+      disabled:false
     },
-    { name: "phoneNumber", type: "text", label: labels.phoneNumberLabel },
-    { name: "age", type: "number", label: labels.ageLabel },
+    { name: "phoneNumber", type: "text", label: labels.phoneNumberLabel, disabled:false },
+    { name: "age", type: "number", label: labels.ageLabel, disabled:false },
     {
       name: "state",
       type: "select",
@@ -270,26 +306,40 @@ const PatientDetailsForm = ({
       options: userRoles.includes("SuperAdmin")
         ? filteredStates
         : filteredStates.filter((option) => option.value === userState),
+      disabled:false,
     },
     {
       name: "district",
       type: "select",
       label: labels.districtLabel,
       options: districts.map((d) => ({ label: d, value: d })),
+      disabled: !selectedState,
+
     },
-    { name: "village", type: "text", label: labels.villageLabel },
-    { name: "block", type: "text", label: labels.blockLabel },
-    { name: "gp", type: "text", label: labels.gpLabel },
-    {
+    { name: "village", type: "text", label: labels.villageLabel, disabled:false },
+    { name: "block", type: "text", label: labels.blockLabel, disabled:false },
+    { name: "gp", type: "text", label: labels.gpLabel, disabled:false },
+      {
+          name: "createdBy",
+          type: "select",
+          label: labels.createdByLabel,
+          options: telecallers?.map((t) => ({ label: t.firstName+" "+t.lastName, value: t.email })),
+          disabled: telecallers?.length==0 || (userRoles.includes("Telecaller") && !userRoles.includes("SuperAdmin") && !userRoles.includes("StateCoordinator")),
+      },
+      {
       name: "consentForMessage",
       type: "radio",
       label: labels.consentForMessageLabel.label,
       options: labels.consentForMessageLabel.options,
+      disabled:false,
     },
+
+
   ];
 
-  if (!labels || !states) return <CircularProgress />;
 
+  if (!labels || !states) return <CircularProgress />;
+console.log(userRoles)
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -305,7 +355,7 @@ const PatientDetailsForm = ({
               fullWidth
               margin="normal"
               slotProps={{ inputLabel: { shrink: true } }}
-              disabled={loading}
+              disabled={loading && field.disabled}
               error={!!errors[field.name]}
               helperText={errors[field.name]?.message}
             />
@@ -335,11 +385,13 @@ const PatientDetailsForm = ({
                   //     ? field.options[0].value
                   //     : controllerField.value || ""
                   // }
-                  disabled={
-                    field.name === "district" && !selectedState ? true : false
-                  }
+                  // disabled={
+                  //   field.name === "district" && !selectedState ? true : false
+                  // }
                   onChange={(e) => controllerField.onChange(e.target.value)}
                   error={!!errors[field.name]}
+                  disabled={field.disabled}
+
                   helperText={errors[field.name]?.message}
                 >
                   {field.options?.map((option) => (
@@ -404,7 +456,7 @@ const PatientDetailsForm = ({
                   fullWidth
                   margin="normal"
                   slotProps={{ inputLabel: { shrink: true } }}
-                  disabled={loading}
+                  disabled={loading && field.disabled}
                   error={!!errors[field.name]}
                   helperText={errors[field.name]?.message}
                   onChange={(e) =>
