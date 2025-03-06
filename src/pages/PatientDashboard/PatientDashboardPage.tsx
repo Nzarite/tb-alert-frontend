@@ -57,10 +57,18 @@ const PatientDashboardPage = () => {
     setRefreshData((prev) => !prev);
   };
 
-  const handleConfirmDialogClose = (confirm: boolean) => {
+  const handleConfirmDialogClose = async(confirm: boolean) => {
     setConfirmDialogOpen(false);
     if (confirm) {
-      setDiagnosedWithTB(true);
+      try {
+        const diagnosedWithTB={
+          isDiagnosedWithTB:true,
+        }
+        const response= await axiosInstance.put(`/patient/update/${patientId}`,diagnosedWithTB);
+        setDiagnosedWithTB(true);
+      } catch (error) {
+        
+      }
     }
   };
 

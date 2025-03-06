@@ -55,7 +55,7 @@ const PatientRegistrationPage = () => {
     useSelector((state:RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
   const userRole = auth.user?.profile.client_roles || {};
-  
+
 
   const steps = [
     "Patient Details",
@@ -64,7 +64,7 @@ const PatientRegistrationPage = () => {
     "Nikshay Details",
     "Contact Screening Details",
   ];
-
+ 
   const [formData, setFormData] = useState({
     patientDetails: {} as PatientDetailsData,
     tbDetails: {} as TbDetailsData,
@@ -75,7 +75,7 @@ const PatientRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
 
   const { handleSubmit } = useForm();
-
+ 
   const onSubmit = (data: any) => {
     console.log("Final Submitted Data:", data);
   };
@@ -86,12 +86,12 @@ const PatientRegistrationPage = () => {
     setError(null);
     try {
       let response;
-
+ 
       if (activeStep === 0) {
         let createdBy;
         if(stepData.createdBy==="") createdBy=userEmail;
-        else createdBy=stepData.createdBy; 
-        
+        else createdBy=stepData.createdBy;
+
         response = await axiosInstance.post("/patient/register", {
           ...stepData,
           createdBy:createdBy
@@ -174,18 +174,18 @@ const PatientRegistrationPage = () => {
   };
   const handleConfirm = async (confirmed: boolean) => {
     setConfirmModalOpen(false);
-  
+
     if (confirmed) {
       // User confirmed, proceed with API call
       const response = await axiosInstance.put(`/patient/update/${patientId}`, {
         ...step1Data,
       });
-  
+
       if (response.status === 200 || response.status === 201 || response.status === 202) {
         setActiveStep(activeStep + 1);
       }
     }
-   
+
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
@@ -217,7 +217,7 @@ const PatientRegistrationPage = () => {
               </Stepper>
             </Paper>
           </Grid>
-
+ 
           <Grid item xs={8}>
             <Paper sx={{ p: 3 }}>
               {activeStep === 0 && (
@@ -316,5 +316,5 @@ const PatientRegistrationPage = () => {
     </>
   );
 };
-
+ 
 export default PatientRegistrationPage;

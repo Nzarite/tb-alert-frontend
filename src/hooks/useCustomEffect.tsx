@@ -4,7 +4,7 @@ import useLogout from "./useLogout";
 
 const useCustomEffect = () => {
   const logout = useLogout();
-  const userState = useSelector((state: any) => state.userState); // Replace `auth.user` with your actual state path
+  const userState = useSelector((state: any) => state.userState);
 
   useEffect(() => {
     if (userState !== null) return; // Wait until Redux state is available
