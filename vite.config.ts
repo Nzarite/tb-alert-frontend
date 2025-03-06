@@ -5,6 +5,20 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    allowedHosts : ["tbalert.beehyv.com"],
+    allowedHosts: ["tbalert.beehyv.com"],
+    cors: true,  // Enable CORS
+    hmr: {
+      protocol: 'wss',  // Ensure WebSocket uses WSS (secure)
+      host: 'tbalert.beehyv.com',
+      clientPort: 443,  // Change to 443 if running on HTTPS
+    },
+    proxy: {
+      "/ws": {
+        target: "wss://tbalert.beehyv.com", // Proxy WebSocket requests
+        ws: true,
+        changeOrigin: true,
+        secure: false, // Set to true if using HTTPS
+      }
+    }
   }
 })
