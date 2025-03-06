@@ -11,11 +11,10 @@ import "./styles.css";
 import axiosInstance from "../../components/axiosInstance";
 
 const LandingPage = () => {
-  const auth = useAuth();
-  // console.log(auth);
-  const user = auth?.user;
-  const profile = user?.profile;
-  const dispatch = useDispatch();
+	const auth = useAuth();
+	const user = auth?.user;
+	const profile = user?.profile;
+	const dispatch = useDispatch();
 
   useEffect(() => {
     if (profile) {
@@ -56,10 +55,7 @@ const LandingPage = () => {
     }
   }, [profile, dispatch]);
 
-  // const state = useSelector((state: RootState) => state);
-  // console.log("Redux State:", state);
-
-  const userRoles: Role[] = (auth?.user?.profile?.client_roles || []) as Role[];
+	const userRoles: Role[] = (auth?.user?.profile?.client_roles || []) as Role[];
 
   const accessibleTiles = tiles.filter((tile) =>
     tile.allowedRoles.some((role) => userRoles.includes(role))
