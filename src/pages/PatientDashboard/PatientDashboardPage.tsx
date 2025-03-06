@@ -1,4 +1,3 @@
-import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useState } from "react";
 import {
@@ -13,17 +12,20 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate, useParams } from "react-router-dom";
 import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
 import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
+import axiosInstance from "../../components/axiosInstance";
 import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
 import PatientFollowUpDetails from "./PatientFollowUpDetails";
 import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPatientData, setSelectedPatientData] = useState(null);
+  const [refreshData, setRefreshData] = useState(false);
   // const [patientId, setPatientId] = useState<number | null>();
   const navigate = useNavigate();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);

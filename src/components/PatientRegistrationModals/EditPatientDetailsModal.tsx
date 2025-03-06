@@ -132,7 +132,6 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
   };
 
   const language = useSelector((state: any) => state.language.language);
-  console.log(language);
 
   const renderForm = () => {
     if (loading) {

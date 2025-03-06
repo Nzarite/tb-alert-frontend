@@ -1,7 +1,7 @@
 {
   "patientdetailsform": {
     "patientIdLabel": "Patient ID",
-    "firstNameLabel": "First Name1",
+    "firstNameLabel": "First Name",
     "lastNameLabel": "Last Name",
     "genderLabel": {
       "label": "Gender",
@@ -12,6 +12,7 @@
     },
     "phoneNumberLabel": "Contact Number",
     "ageLabel": "Age of the Patient",
+    "stateLabel": "Name of the State",
     "districtLabel": "Name of the District",
     "villageLabel": "Name of the Village",
     "blockLabel": "Name of the Block",
@@ -23,7 +24,6 @@
         { "label": "No", "value": false }
       ]
     },
-    "currentStatusLabel": "Status",
-    "stateLabel": "State"
+    "currentStatusLabel": "Status"
   }
 }

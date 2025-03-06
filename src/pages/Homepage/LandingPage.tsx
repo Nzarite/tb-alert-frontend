@@ -14,11 +14,11 @@ import {
 import "./styles.css";
 
 const LandingPage = () => {
-  const auth = useAuth();
-  const user = auth?.user;
+	const auth = useAuth();
+	const user = auth?.user;
   const profile = user?.profile;
   console.log(profile);
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
   useEffect(() => {
     if (profile) {
@@ -44,10 +44,7 @@ const LandingPage = () => {
     }
   }, [profile, dispatch]);
 
-  // const state = useSelector((state: RootState) => state);
-  // console.log("Redux State:", state);
-
-  const userRoles: Role[] = (auth?.user?.profile?.client_roles || []) as Role[];
+	const userRoles: Role[] = (auth?.user?.profile?.client_roles || []) as Role[];
 
   const accessibleTiles = tiles.filter((tile) =>
     tile.allowedRoles.some((role) => userRoles.includes(role))

@@ -20,6 +20,7 @@ import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
 import { LabelOption } from "../../../components/datatypes/DataTypes";
 import { RootState } from "../../../redux/store";
+import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -68,10 +69,6 @@ const StateHeadRegistrationPage = () => {
     mode: "all",
   });
 
-  const [state, setState] = useState<{ states: LabelOption }>({
-    states: { label: "", options: [] },
-  });
-
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
     userIdLabel: "",
     firstNameLabel: "",
@@ -87,6 +84,10 @@ const StateHeadRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [states, setStates] = useState<StateOption[]>([]);
+  const [backendStates, setBackendStates] = useState<string[]>([]);
+  const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
 
   useEffect(() => {
     fetch(`/locales/sc_tc_registration_form_${language}.json`)
@@ -101,12 +102,38 @@ const StateHeadRegistrationPage = () => {
   useEffect(() => {
     fetch(`/locales/states_${language}.json`)
       .then((response) => response.json())
-      .then((data) => setState(data))
+      .then((data) => setStates(data.stateslist))
       .catch((err) => {
         console.error("Error fetching states:", err);
         alert("Failed to load states data. Please try again.");
       });
   }, [language]);
+
+  const fetchStates = async () => {
+    try {
+      const response = await axiosInstance.get("/state/all");
+      const stateNames = response.data.map(
+        (state: { stateName: string }) => state.stateName
+      );
+
+      setBackendStates(stateNames);
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStates();
+  }, []);
+
+  useEffect(() => {
+    if (backendStates.length > 0) {
+      const filtered = states.filter((state) =>
+        backendStates.includes(state.value)
+      );
+      setFilteredStates(filtered);
+    }
+  }, [backendStates, states]);
 
   const formFields = [
     {
@@ -148,8 +175,8 @@ const StateHeadRegistrationPage = () => {
     },
     {
       name: "state",
-      label: state.states.label,
-      options: state.states.options,
+      label: labels.stateLabel,
+      options: filteredStates,
       type: "select",
       disabled: loading,
     },

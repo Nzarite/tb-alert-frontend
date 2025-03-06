@@ -56,21 +56,22 @@ const PatientPersonalDetails = ({ patientId, refreshKey }: any) => {
     { name: "currentStatus", label: labels.currentStatusLabel, size: 6 },
   ];
 
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.get(`patient/${patientId}`);
+      setPatientData(res.data);
+      setError(null);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message || "Failed to fetch patient details"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const res = await axiosInstance.get(`patient/${patientId}`);
-        setPatientData(res.data);
-        setError(null);
-      } catch (err: any) {
-        setError(
-          err.response?.data?.message || "Failed to fetch patient details"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
     getData();
   }, [patientId, refreshKey]);
 

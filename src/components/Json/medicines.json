@@ -1,0 +1,8 @@
+[
+    {"id": 1, "name": "Isoniazid"},
+    {"id": 2, "name": "Rifampin"},
+    {"id": 3, "name": "Rifapentine"},
+    {"id": 4, "name": "Pyrazinamide"},
+    {"id": 5, "name": "Ethambutol"},
+    {"id": 6, "name": "Moxifloxacin"}
+]
