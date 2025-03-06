@@ -28,7 +28,7 @@ const PatientDashboardPage = () => {
   const navigate = useNavigate();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const roles: string[] = useAuth().user?.profile.client_roles as string[];
-  const canEdit = roles.includes("SuperAdmin");
+  const isAdmin = roles.includes("SuperAdmin");
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleEditClick = (section: any) => {
@@ -53,7 +53,7 @@ const PatientDashboardPage = () => {
 
   return (
     <>
-      {canEdit && (
+      {isAdmin && (
         <Box
           sx={{
             display: "flex",
@@ -182,7 +182,7 @@ const PatientDashboardPage = () => {
                     {section.title}
                   </Typography>
                 </Box>
-                {canEdit && (
+                {isAdmin && (
                   <RiPencilLine
                     style={{ fontSize: "20px" }}
                     onClick={() => handleEditClick(section)}

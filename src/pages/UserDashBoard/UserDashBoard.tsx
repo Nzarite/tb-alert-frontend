@@ -72,7 +72,7 @@ const UserDashBoard = ({ role }: SearchProps) => {
   }
 
   const roles: string[] = useAuth().user?.profile.client_roles as string[];
-  const canEdit = roles.includes("SuperAdmin");
+  const isAdmin = roles.includes("SuperAdmin");
 
   return (
     <div>
@@ -91,7 +91,7 @@ const UserDashBoard = ({ role }: SearchProps) => {
             </Typography>
           </Box>
 
-          {canEdit && (
+          {isAdmin && (
             <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
               <DeleteIcon
                 sx={{ cursor: "pointer" }}
