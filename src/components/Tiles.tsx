@@ -41,7 +41,7 @@ export const tiles: Tile[] = [
   {
     path: "/register/gphead",
     label: "Register GP Head",
-    allowedRoles: ["SuperAdmin", "StateCoordinator"],
+    allowedRoles: ["SuperAdmin", "StateCoordinator", "FieldCoordinator"],
     Icon: FaUserPlus,
   },
   {
@@ -89,7 +89,7 @@ export const tiles: Tile[] = [
   {
     path: "/user/gphead",
     label: "GP Head Dashboard",
-    allowedRoles: ["SuperAdmin", "StateCoordinator"],
+    allowedRoles: ["SuperAdmin", "StateCoordinator", "FieldCoordinator"],
     Icon: MdDashboard,
   },
   {
