@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
-import { useState } from "react";
+import { Box, Button, Grid, Paper, Typography, Switch, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { useEffect, useState } from "react";
 import {
   MdAssessment,
   MdLocalHospital,
@@ -18,14 +18,28 @@ import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
+import axiosInstance from "../../components/axiosInstance";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPatientData, setSelectedPatientData] = useState(null);
-  // const [patientId, setPatientId] = useState<number | null>();
   const navigate = useNavigate();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [diagnosedWithTB, setDiagnosedWithTB] = useState<boolean>(true);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchUserDiagnosis = async () => {
+      try {
+        const response = await axiosInstance.get(`/patient/${patientId}`);
+        setDiagnosedWithTB(response.data.isDiagnosedWithTB);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUserDiagnosis();
+  }, [patientId]);
 
   const handleEditClick = (section: any) => {
     if (section.editURL) {
@@ -41,20 +55,30 @@ const PatientDashboardPage = () => {
     setSelectedPatientData(null);
   };
 
+  const handleConfirmDialogClose = (confirm: boolean) => {
+    setConfirmDialogOpen(false);
+    if (confirm) {
+      setDiagnosedWithTB(true);
+    }
+  };
+
   if (!patientId) {
     return <Typography variant="h6">No patient selected</Typography>;
   }
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-          pr: 2,
-        }}
-      >
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
+        {!diagnosedWithTB && (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="body1">Mark as Diagnosed with TB</Typography>
+            <Switch
+              checked={diagnosedWithTB}
+              onChange={() => setConfirmDialogOpen(true)}
+              color="primary"
+            />
+          </Box>
+        )}
         <Button
           color="error"
           variant="contained"
@@ -62,103 +86,101 @@ const PatientDashboardPage = () => {
         >
           <DeleteIcon />
         </Button>
-
-        <DeletePersonModal
-          open={deleteModalOpen}
-          onClose={() => setDeleteModalOpen(false)}
-          deleteUrl={`patient/${patientId}`}
-          navigateUrl="/patient-dashboard"
-          person={"Patient"}
-        />
       </Box>
+
+      <DeletePersonModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        deleteUrl={`patient/${patientId}`}
+        navigateUrl="/patient-dashboard"
+        person={"Patient"}
+      />
 
       <Grid container spacing={2} sx={{ p: 2 }}>
         {[
           {
             title: "Personal Details",
-            component: <PatientPersonalDetails patientId={patientId} />,
-            icon: <MdPerson style={{ fontSize: "24px" }} />,
-            size: 6,
-            editURL: null,
-            prop: "patient",
+            component: <PatientPersonalDetails patientId={patientId} />, 
+            icon: <MdPerson style={{ fontSize: "24px" }} />, 
+            size: 6, 
+            editURL: null, 
+            prop: "patient", 
+            hidden: true
           },
           {
             title: "Nikshay Details",
-            component: <PatientNikshayDetails patientId={patientId} />,
-            icon: <MdMobileFriendly style={{ fontSize: "20px" }} />,
-            size: 6,
-            editURL: null,
-            prop: "nikshaymitra",
+            component: <PatientNikshayDetails patientId={patientId} />, 
+            icon: <MdMobileFriendly style={{ fontSize: "20px" }} />, 
+            size: 6, 
+            editURL: null, 
+            prop: "nikshaymitra", 
+            hidden: diagnosedWithTB
           },
           {
             title: "Medical Report",
-            component: <PatientMedicalDetails patientId={patientId} />,
-            icon: <MdLocalHospital style={{ fontSize: "25px" }} />,
-            size: 6,
-            editURL: null,
-            prop: "tbdetails",
+            component: <PatientMedicalDetails patientId={patientId} />, 
+            icon: <MdLocalHospital style={{ fontSize: "25px" }} />, 
+            size: 6, 
+            editURL: null, 
+            prop: "tbdetails", 
+            hidden: diagnosedWithTB
           },
           {
             title: "Contact Screening",
-            component: <PatientContactScreeningDetails patientId={patientId} />,
-            icon: <MdAssessment style={{ fontSize: "22px" }} />,
-            size: 6,
-            editURL: null,
-            prop: "contactscreening",
+            component: <PatientContactScreeningDetails patientId={patientId} />, 
+            icon: <MdAssessment style={{ fontSize: "22px" }} />, 
+            size: 6, 
+            editURL: null, 
+            prop: "contactscreening", 
+            hidden: diagnosedWithTB
           },
           {
             title: "Medicines",
-            component: <PatientMedicineDetails patientId={patientId} />,
-            icon: <MdVaccines style={{ fontSize: "20px" }} />,
-            size: 6,
-            editURL: null,
+            component: <PatientMedicineDetails patientId={patientId} />, 
+            icon: <MdVaccines style={{ fontSize: "20px" }} />, 
+            size: 6, 
+            editURL: null, 
+            hidden: diagnosedWithTB
           },
           {
             title: "Follow Up",
-            component: <PatientFollowUpDetails patientId={patientId} />,
-            icon: <MdAssessment style={{ fontSize: "22px" }} />,
-            size: 6,
-            editURL: "/visit",
-            prop: patientId,
+            component: <PatientFollowUpDetails patientId={patientId} />, 
+            icon: <MdAssessment style={{ fontSize: "22px" }} />, 
+            size: 6, 
+            editURL: "/visit", 
+            prop: patientId, 
+            hidden: diagnosedWithTB
           },
-        ].map((section, index) => (
+        ].map((section, index) => (section.hidden &&
           <Grid item xs={12} sm={section.size} key={index}>
-            <Paper
-              sx={{
-                p: 3,
-                height: "100%",
-                overflowY: "auto",
-              }}
-            >
+            <Paper sx={{ p: 3, height: "100%", overflowY: "auto" }}>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Box sx={{ display: "flex", gap: 1 }}>
                   {section.icon}
-                  <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    sx={{ mb: 2, color: "#1976d2" }}
-                  >
+                  <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: "#1976d2" }}>
                     {section.title}
                   </Typography>
                 </Box>
-                <RiPencilLine
-                  style={{ fontSize: "20px" }}
-                  onClick={() => handleEditClick(section)}
-                />
+                <RiPencilLine style={{ fontSize: "20px" }} onClick={() => handleEditClick(section)} />
               </Box>
               {section.component}
             </Paper>
           </Grid>
         ))}
       </Grid>
-      {modalOpen && selectedPatientData && (
-        <EditPatientDetailsModal
-          open={modalOpen}
-          onClose={handleModalClose}
-          prop={selectedPatientData}
-          patientId={patientId}
-        />
-      )}
+
+      <Dialog open={confirmDialogOpen} onClose={() => handleConfirmDialogClose(false)}>
+        <DialogTitle>Confirm Action</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to mark this patient as diagnosed with TB?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleConfirmDialogClose(false)}>Cancel</Button>
+          <Button onClick={() => handleConfirmDialogClose(true)} color="primary">Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
