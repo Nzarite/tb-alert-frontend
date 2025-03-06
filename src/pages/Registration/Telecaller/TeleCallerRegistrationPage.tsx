@@ -115,6 +115,7 @@ const TelecallerRegistrationPage = () => {
 
       setBackendStates(stateNames);
     } catch (error) {
+      if(error.status === 401) setBackendStates(userState)
       console.error("Error fetching states:", error);
     }
   };
