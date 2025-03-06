@@ -1,24 +1,25 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Alert,
   Box,
   Button,
+  CircularProgress,
   Divider,
   Paper,
   Stack,
   Typography,
-  CircularProgress,
-  Alert,
-  Snackbar,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useAuth } from "react-oidc-context";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
-import { useSelector } from "react-redux";
-import { useAuth } from "react-oidc-context";
-import { useNavigate } from "react-router-dom";
 import { LabelOption } from "../../../components/datatypes/DataTypes";
+import { RootState } from "../../../redux/store";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -46,14 +47,14 @@ export interface ScTcRegistrationFormLabelsData {
   phoneNumberLabel: string;
   emailLabel: string;
   dateOfJoiningLabel: string;
-  dateOfLeavingLabel:  string;
+  dateOfLeavingLabel: string;
   stateLabel: string;
 }
 
 const StateHeadRegistrationPage = () => {
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user?.profile?.email) ||
+    useSelector((state: RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
   const navigate = useNavigate();
 
@@ -72,7 +73,7 @@ const StateHeadRegistrationPage = () => {
   });
 
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
-    userIdLabel:"",
+    userIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
@@ -86,7 +87,6 @@ const StateHeadRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     fetch(`/locales/sc_tc_registration_form_${language}.json`)
@@ -161,9 +161,12 @@ const StateHeadRegistrationPage = () => {
     const formData = { ...data, createdBy: userEmail };
     try {
       await axiosInstance.post("/statehead/register", formData);
-      setOpenSnackbar(true);
       reset();
       navigate("/");
+      toast.success(
+        "The person has been registered successfully as a State Head. An email has been sent for password reset.",
+        { autoClose: 5000 }
+      );
     } catch (err: any) {
       setErrorMessage(
         err.response?.data?.message ||
@@ -234,21 +237,6 @@ const StateHeadRegistrationPage = () => {
           </Box>
         </Stack>
       </Box>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity="success"
-          variant="filled"
-        >
-          The person has been registered successfully as a State Coordinator. An
-          email has been sent for password reset.
-        </Alert>
-      </Snackbar>
     </Paper>
   );
 };

@@ -6,21 +6,21 @@ import {
   CircularProgress,
   Divider,
   Paper,
-  Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { z } from "zod";
+import { Role } from "../../../components/Authorization/Roles/Types";
 import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
-import { useAuth } from "react-oidc-context";
-import { useNavigate } from "react-router-dom";
 import { LabelOption } from "../../../components/datatypes/DataTypes";
 import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
-import { Role } from "../../../components/Authorization/Roles/Types";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -76,7 +76,6 @@ const TelecallerRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const userState =
     useSelector((state: any) => state.userState) ||
@@ -162,8 +161,11 @@ const TelecallerRegistrationPage = () => {
     const formData = { ...data, createdBy: userEmail };
     try {
       await axiosInstance.post("/telecaller/register", formData);
-      setOpenSnackbar(true);
       navigate("/");
+      toast.success(
+        "The person has been registered successfully as a Telecaller. An email has been sent for password reset.",
+        { autoClose: 5000 }
+      );
       reset();
     } catch (err: any) {
       setErrorMessage(
@@ -235,21 +237,6 @@ const TelecallerRegistrationPage = () => {
           </Box>
         </Stack>
       </Box>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity="success"
-          variant="filled"
-        >
-          The person has been registered successfully as a Telecaller. An email
-          has been sent for password reset.
-        </Alert>
-      </Snackbar>
     </Paper>
   );
 };
