@@ -45,7 +45,11 @@ export const renderField = (
   );
 };
 
-const PatientNikshayDetails = ({ patientId, refreshKey }: any) => {
+const PatientNikshayDetails = ({
+  patientId,
+  refreshKey,
+  setRefreshKey,
+}: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -115,6 +119,8 @@ const PatientNikshayDetails = ({ patientId, refreshKey }: any) => {
 
   const handleModalClose = () => {
     setModalOpen(false);
+    setAreDetailsNull(false);
+    setRefreshKey((prevKey: number) => prevKey + 1);
   };
 
   if (loading) {
@@ -126,7 +132,7 @@ const PatientNikshayDetails = ({ patientId, refreshKey }: any) => {
     );
   }
 
-  if (areDetailsNull) {
+  if (areDetailsNull && !patientData) {
     return (
       <>
         <Button variant="contained" onClick={() => setModalOpen(true)}>

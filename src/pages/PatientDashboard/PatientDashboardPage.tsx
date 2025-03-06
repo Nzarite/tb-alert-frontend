@@ -101,6 +101,7 @@ const PatientDashboardPage = () => {
               <PatientNikshayDetails
                 patientId={patientId}
                 refreshKey={refreshKey}
+                setRefreshKey={setRefreshKey}
               />
             ),
             icon: <MdMobileFriendly style={{ fontSize: "20px" }} />,
@@ -114,6 +115,7 @@ const PatientDashboardPage = () => {
               <PatientMedicalDetails
                 patientId={patientId}
                 refreshKey={refreshKey}
+                setRefreshKey={setRefreshKey}
               />
             ),
             icon: <MdLocalHospital style={{ fontSize: "25px" }} />,
@@ -127,6 +129,7 @@ const PatientDashboardPage = () => {
               <PatientContactScreeningDetails
                 patientId={patientId}
                 refreshKey={refreshKey}
+                setRefreshKey={setRefreshKey}
               />
             ),
             icon: <MdAssessment style={{ fontSize: "22px" }} />,
