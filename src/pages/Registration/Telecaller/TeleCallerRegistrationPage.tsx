@@ -18,11 +18,9 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 import { Role } from "../../../components/Authorization/Roles/Types";
 import FormFieldRenderer from "../../../components/FormFieldRender";
-import axiosInstance from "../../../components/axiosInstance";
-import { LabelOption } from "../../../components/datatypes/DataTypes";
-import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
-import { Role } from "../../../components/Authorization/Roles/Types";
 import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
+import axiosInstance from "../../../components/axiosInstance";
+import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),

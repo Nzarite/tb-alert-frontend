@@ -1,4 +1,6 @@
 import { Divider, Grid, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   FieldCoordinator,
   GPHead,
@@ -6,10 +8,7 @@ import {
   TeleCaller,
 } from "../../components/datatypes/DataTypes";
 import { renderField } from "../PatientDashboard/PatientNikshayDetails";
-import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
-import { useEffect, useState } from "react";
 import { ScTcRegistrationFormLabelsData } from "../Registration/StateHead/StateHeadRegistrationPage";
-import { useSelector } from "react-redux";
 
 interface SearchProps {
   user: TeleCaller | StateHead | FieldCoordinator | GPHead;

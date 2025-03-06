@@ -146,10 +146,10 @@ const FieldCoordinatorRegistrationPage = () => {
     },
     {
       name: "state",
-      label: state.states.label,
+      label: state.states?.label,
       options: userRoles.includes("SuperAdmin")
-        ? state.states.options
-        : state.states.options.filter((option) => option.value === userState),
+        ? state.states?.options
+        : state.states?.options.filter((option) => option.value === userState),
       type: "select",
       disabled: loading,
     },
