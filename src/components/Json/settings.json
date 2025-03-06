@@ -1,90 +1,99 @@
 [
   {
-    "name": "General",
+    "category": "General",
     "settings": [
       {
         "label": "Contact Us",
         "type": "text",
         "keyName": "org_contact",
         "value": "7982241975",
-        "placeholder": "Organisation contact info (eg. Phone number, email)"
+        "placeholder": "Organisation contact info (eg. Phone number, email)",
+        "endpoint": null
       },
       {
         "label": "Plivo Console",
         "type": "button",
         "keyName": "plivo_console",
         "value": "https://console.plivo.com/sms/reporting/",
-        "placeholder": "Go to Plivo Console"
+        "placeholder": "Go to Plivo Console",
+        "endpoint": null
       }
     ]
   },
   {
-    "name": "SMS",
+    "category": "SMS",
     "settings": [
       {
         "label": "Preferred Time",
         "type": "time",
         "keyName": "sms_reminder_time",
         "value": "08:00",
-        "placeholder": "Preferred time for reminder"
+        "placeholder": "Preferred time for reminder",
+        "endpoint": null
       },
       {
         "label": "Template",
         "type": "longtext",
         "keyName": "sms_template",
         "value": "Hi {patientId}:{nikshayId} {firstName} {lastName},\n\nThis is your daily medicine reminder.\nYour scheduled medications for today ({medication_date}) is/are: {medication_names}.\n\nFor any queries, contact us at {org_phone_number}.",
-        "placeholder": "Template for SMS. (Don't change the names in the bracket)"
+        "placeholder": "Template for SMS. (Don't change the modify the text inside. It is adviced to keep the placeholders as it is.)",
+        "endpoint": null
       }
     ]
   },
   {
-    "name": "Followup",
+    "category": "Followup",
     "settings": [
       {
         "label": "DSTB",
         "type": "number",
         "keyName": "dstb_followup",
         "value": "8",
-        "placeholder": "Number of followups for DSTB"
+        "placeholder": "Number of followups for DSTB",
+        "endpoint": null
       },
       {
         "label": "DRTB",
         "type": "number",
         "keyName": "drtb_followup",
         "value": "8",
-        "placeholder": "Number of followups for DRTB"
+        "placeholder": "Number of followups for DRTB",
+        "endpoint": null
       }
     ]
   },
 
   {
-    "name": "Medication",
+    "category": "Medication",
     "settings": [
       {
         "label": "DSTB",
         "type": "chips",
         "keyName": "dstb_medicines",
-        "value": ["Paracetamol", "Dolo", "Crocin", "Medicine A", "Medicine B"],
-        "placeholder": "Default medicines for all patients with DSTB"
+        "value": "1,2,3,4,5",
+        "placeholder": "Default medicines for all patients with DSTB",
+        "endpoint": "/medication"
       },
       {
         "label": "DRTB",
         "type": "chips",
         "keyName": "drtb_medicines",
-        "value": ["Paracetamol", "Dolo", "Crocin", "Medicine A", "Medicine B"],
-        "placeholder": "Default medicines for all patients with DRTB"
+        "value": "1,2,3",
+        "placeholder": "Default medicines for all patients with DRTB",
+        "endpoint": "/medication"
       }
     ]
   },
   {
-    "name": "State",
+    "category": "State",
     "settings": [
       {
         "label": "State",
-        "type": "text",
+        "type": "select",
         "keyName": "state",
         "value": "",
-        "placeholder": "State and it's code. (eg. TS: Telangana)"
+        "placeholder": "Select a State from the list to add",
+        "endpoint": "/state/add"
       }
     ]
   }

@@ -5,7 +5,7 @@ import { renderField } from "./PatientNikshayDetails";
 import { PatientDetailsFormLabelsData } from "../../components/PatientDetailsForm/PatientDetailsForm";
 import { useSelector } from "react-redux";
 
-const PatientPersonalDetails = ({ patientId }: any) => {
+const PatientPersonalDetails = ({ patientId, refresh }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,23 +56,24 @@ const PatientPersonalDetails = ({ patientId }: any) => {
     { name: "currentStatus", label: labels.currentStatusLabel, size: 6 },
   ];
 
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.get(`patient/${patientId}`);
+      setPatientData(res.data);
+      setError(null);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message || "Failed to fetch patient details"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const res = await axiosInstance.get(`patient/${patientId}`);
-        setPatientData(res.data);
-        setError(null);
-      } catch (err: any) {
-        setError(
-          err.response?.data?.message || "Failed to fetch patient details"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
     getData();
-  }, [patientId]);
+  }, [patientId, refresh]);
 
   if (loading) {
     return (
