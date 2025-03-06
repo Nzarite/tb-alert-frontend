@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Modal,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, CircularProgress, Modal, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
@@ -138,7 +131,6 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
   };
 
   const language = useSelector((state: any) => state.language.language);
-  console.log(language);
 
   const renderForm = () => {
     if (loading) {

@@ -32,7 +32,7 @@ export const renderField = (data, item: DashboardFieldsProp, index: number) => {
   );
 };
 
-const PatientNikshayDetails = ({ patientId }: any) => {
+const PatientNikshayDetails = ({ patientId, refresh }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,24 +76,24 @@ const PatientNikshayDetails = ({ patientId }: any) => {
     { name: "nikshayMitraName", label: labels.nikshayMitraNameLabel, size: 6 },
   ];
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const res = await axiosInstance.get(`nikshaymitra/${patientId}`);
-        setPatientData(res.data);
-        setError(null);
-      } catch (err: any) {
-        setError(
-          err.response?.data?.message || "Failed to fetch nikshay details"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.get(`nikshaymitra/${patientId}`);
+      setPatientData(res.data);
+      setError(null);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message || "Failed to fetch nikshay details"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     getData();
-  }, [patientId]);
+  }, [patientId, refresh]);
 
   if (loading) {
     return (

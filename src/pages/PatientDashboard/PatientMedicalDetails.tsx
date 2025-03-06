@@ -5,7 +5,7 @@ import { renderField } from "./PatientNikshayDetails";
 import { useSelector } from "react-redux";
 import { TbDetailsFormLabelsData } from "../../components/TbDetailsForm/TbDetailsForm";
 
-const PatientMedicalDetails = ({ patientId }: any) => {
+const PatientMedicalDetails = ({ patientId, refresh }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,25 +43,25 @@ const PatientMedicalDetails = ({ patientId }: any) => {
     { name: "dstbOrDrtb", label: labels.dstbOrDrtbLabel, size: 6 },
   ];
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const res = await axiosInstance.get(`tbdetails/${patientId}`);
-        setPatientData(res.data);
-        setError(null);
-      } catch (err: any) {
-        setError(
-          err.response?.data?.message ||
-            "Failed to fetch patient medical details"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.get(`tbdetails/${patientId}`);
+      setPatientData(res.data);
+      setError(null);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message ||
+          "Failed to fetch patient medical details"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     getData();
-  }, [patientId]);
+  }, [patientId, refresh]);
 
   if (loading) {
     return (

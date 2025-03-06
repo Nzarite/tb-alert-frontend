@@ -7,11 +7,11 @@ import { useAuth } from "react-oidc-context";
 // import { store } from "../store/store";
 
 const BACKEND_SERVICE_NAME =
-  "http://" + (import.meta.env.VITE_BACKEND_SERVICE_NAME || "localhost");
-const SERVER_PORT = import.meta.env.VITE_SPRINGBOOT_HOST_PORT || "8080";
+  "https://" + (import.meta.env.VITE_BACKEND_SERVICE_NAME || "localhost");
+// const SERVER_PORT = import.meta.env.VITE_SPRINGBOOT_HOST_PORT || "8080";
 
 const axiosInstance = axios.create({
-  baseURL: `${BACKEND_SERVICE_NAME}:${SERVER_PORT}`,
+  baseURL: `${BACKEND_SERVICE_NAME}`,
   timeout: 10000,
 });
 

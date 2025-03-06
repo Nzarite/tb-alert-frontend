@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { LabelOption } from "../../../components/datatypes/DataTypes";
 import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
 import { Role } from "../../../components/Authorization/Roles/Types";
+import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -57,10 +58,6 @@ const TelecallerRegistrationPage = () => {
     mode: "all",
   });
 
-  const [state, setState] = useState<{ states: LabelOption }>({
-    states: { label: "", options: [] },
-  });
-
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
     userIdLabel: "",
     firstNameLabel: "",
@@ -77,6 +74,9 @@ const TelecallerRegistrationPage = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [states, setStates] = useState<StateOption[]>([]);
+  const [backendStates, setBackendStates] = useState<string[]>([]);
+  const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
 
   const userState =
     useSelector((state: any) => state.userState) ||
@@ -100,12 +100,38 @@ const TelecallerRegistrationPage = () => {
   useEffect(() => {
     fetch(`/locales/states_${language}.json`)
       .then((response) => response.json())
-      .then((data) => setState(data))
+      .then((data) => setStates(data.stateslist))
       .catch((err) => {
         console.error("Error fetching states:", err);
         alert("Failed to load states data. Please try again.");
       });
   }, [language]);
+
+  const fetchStates = async () => {
+    try {
+      const response = await axiosInstance.get("/state/all");
+      const stateNames = response.data.map(
+        (state: { stateName: string }) => state.stateName
+      );
+
+      setBackendStates(stateNames);
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStates();
+  }, []);
+
+  useEffect(() => {
+    if (backendStates.length > 0) {
+      const filtered = states.filter((state) =>
+        backendStates.includes(state.value)
+      );
+      setFilteredStates(filtered);
+    }
+  }, [backendStates, states]);
 
   const formFields = [
     {
@@ -147,10 +173,10 @@ const TelecallerRegistrationPage = () => {
     },
     {
       name: "state",
-      label: state.states.label,
+      label: labels.stateLabel,
       options: userRoles.includes("SuperAdmin")
-        ? state.states.options
-        : state.states.options.filter((option) => option.value === userState),
+        ? filteredStates
+        : filteredStates.filter((option) => option.value === userState),
       type: "select",
       disabled: loading,
     },

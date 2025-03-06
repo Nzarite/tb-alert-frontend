@@ -20,6 +20,7 @@ import { z } from "zod";
 import { Role } from "../Authorization/Roles/Types";
 import { useAuth } from "react-oidc-context";
 import { LabelOption } from "../datatypes/DataTypes";
+import axiosInstance from "../axiosInstance";
 
 export type PatientDetailsData = {
   firstName: string;
@@ -43,6 +44,7 @@ export interface PatientDetailsFormLabelsData {
   genderLabel: LabelOption;
   phoneNumberLabel: string;
   ageLabel: string;
+  stateLabel: string;
   districtLabel: string;
   villageLabel: string;
   blockLabel: string;
@@ -52,6 +54,16 @@ export interface PatientDetailsFormLabelsData {
   stateLabel: string;
   reminderTimeLabel: string;
 }
+
+export type StateOption = {
+  label: string;
+  value: string;
+};
+
+export type StateOption = {
+  label: string;
+  value: string;
+};
 
 const patientDetailsSchema = z
   .object({
@@ -108,9 +120,13 @@ const PatientDetailsForm = ({
   functionality,
   loading,
 }: any) => {
-  const [state, setState] = useState<{ states: LabelOption }>({
-    states: { label: "", options: [] },
-  });
+  const [states, setStates] = useState<StateOption[]>([]);
+  const [backendStates, setBackendStates] = useState<string[]>([]);
+  const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
+  const [allDistricts, setAllDistricts] = useState<
+    { value: string; districts: string[] }[]
+  >([]);
+  const [districts, setDistricts] = useState<string[]>([]);
 
   const auth = useAuth();
 
@@ -130,6 +146,7 @@ const PatientDetailsForm = ({
     genderLabel: { label: "", options: [] },
     phoneNumberLabel: "",
     ageLabel: "",
+    stateLabel: "",
     districtLabel: "",
     villageLabel: "",
     blockLabel: "",
@@ -153,12 +170,48 @@ const PatientDetailsForm = ({
   useEffect(() => {
     fetch(`/locales/states_${language}.json`)
       .then((response) => response.json())
-      .then((data) => setState(data))
+      .then((data) => setStates(data.stateslist))
       .catch((err) => {
         console.error("Error fetching states:", err);
         alert("Failed to load states data. Please try again.");
       });
   }, [language]);
+
+  useEffect(() => {
+    fetch(`/locales/districts_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setAllDistricts(data))
+      .catch((err) => {
+        console.error("Error fetching districts:", err);
+        alert("Failed to load districts data. Please try again.");
+      });
+  }, [language]);
+
+  const fetchStates = async () => {
+    try {
+      const response = await axiosInstance.get("/state/all");
+      const stateNames = response.data.map(
+        (state: { stateName: string }) => state.stateName
+      );
+
+      setBackendStates(stateNames);
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStates();
+  }, []);
+
+  useEffect(() => {
+    if (backendStates.length > 0) {
+      const filtered = states.filter((state) =>
+        backendStates.includes(state.value)
+      );
+      setFilteredStates(filtered);
+    }
+  }, [backendStates, states]);
 
   const {
     control,
@@ -171,6 +224,18 @@ const PatientDetailsForm = ({
     resolver: zodResolver(patientDetailsSchema),
     mode: "onChange",
   });
+
+  const selectedState = useWatch({ control, name: "state" });
+
+  useEffect(() => {
+    if (selectedState && allDistricts.length) {
+      const stateData = allDistricts.find(
+        (option) => option.value === selectedState
+      );
+      setDistricts(stateData ? stateData.districts : []);
+      setValue("district", "");
+    }
+  }, [selectedState, setValue, allDistricts]);
 
   useEffect(() => {
     if (data) {
@@ -208,12 +273,17 @@ const PatientDetailsForm = ({
     {
       name: "state",
       type: "select",
-      label: state.states.label,
+      label: labels.stateLabel,
       options: userRoles.includes("SuperAdmin")
-        ? state.states.options
-        : state.states.options.filter((option) => option.value === userState),
+        ? filteredStates
+        : filteredStates.filter((option) => option.value === userState),
     },
-    { name: "district", type: "text", label: labels.districtLabel },
+    {
+      name: "district",
+      type: "select",
+      label: labels.districtLabel,
+      options: districts.map((d) => ({ label: d, value: d })),
+    },
     { name: "village", type: "text", label: labels.villageLabel },
     { name: "block", type: "text", label: labels.blockLabel },
     { name: "gp", type: "text", label: labels.gpLabel },
@@ -225,18 +295,7 @@ const PatientDetailsForm = ({
     },
   ];
 
-  // const len = {
-  //   name: "state",
-  //   type: "select",
-  //   label: state.states.label,
-  //   options: userRoles.includes("SuperAdmin")
-  //     ? state.states.options
-  //     : state.states.options.filter((option) => option.value === userState),
-  // }.options.length;
-
-  // console.log(len);
-
-  if (!labels || !state.states) return <CircularProgress />;
+  if (!labels || !states) return <CircularProgress />;
 
   return (
     <Box>
@@ -270,12 +329,22 @@ const PatientDetailsForm = ({
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  slotProps={{ inputLabel: { shrink: true } }}
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                    select: {
+                      MenuProps: {
+                        PaperProps: { style: { maxHeight: 150 } },
+                      },
+                    },
+                  }}
                   // value={
                   //   field.options?.length === 1
                   //     ? field.options[0].value
                   //     : controllerField.value || ""
                   // }
+                  disabled={
+                    field.name === "district" && !selectedState ? true : false
+                  }
                   onChange={(e) => controllerField.onChange(e.target.value)}
                   error={!!errors[field.name]}
                   helperText={errors[field.name]?.message}

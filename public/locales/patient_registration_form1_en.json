@@ -12,6 +12,7 @@
     },
     "phoneNumberLabel": "Contact Number",
     "ageLabel": "Age of the Patient",
+    "stateLabel": "Name of the State",
     "districtLabel": "Name of the District",
     "villageLabel": "Name of the Village",
     "blockLabel": "Name of the Block",
