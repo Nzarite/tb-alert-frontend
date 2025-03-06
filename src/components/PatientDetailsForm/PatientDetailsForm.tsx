@@ -51,14 +51,8 @@ export interface PatientDetailsFormLabelsData {
   gpLabel: string;
   consentForMessageLabel: LabelOption;
   currentStatusLabel: string;
-  stateLabel: string;
   reminderTimeLabel: string;
 }
-
-export type StateOption = {
-  label: string;
-  value: string;
-};
 
 export type StateOption = {
   label: string;
@@ -154,7 +148,6 @@ const PatientDetailsForm = ({
     consentForMessageLabel: { label: "", options: [] },
     currentStatusLabel: "",
     reminderTimeLabel: "",
-    stateLabel: "",
   });
 
   useEffect(() => {
