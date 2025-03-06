@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useState } from "react";
 import {
   MdAssessment,
@@ -9,6 +9,7 @@ import {
 } from "react-icons/md";
 import { RiPencilLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
+import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
 import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 import axiosInstance from "../../components/axiosInstance";
 import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
@@ -17,13 +18,16 @@ import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPatientData, setSelectedPatientData] = useState(null);
+  const [refreshData, setRefreshData] = useState(false);
   // const [patientId, setPatientId] = useState<number | null>();
   const navigate = useNavigate();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleEditClick = (section: any) => {
     if (section.editURL) {
@@ -37,19 +41,7 @@ const PatientDashboardPage = () => {
   const handleModalClose = () => {
     setModalOpen(false);
     setSelectedPatientData(null);
-  };
-
-  const handlePatientDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this patient?"))
-      return;
-    try {
-      await axiosInstance.delete(`/patient/${patientId}`);
-      alert("Patient deleted successfully.");
-      console.log(`Patient ${patientId} deleted successfully.`);
-    } catch (Error) {
-      alert("Failed to delete patient. Please try again.");
-      console.log(Error);
-    }
+    setRefreshData((prev) => !prev);
   };
 
   if (!patientId) {
@@ -58,12 +50,36 @@ const PatientDashboardPage = () => {
 
   return (
     <>
-      {/* <Button onClick={handlePatientDelete}>Delete Patient</Button> */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          pr: 2,
+        }}
+      >
+        <Button
+          color="error"
+          variant="contained"
+          onClick={() => setDeleteModalOpen(true)}
+        >
+          <DeleteIcon />
+        </Button>
+
+        <DeletePersonModal
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          deleteUrl={`patient/${patientId}`}
+          navigateUrl="/patient-dashboard"
+          person={"Patient"}
+        />
+      </Box>
+
       <Grid container spacing={2} sx={{ p: 2 }}>
         {[
           {
             title: "Personal Details",
-            component: <PatientPersonalDetails patientId={patientId} />,
+            component: <PatientPersonalDetails patientId={patientId} refresh={refreshData}/>,
             icon: <MdPerson style={{ fontSize: "24px" }} />,
             size: 6,
             editURL: null,
@@ -71,7 +87,7 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Nikshay Details",
-            component: <PatientNikshayDetails patientId={patientId} />,
+            component: <PatientNikshayDetails patientId={patientId} refresh={refreshData}/>,
             icon: <MdMobileFriendly style={{ fontSize: "20px" }} />,
             size: 6,
             editURL: null,
@@ -79,7 +95,7 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Medical Report",
-            component: <PatientMedicalDetails patientId={patientId} />,
+            component: <PatientMedicalDetails patientId={patientId} refresh={refreshData}/>,
             icon: <MdLocalHospital style={{ fontSize: "25px" }} />,
             size: 6,
             editURL: null,
@@ -87,7 +103,7 @@ const PatientDashboardPage = () => {
           },
           {
             title: "Contact Screening",
-            component: <PatientContactScreeningDetails patientId={patientId} />,
+            component: <PatientContactScreeningDetails patientId={patientId} refresh={refreshData}/>,
             icon: <MdAssessment style={{ fontSize: "22px" }} />,
             size: 6,
             editURL: null,

@@ -5,16 +5,22 @@ import {
   CircularProgress,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   MenuItem,
   Radio,
   RadioGroup,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { z } from "zod";
+import { Role } from "../Authorization/Roles/Types";
+import { useAuth } from "react-oidc-context";
+import { LabelOption } from "../datatypes/DataTypes";
+import axiosInstance from "../axiosInstance";
 
 export type PatientDetailsData = {
   firstName: string;
@@ -27,7 +33,28 @@ export type PatientDetailsData = {
   village: string;
   block: string;
   gp: string;
-  consentForMessage:boolean;
+  consentForMessage: boolean;
+};
+
+export interface PatientDetailsFormLabelsData {
+  patientIdLabel: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  genderLabel: LabelOption;
+  phoneNumberLabel: string;
+  ageLabel: string;
+  stateLabel: string;
+  districtLabel: string;
+  villageLabel: string;
+  blockLabel: string;
+  gpLabel: string;
+  consentForMessageLabel: LabelOption;
+  currentStatusLabel: string;
+}
+
+export type StateOption = {
+  label: string;
+  value: string;
 };
 
 const patientDetailsSchema = z.object({
@@ -51,50 +78,53 @@ const patientDetailsSchema = z.object({
   village: z.string().min(1, "Village Name is required"),
   block: z.string().min(1, "Block Name is required"),
   gp: z.string().min(1, "GP Name is required"),
-  consentForMessage:z.string(),
+  consentForMessage: z.boolean({
+    errorMap: () => ({ message: "Consent for message is required" }),
+  }),
 });
 
 const PatientDetailsForm = ({
   language,
   data,
   onSave,
+  onClose,
   // onNext,
   functionality,
   loading,
 }: any) => {
-  interface LabelOption {
-    label: string;
-    options: { label: string; value: any }[];
-  }
+  const [states, setStates] = useState<StateOption[]>([]);
+  const [backendStates, setBackendStates] = useState<string[]>([]);
+  const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
+  const [allDistricts, setAllDistricts] = useState<
+    { value: string; districts: string[] }[]
+  >([]);
+  const [districts, setDistricts] = useState<string[]>([]);
 
-  const [state, setState] = useState<{ states: LabelOption }>({
-    states: { label: "", options: [] },
-  });
+  const auth = useAuth();
 
-  interface PatientDetailsFormLabelsData {
-    firstNameLabel: string;
-    lastNameLabel: string;
-    genderLabel: LabelOption;
-    phoneNumberLabel: string;
-    ageLabel: string;
-    districtLabel: string;
-    villageLabel: string;
-    blockLabel: string;
-    gpLabel: string;
-    consentForMessageLabel:LabelOption;
-  }
+  const userState =
+    useSelector((state: any) => state.userState) ||
+    localStorage.getItem("userState");
+
+  const userRoles: Role[] = useSelector(
+    (state: any) =>
+      state.user?.profile?.client_roles || auth?.user?.profile?.client_roles
+  ) as Role[];
 
   const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
+    patientIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
     phoneNumberLabel: "",
     ageLabel: "",
+    stateLabel: "",
     districtLabel: "",
     villageLabel: "",
     blockLabel: "",
     gpLabel: "",
-    consentForMessageLabel:{label:"",options:[]},
+    consentForMessageLabel: { label: "", options: [] },
+    currentStatusLabel: "",
   });
 
   useEffect(() => {
@@ -110,12 +140,48 @@ const PatientDetailsForm = ({
   useEffect(() => {
     fetch(`/locales/states_${language}.json`)
       .then((response) => response.json())
-      .then((data) => setState(data))
+      .then((data) => setStates(data.stateslist))
       .catch((err) => {
         console.error("Error fetching states:", err);
         alert("Failed to load states data. Please try again.");
       });
   }, [language]);
+
+  useEffect(() => {
+    fetch(`/locales/districts_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setAllDistricts(data))
+      .catch((err) => {
+        console.error("Error fetching districts:", err);
+        alert("Failed to load districts data. Please try again.");
+      });
+  }, [language]);
+
+  const fetchStates = async () => {
+    try {
+      const response = await axiosInstance.get("/state/all");
+      const stateNames = response.data.map(
+        (state: { stateName: string }) => state.stateName
+      );
+
+      setBackendStates(stateNames);
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStates();
+  }, []);
+
+  useEffect(() => {
+    if (backendStates.length > 0) {
+      const filtered = states.filter((state) =>
+        backendStates.includes(state.value)
+      );
+      setFilteredStates(filtered);
+    }
+  }, [backendStates, states]);
 
   const {
     control,
@@ -128,6 +194,18 @@ const PatientDetailsForm = ({
     resolver: zodResolver(patientDetailsSchema),
     mode: "onChange",
   });
+
+  const selectedState = useWatch({ control, name: "state" });
+
+  useEffect(() => {
+    if (selectedState && allDistricts.length) {
+      const stateData = allDistricts.find(
+        (option) => option.value === selectedState
+      );
+      setDistricts(stateData ? stateData.districts : []);
+      setValue("district", "");
+    }
+  }, [selectedState, setValue, allDistricts]);
 
   useEffect(() => {
     if (data) {
@@ -163,17 +241,29 @@ const PatientDetailsForm = ({
     {
       name: "state",
       type: "select",
-      label: state.states.label,
-      options: state.states.options,
+      label: labels.stateLabel,
+      options: userRoles.includes("SuperAdmin")
+        ? filteredStates
+        : filteredStates.filter((option) => option.value === userState),
     },
-    { name: "district", type: "text", label: labels.districtLabel },
+    {
+      name: "district",
+      type: "select",
+      label: labels.districtLabel,
+      options: districts.map((d) => ({ label: d, value: d })),
+    },
     { name: "village", type: "text", label: labels.villageLabel },
     { name: "block", type: "text", label: labels.blockLabel },
     { name: "gp", type: "text", label: labels.gpLabel },
-    { name: "consentForMessage", type:"radio", label:labels.consentForMessageLabel.label, options:labels.consentForMessageLabel.options}
+    {
+      name: "consentForMessage",
+      type: "radio",
+      label: labels.consentForMessageLabel.label,
+      options: labels.consentForMessageLabel.options,
+    },
   ];
 
-  if (!labels || !state.states) return <CircularProgress />;
+  if (!labels || !states) return <CircularProgress />;
 
   return (
     <Box>
@@ -195,26 +285,46 @@ const PatientDetailsForm = ({
               helperText={errors[field.name]?.message}
             />
           ) : field.type === "select" ? (
-            <TextField
-              key={field.name}
-              {...register(field.name)}
-              select
-              label={field.label}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              defaultValue={data?.name || ""}
-              slotProps={{ inputLabel: { shrink: true } }}
-              disabled={loading}
-              error={!!errors[field.name]}
-              helperText={errors[field.name]?.message}
-            >
-              {field.options?.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name={field.name}
+              control={control}
+              defaultValue={data?.[field.name] || ""}
+              render={({ field: controllerField }) => (
+                <TextField
+                  {...controllerField}
+                  select
+                  label={field.label}
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                    select: {
+                      MenuProps: {
+                        PaperProps: { style: { maxHeight: 150 } },
+                      },
+                    },
+                  }}
+                  // value={
+                  //   field.options?.length === 1
+                  //     ? field.options[0].value
+                  //     : controllerField.value || ""
+                  // }
+                  disabled={
+                    field.name === "district" && !selectedState ? true : false
+                  }
+                  onChange={(e) => controllerField.onChange(e.target.value)}
+                  error={!!errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                >
+                  {field.options?.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
           ) : field.type === "radio" ? (
             <FormControl
               key={field.name}
@@ -229,7 +339,17 @@ const PatientDetailsForm = ({
                 defaultValue={data?.name || ""}
                 rules={{ required: `${field.label} is required` }}
                 render={({ field: radioField }) => (
-                  <RadioGroup {...radioField} row>
+                  <RadioGroup
+                    {...radioField}
+                    row
+                    onChange={(e) =>
+                      radioField.onChange(
+                        field.name === "consentForMessage"
+                          ? e.target.value === "true"
+                          : e.target.value
+                      )
+                    }
+                  >
                     {field.options?.map((option) => (
                       <FormControlLabel
                         key={option.value.toString()}
@@ -241,6 +361,9 @@ const PatientDetailsForm = ({
                   </RadioGroup>
                 )}
               />
+              {errors[field.name] && (
+                <FormHelperText>{errors[field.name]?.message}</FormHelperText>
+              )}
             </FormControl>
           ) : field.type === "number" ? (
             <Controller
@@ -267,7 +390,17 @@ const PatientDetailsForm = ({
             />
           ) : null
         )}
-        <Box mt={3}>
+        <Box mt={3} display="flex" justifyContent="space-between">
+          {functionality === "editdetails" && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+          )}
           {functionality === "register" && (
             <Button
               type="submit"

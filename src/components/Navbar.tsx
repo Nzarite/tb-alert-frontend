@@ -5,16 +5,18 @@ import {
   OutlinedInput,
   Select,
 } from "@mui/material";
-import { useState } from "react";
 import { MdLogout } from "react-icons/md";
 import { RiAccountBoxFill } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import useLogout from "../hooks/useLogout";
+import { updateLanguage } from "../redux/langSlice";
 import "./Navbar.css";
-import { useAuth } from "react-oidc-context";
 
 const Navbar = () => {
-  const auth = useAuth();
-  const [language, setLanguage] = useState("en");
+  const language = useSelector((state: any) => state.language.language);
+  const logout = useLogout();
+  const dispatch = useDispatch();
 
   return (
     <Box id="navbar">
@@ -29,7 +31,9 @@ const Navbar = () => {
             labelId="language-type-label"
             label="Language"
             value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            onChange={(e) => {
+              dispatch(updateLanguage(e.target.value));
+            }}
             input={<OutlinedInput sx={{ height: "30px" }} />}
           >
             <MenuItem value="en">English</MenuItem>
@@ -42,11 +46,7 @@ const Navbar = () => {
           <RiAccountBoxFill title="Profile" size={25} />
         </Link>
         <Link to="#" className="navbar-text">
-          <MdLogout
-            title="Log Out"
-            size={25}
-            onClick={() => auth.signoutRedirect()}
-          />
+          <MdLogout title="Log Out" size={25} onClick={logout} />
         </Link>
       </Box>
     </Box>

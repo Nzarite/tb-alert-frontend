@@ -1,15 +1,24 @@
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { clearUserProfile } from "../redux/userSlice";
+import { useAuth } from "react-oidc-context";
+// import { jwtDecode } from "jwt-decode";
+// import { deleteTokens, updateTokens } from "../store/jwtSlice";
+// import { store } from "../store/store";
 
 const BACKEND_SERVICE_NAME =
-  "http://" + (import.meta.env.VITE_BACKEND_SERVICE_NAME || "localhost");
-const SERVER_PORT = import.meta.env.VITE_SPRINGBOOT_HOST_PORT || "8080";
+  "https://" + (import.meta.env.VITE_BACKEND_SERVICE_NAME || "localhost");
+// const SERVER_PORT = import.meta.env.VITE_SPRINGBOOT_HOST_PORT || "8080";
 
 const axiosInstance = axios.create({
-  baseURL: `${BACKEND_SERVICE_NAME}:${SERVER_PORT}`,
+  baseURL: `${BACKEND_SERVICE_NAME}`,
   timeout: 10000,
 });
 
-const oidcSessionKey = `oidc.user:${import.meta.env.VITE_OIDC_AUTHORITY}:${import.meta.env.VITE_OIDC_CLIENT_ID}`;
+// let isRefreshing = false;
+const oidcSessionKey = `oidc.user:${import.meta.env.VITE_OIDC_AUTHORITY}:${
+  import.meta.env.VITE_OIDC_CLIENT_ID
+}`;
 
 axiosInstance.interceptors.request.use(
   async (config) => {
@@ -45,15 +54,7 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       console.warn("Unauthorized request detected. Logging out...");
 
-      // Remove token from storage
-      sessionStorage.removeItem(
-        `oidc.user:${import.meta.env.VITE_OIDC_AUTHORITY}:${
-          import.meta.env.VITE_OIDC_CLIENT_ID
-        }`
-      );
-
-      // Redirect to Keycloak logout URL
-      window.location.href = `${import.meta.env.VITE_POST_LOGOUT_REDIRECT_URI}`;
+      
 
       return Promise.reject(error);
     }

@@ -2,81 +2,108 @@ import { Alert, Box, Divider, Grid, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../components/axiosInstance";
 import { renderField } from "./PatientNikshayDetails";
+import { ContactScreeningDetailsFormLabelsData } from "../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
+import { useSelector } from "react-redux";
 
-const PatientContactScreeningDetails = ({ patientId }: any) => {
+const PatientContactScreeningDetails = ({ patientId, refresh }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const language = useSelector((state:any) => state.language.language)
+  const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
+      patientNameLabel: "",
+      contactScreeningDoneLabel: { label: "", options: [] },
+      dateOfContactScreeningLabel: "",
+      noOfHHCsAvailableLabel: "",
+      noOfHHCsScreenedLabel: "",
+      noOfHHCsWithTBSymptomsLabel: "",
+      noOfHHCsReferredTBTestingLabel: "",
+      noOfHHCsDiagnosedTBLabel: "",
+      noOfHHCsTBInitiatedATTLabel: "",
+      noOfHHCsUndergoneLTBITestLabel: "",
+      noOfEligibleForTPTLabel: "",
+      noOfHHCsInitiatedTPTLabel: "",
+    });
+  
+    useEffect(() => {
+      fetch(`/locales/patient_registration_form4_${language}.json`)
+        .then((response) => response.json())
+        .then((data) => setLabels(data.nikshaydetailsform))
+        .catch((error) => {
+          console.error("Error loading form labels file:", error);
+          alert("Failed to load form labels data. Please try again.");
+        });
+    }, [language]);
 
   const fields = [
-    { name: "contactScreeningDone", label: "Contact Screen Status", size: 6 },
+    { name: "contactScreeningDone", label: labels.contactScreeningDoneLabel, size: 12 },
     {
       name: "dateOfContactScreening",
-      label: "Date of Contact Screening",
+      label: labels.dateOfContactScreeningLabel,
       size: 6,
     },
     {
       name: "noOfHHCsAvailable",
-      label: "No. of Household Contacts(HHC) Available",
+      label: labels.noOfHHCsAvailableLabel,
       size: 6,
     },
-    { name: "noOfHHCsScreened", label: "No. of HHCs Screened", size: 6 },
+    { name: "noOfHHCsScreened", label: labels.noOfHHCsScreenedLabel, size: 6 },
     {
       name: "noOfHHCsWithTBSymptoms",
-      label: "No. of HHCs with TB Symptoms",
+      label: labels.noOfHHCsWithTBSymptomsLabel,
       size: 6,
     },
     {
       name: "noOfHHCsReferredTBTesting",
-      label: "No. of HHCs referred for TB Testing",
+      label: labels.noOfHHCsReferredTBTestingLabel,
       size: 6,
     },
     {
       name: "noOfHHCsDiagnosedTB",
-      label: "No. of HHCs diagnosed with TB",
+      label: labels.noOfHHCsDiagnosedTBLabel,
       size: 6,
     },
     {
       name: "noOfHHCsTBInitiatedATT",
-      label: "No. of HHCs who initiated ATT",
+      label: labels.noOfHHCsTBInitiatedATTLabel,
       size: 6,
     },
     {
       name: "noOfHHCsUndergoneLTBITest",
-      label: "No. of HHCs undergone LTBI test",
+      label: labels.noOfHHCsUndergoneLTBITestLabel,
       size: 6,
     },
     {
       name: "noOfEligibleForTPT",
-      label: "No. of HHCs Eligible for TPT",
+      label: labels.noOfEligibleForTPTLabel,
       size: 6,
     },
     {
       name: "noOfHHCsInitiatedTPT",
-      label: "No. of HHCs who initiated TPT",
+      label: labels.noOfHHCsInitiatedTPTLabel,
       size: 6,
     },
   ];
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const res = await axiosInstance.get(`contactscreening/${patientId}`);
-        setPatientData(res.data);
-        setError(null);
-      } catch (err: any) {
-        setError(
-          err.response?.data?.message ||
-            "Failed to fetch contact screening details"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.get(`contactscreening/${patientId}`);
+      setPatientData(res.data);
+      setError(null);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message ||
+          "Failed to fetch contact screening details"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     getData();
-  }, [patientId]);
+  }, [patientId, refresh]);
 
   if (loading) {
     return (

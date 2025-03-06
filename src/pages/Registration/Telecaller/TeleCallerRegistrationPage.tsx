@@ -18,6 +18,10 @@ import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
+import { LabelOption } from "../../../components/datatypes/DataTypes";
+import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
+import { Role } from "../../../components/Authorization/Roles/Types";
+import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -41,7 +45,7 @@ const TelecallerRegistrationPage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const userEmail =
-    useSelector((state) => state.user?.profile?.email) ||
+    useSelector((state: any) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
 
   const {
@@ -54,37 +58,34 @@ const TelecallerRegistrationPage = () => {
     mode: "all",
   });
 
-  interface LabelOption {
-    label: string;
-    options: { label: string; value: any }[];
-  }
-
-  const [state, setState] = useState<{ states: LabelOption }>({
-    states: { label: "", options: [] },
-  });
-
-  interface ScTcRegistrationFormLabelsData {
-    firstNameLabel: string;
-    lastNameLabel: string;
-    genderLabel: LabelOption;
-    phoneNumberLabel: string;
-    emailLabel: string;
-    dateOfJoiningLabel: string;
-  }
-
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
+    userIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
     genderLabel: { label: "", options: [] },
     phoneNumberLabel: "",
     emailLabel: "",
     dateOfJoiningLabel: "",
+    dateOfLeavingLabel: "",
+    stateLabel: "",
   });
 
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [states, setStates] = useState<StateOption[]>([]);
+  const [backendStates, setBackendStates] = useState<string[]>([]);
+  const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
+
+  const userState =
+    useSelector((state: any) => state.userState) ||
+    localStorage.getItem("userState");
+
+  const userRoles: Role[] = useSelector(
+    (state: any) =>
+      state.user?.profile?.client_roles || auth?.user?.profile?.client_roles
+  ) as Role[];
 
   useEffect(() => {
     fetch(`/locales/sc_tc_registration_form_${language}.json`)
@@ -99,12 +100,38 @@ const TelecallerRegistrationPage = () => {
   useEffect(() => {
     fetch(`/locales/states_${language}.json`)
       .then((response) => response.json())
-      .then((data) => setState(data))
+      .then((data) => setStates(data.stateslist))
       .catch((err) => {
         console.error("Error fetching states:", err);
         alert("Failed to load states data. Please try again.");
       });
   }, [language]);
+
+  const fetchStates = async () => {
+    try {
+      const response = await axiosInstance.get("/state/all");
+      const stateNames = response.data.map(
+        (state: { stateName: string }) => state.stateName
+      );
+
+      setBackendStates(stateNames);
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStates();
+  }, []);
+
+  useEffect(() => {
+    if (backendStates.length > 0) {
+      const filtered = states.filter((state) =>
+        backendStates.includes(state.value)
+      );
+      setFilteredStates(filtered);
+    }
+  }, [backendStates, states]);
 
   const formFields = [
     {
@@ -146,8 +173,10 @@ const TelecallerRegistrationPage = () => {
     },
     {
       name: "state",
-      label: state.states.label,
-      options: state.states.options,
+      label: labels.stateLabel,
+      options: userRoles.includes("SuperAdmin")
+        ? filteredStates
+        : filteredStates.filter((option) => option.value === userState),
       type: "select",
       disabled: loading,
     },

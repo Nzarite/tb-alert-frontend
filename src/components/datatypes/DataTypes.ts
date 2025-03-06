@@ -86,9 +86,14 @@ export interface PatientMedicalInterface {
 	patientId: string;
 }
 
+export interface LabelOption {
+  label: string;
+  options: { label: string; value: any }[];
+}
+
 export interface DashboardFieldsProp {
 	name: string;
-	label: string;
+  label: string | LabelOption;
 	size: number;
 }
 
