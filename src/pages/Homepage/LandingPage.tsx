@@ -30,7 +30,6 @@ const LandingPage = () => {
           const response = await axiosInstance.get(
             `/person/email/${profile.email}`
           );
-          // console.log("Fetched user details:", response.data);
 
           if (response.data.state) {
             dispatch(setUserState(response.data.state));

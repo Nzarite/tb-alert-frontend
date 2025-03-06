@@ -3,6 +3,10 @@ import { useSelector } from "react-redux";
 import Select from "react-select";
 import { Role } from "./Authorization/Roles/Types";
 import axiosInstance from "./axiosInstance";
+import { TeleCaller, StateHead } from "./datatypes/DataTypes";
+import { useSelector } from "react-redux";
+import { Role } from "./Authorization/Roles/Types";
+import { useAuth } from "react-oidc-context";
 import {
   FieldCoordinator,
   GPHead,
@@ -31,9 +35,13 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const userRoles: Role[] = useSelector(
-    (state: any) => state.user?.profile?.client_roles || []
-  );
+  const auth = useAuth();
+    const userRoles: Role[] = useSelector(
+        (state: any) =>
+            state.user?.profile?.client_roles ||
+            auth.user?.profile?.client_roles ||
+            []
+    );
   const userState: string = useSelector((state: any) => state.user?.userState);
   const getPersons = (role: any) => {
     switch (role) {
