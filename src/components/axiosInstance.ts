@@ -1,13 +1,10 @@
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { clearUserProfile } from "../redux/userSlice";
-import { useAuth } from "react-oidc-context";
 // import { jwtDecode } from "jwt-decode";
 // import { deleteTokens, updateTokens } from "../store/jwtSlice";
 // import { store } from "../store/store";
 
 const BACKEND_SERVICE_NAME =
-  "https://" + (import.meta.env.VITE_BACKEND_SERVICE_NAME || "localhost");
+  "http://" + (import.meta.env.VITE_BACKEND_SERVICE_NAME || "localhost");
 const SERVER_PORT = import.meta.env.VITE_SPRINGBOOT_HOST_PORT || "8080";
 
 const axiosInstance = axios.create({

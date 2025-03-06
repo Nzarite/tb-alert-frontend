@@ -17,10 +17,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
+import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
 import { LabelOption } from "../../../components/datatypes/DataTypes";
 import { RootState } from "../../../redux/store";
-import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),

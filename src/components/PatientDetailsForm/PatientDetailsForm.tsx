@@ -15,12 +15,12 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { Role } from "../Authorization/Roles/Types";
-import { useAuth } from "react-oidc-context";
-import { LabelOption } from "../datatypes/DataTypes";
 import axiosInstance from "../axiosInstance";
+import { LabelOption } from "../datatypes/DataTypes";
 
 export type PatientDetailsData = {
   firstName: string;
@@ -166,6 +166,7 @@ const PatientDetailsForm = ({
 
       setBackendStates(stateNames);
     } catch (error) {
+      if (error.status === 401) setBackendStates(userState);
       console.error("Error fetching states:", error);
     }
   };

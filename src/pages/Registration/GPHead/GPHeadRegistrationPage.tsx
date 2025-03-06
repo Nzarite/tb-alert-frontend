@@ -15,10 +15,12 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import { Role } from "../../../components/Authorization/Roles/Types";
-import { LabelOption } from "../../../components/datatypes/DataTypes";
+import axiosInstance from "../../../components/axiosInstance";
 import FormFieldRenderer from "../../../components/FormFieldRender";
+import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
 
 const schema = z.object({
@@ -56,10 +58,6 @@ const GPHeadRegistrationPage = () => {
     mode: "all",
   });
 
-  const [state, setState] = useState<{ states: LabelOption }>({
-    states: { label: "", options: [] },
-  });
-
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
     userIdLabel: "",
     firstNameLabel: "",
@@ -76,6 +74,9 @@ const GPHeadRegistrationPage = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [states, setStates] = useState<StateOption[]>([]);
+  const [backendStates, setBackendStates] = useState<string[]>([]);
+  const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
 
   const userState =
     useSelector((state: any) => state.userState) ||
@@ -99,12 +100,39 @@ const GPHeadRegistrationPage = () => {
   useEffect(() => {
     fetch(`/locales/states_${language}.json`)
       .then((response) => response.json())
-      .then((data) => setState(data))
+      .then((data) => setStates(data.stateslist))
       .catch((err) => {
         console.error("Error fetching states:", err);
         alert("Failed to load states data. Please try again.");
       });
   }, [language]);
+
+  const fetchStates = async () => {
+    try {
+      const response = await axiosInstance.get("/state/all");
+      const stateNames = response.data.map(
+        (state: { stateName: string }) => state.stateName
+      );
+
+      setBackendStates(stateNames);
+    } catch (error: any) {
+      if (error.status === 401) setBackendStates(userState);
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStates();
+  }, []);
+
+  useEffect(() => {
+    if (backendStates.length > 0) {
+      const filtered = states.filter((state) =>
+        backendStates.includes(state.value)
+      );
+      setFilteredStates(filtered);
+    }
+  }, [backendStates, states]);
 
   const formFields = [
     {
@@ -146,10 +174,10 @@ const GPHeadRegistrationPage = () => {
     },
     {
       name: "state",
-      label: state.states.label,
+      label: labels.stateLabel,
       options: userRoles.includes("SuperAdmin")
-        ? state.states.options
-        : state.states.options.filter((option) => option.value === userState),
+        ? filteredStates
+        : filteredStates.filter((option) => option.value === userState),
       type: "select",
       disabled: loading,
     },
@@ -159,11 +187,22 @@ const GPHeadRegistrationPage = () => {
     setLoading(true);
     setErrorMessage(null);
     const formData = { ...data, createdBy: userEmail };
-    console.log(formData);
-    setOpenSnackbar(true);
-    navigate("/");
-    reset();
-    setLoading(false);
+    try {
+      await axiosInstance.post("/gphead/register", formData);
+      navigate("/");
+      toast.success(
+        "The person has been registered successfully as a GP Head. An email has been sent for password reset.",
+        { autoClose: 5000 }
+      );
+      reset();
+    } catch (err: any) {
+      setErrorMessage(
+        err.response?.data?.message ||
+          "There was an error submitting the form, please try again"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

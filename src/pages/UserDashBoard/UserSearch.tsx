@@ -35,8 +35,12 @@ const UserSearch = () => {
     if (selectedPatient?.value) {
       if (role === "telecaller")
         navigate(`/user/telecaller/${selectedPatient.value}`);
-      if (role === "statehead")
+      else if (role === "statehead")
         navigate(`/user/statehead/${selectedPatient.value}`);
+      else if (role === "gphead")
+        navigate(`/user/gphead/${selectedPatient.value}`);
+      else if (role === "fieldcoordinator")
+        navigate(`/user/fieldcoordinator/${selectedPatient.value}`);
     }
   };
   return (

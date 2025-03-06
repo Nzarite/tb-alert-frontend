@@ -32,10 +32,7 @@ const UserDashBoard = ({ role }: SearchProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url =
-          role === "telecaller"
-            ? `/telecaller/${userId}`
-            : `/statehead/${userId}`;
+        const url = `/${role}/${userId}`;
         const response = await axiosInstance.get(url);
         setUserData(response.data);
       } catch (error) {
@@ -46,33 +43,48 @@ const UserDashBoard = ({ role }: SearchProps) => {
     fetchData();
   }, [userId, role]);
 
-  const handleUpdate = (updatedUser: TeleCaller | StateHead) => {
+  const handleUpdate = (
+    updatedUser: TeleCaller | StateHead | FieldCoordinator | GPHead
+  ) => {
     setUserData(updatedUser);
   };
 
   let deleteUrl = "",
     navigateUrl = "",
     person = "";
-  if (userData?.hasOwnProperty("stateHeadId")) {
+  if (role === "statehead") {
     deleteUrl = `statehead/${userData?.stateHeadId}`;
     navigateUrl = "/user/statehead";
     person = "StateHead";
-  } else if (userData?.hasOwnProperty("teleCallerId")) {
+  } else if (role === "telecaller") {
     deleteUrl = `telecaller/${userData?.teleCallerId}`;
     navigateUrl = "/user/telecaller";
     person = "TeleCaller";
-  } else if (userData?.hasOwnProperty("fieldCoordinatorId")) {
-    deleteUrl = `fieldcoordinator/${userData?.fieldCoordinatorId}`;
+  } else if (role === "fieldcoordinator") {
+    deleteUrl = `fieldcoordinator/${userData?.id}`;
     navigateUrl = "/user/fieldcoordinator";
     person = "FieldCoordinator";
-  } else if (userData?.hasOwnProperty("gpHeadId")) {
-    deleteUrl = `gphead/${userData?.gpHeadId}`;
+  } else if (role === "gphead") {
+    deleteUrl = `gphead/${userData?.id}`;
     navigateUrl = "/user/gphead";
     person = "GPHead";
   }
 
   const roles: string[] = useAuth().user?.profile.client_roles as string[];
   const isAdmin = roles.includes("SuperAdmin");
+
+  const getTitle = (role: string) => {
+    switch (role) {
+      case "telecaller":
+        return "Telecaller Details";
+      case "statehead":
+        return "Statehead Details";
+      case "fieldcoordinator":
+        return "Field Coordinator Details";
+      case "gphead":
+        return "GP Head details";
+    }
+  };
 
   return (
     <div>
@@ -85,9 +97,7 @@ const UserDashBoard = ({ role }: SearchProps) => {
               fontWeight="bold"
               sx={{ mb: 2, color: "#1976d2" }}
             >
-              {role === "telecaller"
-                ? "Telecaller Details"
-                : "State Coordinator Details"}
+              {getTitle(role)}
             </Typography>
           </Box>
 

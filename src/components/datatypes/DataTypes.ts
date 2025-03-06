@@ -185,7 +185,7 @@ export interface FieldCoordinator {
   personId: number;
   phoneNumber: string;
   state: string;
-  fieldCoordinatorId: number;
+  id: number;
   updatedBy: string;
   dateOfLeaving: string;
 }
@@ -201,7 +201,7 @@ export interface GPHead {
   personId: number;
   phoneNumber: string;
   state: string;
-  gpHeadId: number;
+  id: number;
   updatedBy: string;
   dateOfLeaving: string;
 }
