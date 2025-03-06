@@ -3,7 +3,6 @@ import {
   Container,
   Grid,
   Paper,
-  Snackbar,
   Step,
   StepLabel,
   Stepper,
@@ -27,7 +26,7 @@ import TbDetailsForm, {
   TbDetailsData,
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
-import { Role } from "../../../components/Authorization/Roles/Types";
+import { toast, ToastContainer } from "react-toastify";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -39,7 +38,6 @@ const PatientRegistrationPage = () => {
   const [patientName, setPatientName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const auth = useAuth();
   const userEmail =
@@ -87,6 +85,7 @@ const PatientRegistrationPage = () => {
           );
           setFormData({ ...formData, patientDetails: stepData });
           setActiveStep(activeStep + 1);
+          toast.success("Patient details registered successfully!");
         }
       } else if (activeStep === 1) {
         if (!patientId) {
@@ -99,6 +98,7 @@ const PatientRegistrationPage = () => {
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, tbDetails: stepData });
           setActiveStep(activeStep + 1);
+          toast.success("TB details registered successfully!");
         }
       } else if (activeStep === 2) {
         if (!formData.tbDetails) {
@@ -111,6 +111,7 @@ const PatientRegistrationPage = () => {
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, nikshayDetails: stepData });
           setActiveStep(activeStep + 1);
+          toast.success("Nikshay details registered successfully!");
         }
       } else if (activeStep === 3) {
         if (!formData.nikshayDetails) {
@@ -122,10 +123,11 @@ const PatientRegistrationPage = () => {
         });
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, contactScreeningDetails: stepData });
-          setOpenSnackbar(true);
-          setTimeout(() => {
-            navigate(`/patient-dashboard/${patientId}`);
-          }, 2000);
+          toast.success("Contact screening details saved and Patient registration done successfully!");
+          navigate(`/patient-dashboard/${patientId}`);
+          // setTimeout(() => {
+          //   navigate(`/patient-dashboard/${patientId}`);
+          // }, 1000);
         }
       }
     } catch (error: any) {
@@ -223,17 +225,6 @@ const PatientRegistrationPage = () => {
                   {error}
                 </Alert>
               )}
-              <Snackbar
-                open={openSnackbar}
-                autoHideDuration={4000}
-                onClose={() => setOpenSnackbar(false)}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-              >
-                <Alert severity="success" variant="filled">
-                  Patient registered successfully with Personal, TB, Nikshay &
-                  Contact Screening details.
-                </Alert>
-              </Snackbar>
             </Paper>
           </Grid>
         </Grid>

@@ -8,7 +8,6 @@ import {
   Typography,
   CircularProgress,
   Alert,
-  Snackbar,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
@@ -82,7 +81,6 @@ const StateHeadRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [states, setStates] = useState<StateOption[]>([]);
   const [backendStates, setBackendStates] = useState<string[]>([]);
   const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
@@ -186,7 +184,6 @@ const StateHeadRegistrationPage = () => {
     const formData = { ...data, createdBy: userEmail };
     try {
       await axiosInstance.post("/statehead/register", formData);
-      setOpenSnackbar(true);
       reset();
       navigate("/");
     } catch (err: any) {
@@ -259,21 +256,6 @@ const StateHeadRegistrationPage = () => {
           </Box>
         </Stack>
       </Box>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity="success"
-          variant="filled"
-        >
-          The person has been registered successfully as a State Coordinator. An
-          email has been sent for password reset.
-        </Alert>
-      </Snackbar>
     </Paper>
   );
 };
