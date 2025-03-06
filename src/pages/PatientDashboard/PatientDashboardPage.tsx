@@ -18,7 +18,6 @@ import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
-import axiosInstance from "../../components/axiosInstance";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const PatientDashboardPage = () => {
