@@ -1,13 +1,10 @@
+import { CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
-import Select from "react-select";
-import axiosInstance from "./axiosInstance";
-import { TeleCaller, StateHead } from "./datatypes/DataTypes";
+import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
 import Select from "react-select";
-import { Role } from "./Authorization/Roles/Types";
-import { useAuth } from "react-oidc-context";
-import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
+import { Role } from "./Authorization/Roles/Types";
 import axiosInstance from "./axiosInstance";
 import {
   FieldCoordinator,

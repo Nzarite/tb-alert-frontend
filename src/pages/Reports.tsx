@@ -14,6 +14,7 @@ import {
 import axiosInstance from "../components/axiosInstance";
 import { useSelector } from "react-redux";
 import { useAuth } from "react-oidc-context";
+import { StateOption } from "../components/datatypes/DataTypes";
 
 const Reports = () => {
   const auth = useAuth();
@@ -87,11 +88,11 @@ const Reports = () => {
   }, [backendStates, availableStates]);
 
   useEffect(() => {
-    if (userRole.length === 3 && userRole.includes("SuperAdmin"))
+    if (userRole.length === 5 && userRole.includes("SuperAdmin"))
       setState([{ label: "All", value: "" }, ...filteredStates]);
     else if (
       (userRole.length === 1 && userRole.includes("Telecaller")) ||
-      (userRole.length == 2 && userRole.includes("StateCoordinator"))
+      (userRole.length == 4 && userRole.includes("StateCoordinator"))
     )
       setState(filteredStates.filter((option) => option.value === userState));
     if (
@@ -105,7 +106,7 @@ const Reports = () => {
     if (
       state.length > 0 &&
       ((userRole.length === 1 && userRole.includes("Telecaller")) ||
-        (userRole.length == 2 && userRole.includes("StateCoordinator")))
+        (userRole.length == 4 && userRole.includes("StateCoordinator")))
     )
       setSelectedState(state[0].value);
   }, [userRole, state]);
@@ -214,7 +215,7 @@ const Reports = () => {
     setCurrentStatus("");
     if (
       !(userRole.length === 1 && userRole.includes("Telecaller")) &&
-      !(userRole.length == 2 && userRole.includes("StateCoordinator"))
+      !(userRole.length == 4 && userRole.includes("StateCoordinator"))
     )
       setSelectedState("");
     setDsOrDr("");
@@ -357,7 +358,7 @@ const Reports = () => {
                   disabled={
                     (userRole.length === 1 &&
                       userRole.includes("Telecaller")) ||
-                    (userRole.length == 2 &&
+                    (userRole.length == 4 &&
                       userRole.includes("StateCoordinator"))
                   }
                   onChange={(e) => setSelectedState(e.target.value)}

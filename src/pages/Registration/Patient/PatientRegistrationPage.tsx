@@ -8,17 +8,17 @@ import {
   DialogTitle,
   Grid,
   Paper,
-  Snackbar,
   Step,
   StepLabel,
   Stepper,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import ContactScreeningDetailsForm, {
   ContactScreeningData,
 } from "../../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
@@ -28,13 +28,11 @@ import NikshayDetailsForm, {
 import PatientDetailsForm, {
   PatientDetailsData,
 } from "../../../components/PatientDetailsForm/PatientDetailsForm";
+import DiagnosedWithTB from "../../../components/TbDetailsForm/DiagnosedWithTB";
 import TbDetailsForm, {
   TbDetailsData,
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
-import { Role } from "../../../components/Authorization/Roles/Types";
-import { toast, ToastContainer } from "react-toastify";
-import DiagnosedWithTB from "../../../components/TbDetailsForm/DiagnosedWithTB";
 import { RootState } from "../../../redux/store";
 
 const PatientRegistrationPage = () => {
@@ -47,10 +45,8 @@ const PatientRegistrationPage = () => {
   const [patientName, setPatientName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [step1Data, setStep1Data] = useState<any>(null);
-  const [snackString,setSnackString]=useState<string>("Patient registered successfully with Personal, TB, Nikshay & Contact Screening details.")
 
   const auth = useAuth();
   const userEmail =
@@ -118,11 +114,8 @@ const PatientRegistrationPage = () => {
           setLoading(false);
           return;
         }
-        setSnackString("Referal Patient Registered");
-        setOpenSnackbar(true);
-        setTimeout(() => {
-          navigate(`/patient-dashboard/${patientId}`);
-        }, 2000);
+        toast.success("Referral Patient Registered");
+        navigate(`/patient-dashboard/${patientId}`);
       } else if (activeStep === 2) {
         if (!patientId) {
           throw new Error("Patient ID not found. Please complete step 1.");
