@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Role } from "../../components/Authorization/Roles/Types";
 import { tiles } from "../../components/Tiles";
-import { RootState } from "../../redux/store";
 import { setUserProfile, setUserState } from "../../redux/userSlice";
 import "./styles.css";
 import axiosInstance from "../../components/axiosInstance";
@@ -41,7 +40,6 @@ const LandingPage = () => {
           const response = await axiosInstance.get(
             `/person/email/${profile.email}`
           );
-          // console.log("Fetched user details:", response.data);
 
           if (response.data.state) {
             dispatch(setUserState(response.data.state));

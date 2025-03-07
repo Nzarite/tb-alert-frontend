@@ -1,8 +1,14 @@
 import {
   Alert,
+  Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   Paper,
+  Snackbar,
   Step,
   StepLabel,
   Stepper,
@@ -26,7 +32,10 @@ import TbDetailsForm, {
   TbDetailsData,
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
+import { Role } from "../../../components/Authorization/Roles/Types";
 import { toast, ToastContainer } from "react-toastify";
+import DiagnosedWithTB from "../../../components/TbDetailsForm/DiagnosedWithTB";
+import { RootState } from "../../../redux/store";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -34,18 +43,25 @@ const PatientRegistrationPage = () => {
   const [activeStep, setActiveStep] = useState(
     location.state?.initialStep || 0
   );
-  const [patientId, setPatientId] = useState<string | null>(null);
+  const [patientId, setPatientId] = useState<string>("");
   const [patientName, setPatientName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [step1Data, setStep1Data] = useState<any>(null);
+  const [snackString,setSnackString]=useState<string>("Patient registered successfully with Personal, TB, Nikshay & Contact Screening details.")
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user?.profile?.email) ||
+    useSelector((state:RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
+  const userRole = auth.user?.profile.client_roles || {};
+
 
   const steps = [
     "Patient Details",
+    "Current TB Status",
     "TB Details",
     "Nikshay Details",
     "Contact Screening Details",
@@ -65,7 +81,8 @@ const PatientRegistrationPage = () => {
   const onSubmit = (data: any) => {
     console.log("Final Submitted Data:", data);
   };
- 
+
+  //use switch here instead
   const handleSave = async (stepData: any) => {
     setLoading(true);
     setError(null);
@@ -73,10 +90,15 @@ const PatientRegistrationPage = () => {
       let response;
  
       if (activeStep === 0) {
+        let createdBy;
+        if(stepData.createdBy==="") createdBy=userEmail;
+        else createdBy=stepData.createdBy;
+
         response = await axiosInstance.post("/patient/register", {
           ...stepData,
-          createdBy: userEmail,
+          createdBy:createdBy
         });
+        console.log(stepData);
         if (response.status === 200 || 201 || 202) {
           setPatientId(response.data.patientId);
           setPatientName(
@@ -91,6 +113,21 @@ const PatientRegistrationPage = () => {
         if (!patientId) {
           throw new Error("Patient ID not found. Please complete step 1.");
         }
+        if (stepData.isDiagnosedWithTB === true) {
+          setStep1Data(stepData); // Store data temporarily
+          setConfirmModalOpen(true); // Open confirmation modal
+          setLoading(false);
+          return;
+        }
+        setSnackString("Referal Patient Registered")
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          navigate(`/patient-dashboard/${patientId}`);
+        }, 2000);
+      } else if (activeStep === 2) {
+        if (!patientId) {
+          throw new Error("Patient ID not found. Please complete step 1.");
+        }
         response = await axiosInstance.post("/tbdetails/register", {
           ...stepData,
           patientId,
@@ -100,7 +137,7 @@ const PatientRegistrationPage = () => {
           setActiveStep(activeStep + 1);
           toast.success("TB details registered successfully!");
         }
-      } else if (activeStep === 2) {
+      } else if (activeStep === 3) {
         if (!formData.tbDetails) {
           throw new Error("TB Details not found. Please complete step 2.");
         }
@@ -113,7 +150,7 @@ const PatientRegistrationPage = () => {
           setActiveStep(activeStep + 1);
           toast.success("Nikshay details registered successfully!");
         }
-      } else if (activeStep === 3) {
+      } else if (activeStep === 4) {
         if (!formData.nikshayDetails) {
           throw new Error("Nikshay Details not found. Please complete step 3.");
         }
@@ -140,7 +177,21 @@ const PatientRegistrationPage = () => {
       setLoading(false);
     }
   };
- 
+  const handleConfirm = async (confirmed: boolean) => {
+    setConfirmModalOpen(false);
+
+    if (confirmed) {
+      // User confirmed, proceed with API call
+      const response = await axiosInstance.put(`/patient/update/${patientId}`, {
+        ...step1Data,
+      });
+
+      if (response.status === 200 || response.status === 201 || response.status === 202) {
+        setActiveStep(activeStep + 1);
+      }
+    }
+
+  };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
@@ -185,7 +236,7 @@ const PatientRegistrationPage = () => {
                 />
               )}
               {activeStep === 1 && (
-                <TbDetailsForm
+                <DiagnosedWithTB
                   language={language}
                   data={formData.tbDetails}
                   onSave={handleSave}
@@ -197,6 +248,18 @@ const PatientRegistrationPage = () => {
                 />
               )}
               {activeStep === 2 && (
+                <TbDetailsForm
+                  language={language}
+                  data={formData.tbDetails}
+                  onSave={handleSave}
+                  // onNext={handleNext}
+                  onBack={handleBack}
+                  functionality="register"
+                  patientName={patientName}
+                  loading={loading}
+                />
+              )}
+              {activeStep === 3 && (
                 <NikshayDetailsForm
                   language={language}
                   data={formData.nikshayDetails}
@@ -208,7 +271,7 @@ const PatientRegistrationPage = () => {
                   loading={loading}
                 />
               )}
-              {activeStep === 3 && (
+              {activeStep === 4 && (
                 <ContactScreeningDetailsForm
                   language={language}
                   data={formData.contactScreeningDetails}
@@ -228,6 +291,22 @@ const PatientRegistrationPage = () => {
             </Paper>
           </Grid>
         </Grid>
+        <Dialog open={confirmModalOpen} onClose={() => handleConfirm(false)}>
+      <DialogTitle>Confirm Diagnosis</DialogTitle>
+      <DialogContent>
+        <Typography>
+          Are you sure you want to proceed with the TB diagnosis?
+        </Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => handleConfirm(false)} color="secondary">
+          No
+        </Button>
+        <Button onClick={() => handleConfirm(true)} color="primary" autoFocus>
+          Yes
+        </Button>
+      </DialogActions>
+    </Dialog>
       </Container>
     </>
   );
