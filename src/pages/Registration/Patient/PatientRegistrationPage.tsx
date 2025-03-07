@@ -58,7 +58,6 @@ const PatientRegistrationPage = () => {
     auth.user?.profile?.email;
   const userRole = auth.user?.profile.client_roles || {};
 
-
   const steps = [
     "Patient Details",
     "Current TB Status",
@@ -91,12 +90,12 @@ const PatientRegistrationPage = () => {
  
       if (activeStep === 0) {
         let createdBy;
-        if(stepData.createdBy==="") createdBy=userEmail;
-        else createdBy=stepData.createdBy;
+        if (stepData.createdBy === "") createdBy = userEmail;
+        else createdBy = stepData.createdBy;
 
         response = await axiosInstance.post("/patient/register", {
           ...stepData,
-          createdBy:createdBy
+          createdBy: createdBy,
         });
         console.log(stepData);
         if (response.status === 200 || 201 || 202) {
@@ -119,7 +118,7 @@ const PatientRegistrationPage = () => {
           setLoading(false);
           return;
         }
-        setSnackString("Referal Patient Registered")
+        setSnackString("Referal Patient Registered");
         setOpenSnackbar(true);
         setTimeout(() => {
           navigate(`/patient-dashboard/${patientId}`);
@@ -190,7 +189,6 @@ const PatientRegistrationPage = () => {
         setActiveStep(activeStep + 1);
       }
     }
-
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
@@ -292,24 +290,28 @@ const PatientRegistrationPage = () => {
           </Grid>
         </Grid>
         <Dialog open={confirmModalOpen} onClose={() => handleConfirm(false)}>
-      <DialogTitle>Confirm Diagnosis</DialogTitle>
-      <DialogContent>
-        <Typography>
-          Are you sure you want to proceed with the TB diagnosis?
-        </Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => handleConfirm(false)} color="secondary">
-          No
-        </Button>
-        <Button onClick={() => handleConfirm(true)} color="primary" autoFocus>
-          Yes
-        </Button>
-      </DialogActions>
-    </Dialog>
+          <DialogTitle>Confirm Diagnosis</DialogTitle>
+          <DialogContent>
+            <Typography>
+              Are you sure you want to proceed with the TB diagnosis?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => handleConfirm(false)} color="secondary">
+              No
+            </Button>
+            <Button
+              onClick={() => handleConfirm(true)}
+              color="primary"
+              autoFocus
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );
 };
- 
+
 export default PatientRegistrationPage;

@@ -1,42 +1,61 @@
-import { Alert, Box, Divider, Grid, Skeleton, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
-import axiosInstance from "../../components/axiosInstance";
-import { renderField } from "./PatientNikshayDetails";
-import { ContactScreeningDetailsFormLabelsData } from "../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../components/axiosInstance";
+import { ContactScreeningDetailsFormLabelsData } from "../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
+import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
+import { renderField } from "./PatientNikshayDetails";
 
-const PatientContactScreeningDetails = ({ patientId, refresh }: any) => {
+const PatientContactScreeningDetails = ({
+  patientId,
+  refreshKey,
+  setRefreshKey,
+}: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const language = useSelector((state:any) => state.language.language)
+  const language = useSelector((state: any) => state.language.language);
   const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
-      patientNameLabel: "",
-      contactScreeningDoneLabel: { label: "", options: [] },
-      dateOfContactScreeningLabel: "",
-      noOfHHCsAvailableLabel: "",
-      noOfHHCsScreenedLabel: "",
-      noOfHHCsWithTBSymptomsLabel: "",
-      noOfHHCsReferredTBTestingLabel: "",
-      noOfHHCsDiagnosedTBLabel: "",
-      noOfHHCsTBInitiatedATTLabel: "",
-      noOfHHCsUndergoneLTBITestLabel: "",
-      noOfEligibleForTPTLabel: "",
-      noOfHHCsInitiatedTPTLabel: "",
-    });
-  
-    useEffect(() => {
-      fetch(`/locales/patient_registration_form4_${language}.json`)
-        .then((response) => response.json())
-        .then((data) => setLabels(data.nikshaydetailsform))
-        .catch((error) => {
-          console.error("Error loading form labels file:", error);
-          alert("Failed to load form labels data. Please try again.");
-        });
-    }, [language]);
+    patientNameLabel: "",
+    contactScreeningDoneLabel: { label: "", options: [] },
+    dateOfContactScreeningLabel: "",
+    noOfHHCsAvailableLabel: "",
+    noOfHHCsScreenedLabel: "",
+    noOfHHCsWithTBSymptomsLabel: "",
+    noOfHHCsReferredTBTestingLabel: "",
+    noOfHHCsDiagnosedTBLabel: "",
+    noOfHHCsTBInitiatedATTLabel: "",
+    noOfHHCsUndergoneLTBITestLabel: "",
+    noOfEligibleForTPTLabel: "",
+    noOfHHCsInitiatedTPTLabel: "",
+  });
+  const [areDetailsNull, setAreDetailsNull] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetch(`/locales/patient_registration_form4_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.nikshaydetailsform))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
 
   const fields = [
-    { name: "contactScreeningDone", label: labels.contactScreeningDoneLabel, size: 12 },
+    {
+      name: "contactScreeningDone",
+      label: labels.contactScreeningDoneLabel,
+      size: 12,
+    },
     {
       name: "dateOfContactScreening",
       label: labels.dateOfContactScreeningLabel,
@@ -92,6 +111,9 @@ const PatientContactScreeningDetails = ({ patientId, refresh }: any) => {
       setPatientData(res.data);
       setError(null);
     } catch (err: any) {
+      if (err.status == 400) {
+        setAreDetailsNull(true);
+      }
       setError(
         err.response?.data?.message ||
           "Failed to fetch contact screening details"
@@ -103,7 +125,13 @@ const PatientContactScreeningDetails = ({ patientId, refresh }: any) => {
 
   useEffect(() => {
     getData();
-  }, [patientId, refresh]);
+  }, [patientId, refreshKey]);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setAreDetailsNull(false);
+    setRefreshKey((prevKey: number) => prevKey + 1);
+  };
 
   if (loading) {
     return (
@@ -111,6 +139,25 @@ const PatientContactScreeningDetails = ({ patientId, refresh }: any) => {
         <Skeleton variant="rectangular" width="100%" height={100} />
         <Skeleton variant="text" sx={{ mt: 1, width: "60%" }} />
       </Box>
+    );
+  }
+
+  if (areDetailsNull && !patientData) {
+    return (
+      <>
+        <Button variant="contained" onClick={() => setModalOpen(true)}>
+          Set Contact Screening Details
+        </Button>
+        {modalOpen && (
+          <EditPatientDetailsModal
+            open={modalOpen}
+            onClose={handleModalClose}
+            prop={"contactscreening"}
+            patientId={patientId}
+            getData={getData}
+          />
+        )}
+      </>
     );
   }
 

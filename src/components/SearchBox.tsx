@@ -3,14 +3,22 @@ import Select from "react-select";
 import axiosInstance from "./axiosInstance";
 import { TeleCaller, StateHead } from "./datatypes/DataTypes";
 import { useSelector } from "react-redux";
+import Select from "react-select";
 import { Role } from "./Authorization/Roles/Types";
 import { useAuth } from "react-oidc-context";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
+import axiosInstance from "./axiosInstance";
+import {
+  FieldCoordinator,
+  GPHead,
+  StateHead,
+  TeleCaller,
+} from "./datatypes/DataTypes";
 
 interface SearchProps {
   changeSearch: (text: { value: string; label: string }) => void;
-  role: "patient" | "telecaller" | "statehead";
+  role: "patient" | "telecaller" | "statehead" | "gphead" | "fieldcoordinator";
 }
 
 interface Patient {
@@ -30,13 +38,34 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const auth = useAuth();
-    const userRoles: Role[] = useSelector(
-        (state: any) =>
-            state.user?.profile?.client_roles ||
-            auth.user?.profile?.client_roles ||
-            []
-    );
+  const userRoles: Role[] = useSelector(
+    (state: any) =>
+      state.user?.profile?.client_roles ||
+      auth.user?.profile?.client_roles ||
+      []
+  );
   const userState: string = useSelector((state: any) => state.user?.userState);
+  const getPersons = (role: any) => {
+    switch (role) {
+      case "patient":
+        return "Patients";
+
+      case "telecaller":
+        return "Telecallers";
+
+      case "statehead":
+        return "State Heads";
+
+      case "fieldcoordinator":
+        return "Field Coordinators";
+
+      case "gphead":
+        return "Gram Panchayat Heads";
+
+      default:
+        return "";
+    }
+  };
 
   const roleToUrlMap: Record<SearchProps["role"], string> = {
     patient: userRoles?.includes("SuperAdmin")
@@ -46,6 +75,8 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
       ? `/telecaller/name/`
       : `/telecaller/state/${userState}/name/`,
     statehead: "/statehead/name/",
+    gphead: "/gphead/name/",
+    fieldcoordinator: "/fieldcoordinator/name/",
   };
 
   const url = roleToUrlMap[role];
@@ -76,6 +107,19 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
         } else if (role === "statehead") {
           data = response.data.map((item: StateHead) => ({
             value: item.stateHeadId.toString(),
+            label: `${item.firstName} ${item.lastName}`,
+            details: `${item.gender} | ${item.state}`,
+          }));
+        } else if (role === "gphead") {
+          data = response.data.map((item: GPHead) => ({
+            value: item.id,
+            label: `${item.firstName} ${item.lastName}`,
+            details: `${item.gender} | ${item.state}`,
+          }));
+        } else if (role === "fieldcoordinator") {
+          console.log(response.data);
+          data = response.data.map((item: FieldCoordinator) => ({
+            value: item.id,
             label: `${item.firstName} ${item.lastName}`,
             details: `${item.gender} | ${item.state}`,
           }));
@@ -167,13 +211,7 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
         filterOption={() => true}
         components={{ Option: CustomOption }}
         styles={customStyles}
-        placeholder={`Search ${
-          role === "patient"
-            ? "Patients"
-            : role === "telecaller"
-            ? "Telecallers"
-            : "State heads"
-        } ...`}
+        placeholder={`Search ${getPersons(role)} ...`}
         noOptionsMessage={() =>
           loading ? <CircularProgress size={20} /> : "No results found"
         }

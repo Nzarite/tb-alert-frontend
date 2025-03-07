@@ -1,11 +1,11 @@
 import { Alert, Box, Divider, Grid, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import axiosInstance from "../../components/axiosInstance";
-import { renderField } from "./PatientNikshayDetails";
-import { PatientDetailsFormLabelsData } from "../../components/PatientDetailsForm/PatientDetailsForm";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../components/axiosInstance";
+import { PatientDetailsFormLabelsData } from "../../components/PatientDetailsForm/PatientDetailsForm";
+import { renderField } from "./PatientNikshayDetails";
 
-const PatientPersonalDetails = ({ patientId, refresh }: any) => {
+const PatientPersonalDetails = ({ patientId, refreshKey }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,7 +73,7 @@ const PatientPersonalDetails = ({ patientId, refresh }: any) => {
 
   useEffect(() => {
     getData();
-  }, [patientId, refresh]);
+  }, [patientId, refreshKey]);
 
   if (loading) {
     return (

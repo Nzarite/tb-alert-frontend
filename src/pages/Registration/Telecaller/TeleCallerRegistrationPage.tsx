@@ -17,9 +17,11 @@ import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
+import { LabelOption } from "../../../components/datatypes/DataTypes";
 import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
 import { Role } from "../../../components/Authorization/Roles/Types";
-import { StateOption } from "../../../components/datatypes/DataTypes";
+import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -187,6 +189,10 @@ const TelecallerRegistrationPage = () => {
     try {
       await axiosInstance.post("/telecaller/register", formData);
       navigate("/");
+      toast.success(
+        "The person has been registered successfully as a Telecaller. An email has been sent for password reset.",
+        { autoClose: 5000 }
+      );
       reset();
     } catch (err: any) {
       setErrorMessage(
