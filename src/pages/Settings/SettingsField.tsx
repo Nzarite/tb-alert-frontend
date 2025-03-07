@@ -1,4 +1,11 @@
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import {
   Control,
@@ -30,6 +37,8 @@ const SettingField = ({
   reset,
   loadSettings,
 }: Props) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const fieldValue = useWatch({ control, name: setting.keyName });
   const [editable, setEditable] = useState(false);
   const [stateList, setStateList] = useState([]);
@@ -64,20 +73,41 @@ const SettingField = ({
 
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-        <Typography sx={{ width: 200, fontWeight: 500, color: "gray" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: isSmallScreen ? "column" : "row",
+          alignItems: isSmallScreen ? "flex-start" : "center",
+          mb: 2,
+        }}
+      >
+        <Typography
+          sx={{
+            width: isSmallScreen ? "100%" : "200px",
+            fontWeight: 500,
+            color: "gray",
+            mb: isSmallScreen ? 2 : 0,
+          }}
+        >
           {setting.label}
         </Typography>
-        <Box sx={{ flex: 1, display: "flex", gap: 1 }}>
+        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}>
           {setting.type === "button" ? (
             <Button
               variant="contained"
+              sx={{ alignSelf: isSmallScreen ? "" : "flex-start" }}
               onClick={() => window.open(setting.value)}
             >
               {setting.placeholder}
             </Button>
           ) : (
-            <>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: !isSmallScreen || !editable ? "row" : "column",
+                gap: 1,
+              }}
+            >
               <Controller
                 name={setting.keyName}
                 control={control}
@@ -95,8 +125,16 @@ const SettingField = ({
                   />
                 )}
               />
+
               {editable ? (
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "flex-start",
+                    gap: 1,
+                  }}
+                >
                   <Button
                     size="small"
                     onClick={() => {
@@ -124,7 +162,7 @@ const SettingField = ({
                   <MdEdit />
                 </IconButton>
               )}
-            </>
+            </Box>
           )}
         </Box>
       </Box>
@@ -132,12 +170,14 @@ const SettingField = ({
         <Box
           sx={{
             display: "flex",
-            // border: "1px solid blue",
-            alignItems: "center",
+            flexDirection: isSmallScreen ? "column" : "row",
+            alignItems: isSmallScreen ? "flex-start" : "center",
             width: "84%",
           }}
         >
-          <Typography sx={{ width: 200, fontWeight: 500, color: "gray" }}>
+          <Typography
+            sx={{ width: 200, fontWeight: 500, color: "gray", mb: 2 }}
+          >
             Active Regions
           </Typography>
           <Box display={"flex"} gap={1} flexWrap={"wrap"}>

@@ -5,6 +5,7 @@ import {
   FormHelperText,
   Select,
   TextField,
+  useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -72,7 +73,7 @@ const RenderSettingItem = ({
         <TextField
           {...field}
           size="small"
-          sx={{ width: "80%" }}
+          sx={{ width: "100%" }}
           variant="outlined"
           error={!!errors[setting.keyName]}
           helperText={errors[setting.keyName]?.message || setting.placeholder}
@@ -86,7 +87,7 @@ const RenderSettingItem = ({
           multiline
           rows={5}
           size="small"
-          sx={{ width: "80%" }}
+          sx={{ width: "100%" }}
           variant="outlined"
           error={!!errors[setting.keyName]}
           helperText={errors[setting.keyName]?.message || setting.placeholder}
@@ -99,7 +100,7 @@ const RenderSettingItem = ({
           {...field}
           type="time"
           size="small"
-          sx={{ width: "80%" }}
+          sx={{ width: "100%" }}
           variant="outlined"
           error={!!errors[setting.keyName]}
           helperText={errors[setting.keyName]?.message || setting.placeholder}
@@ -135,7 +136,7 @@ const RenderSettingItem = ({
               return filtered;
             }}
             size="small"
-            sx={{ width: "80%" }}
+            sx={{ width: "100%" }}
             disabled={!editable}
             renderInput={(params) => (
               <TextField
@@ -162,7 +163,7 @@ const RenderSettingItem = ({
     case "select":
       return (
         <FormControl
-          sx={{ width: "80%" }}
+          sx={{ width: "100%" }}
           size="small"
           error={!!errors[setting.keyName]}
         >

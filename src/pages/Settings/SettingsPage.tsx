@@ -1,5 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -70,7 +75,7 @@ const SettingsPage = () => {
   if (loading)
     return <CircularProgress sx={{ display: "block", mx: "auto", mt: 5 }} />;
   return (
-    <Box sx={{ maxWidth: 1000, margin: "auto", padding: 1 }}>
+    <Box sx={{ maxWidth: "90%", margin: "auto" }}>
       <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
         Settings
       </Typography>
