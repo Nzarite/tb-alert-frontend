@@ -19,10 +19,8 @@ import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { Role } from "../Authorization/Roles/Types";
-import { useAuth } from "react-oidc-context";
-import { LabelOption, TeleCaller } from "../datatypes/DataTypes";
 import axiosInstance from "../axiosInstance";
-import { LabelOption } from "../datatypes/DataTypes";
+import { LabelOption, TeleCaller } from "../datatypes/DataTypes";
 
 export type PatientDetailsData = {
   firstName: string;
