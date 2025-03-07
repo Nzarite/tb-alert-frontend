@@ -12,28 +12,46 @@
 
 .navbar-left,
 .navbar-right {
-  min-width: 0;
   display: flex;
   flex-direction: row;
   gap: 30px;
+  align-items: center;
 }
 
 .navbar-left {
   margin-left: 7%;
-  align-items: center;
 }
 
 .navbar-right {
   margin-right: 7%;
-  align-items: center;
 }
 
 .navbar-text {
   color: white;
   font-weight: bold;
   text-decoration: none;
+  cursor: pointer;
 }
 
 #language-menu {
   background-color: white;
+}
+
+/* Mobile Styles */
+.mobile-navbar {
+  padding: 5px;
+}
+
+/* Tablet Styles */
+.tablet-navbar {
+  padding: 8px;
+  gap: 15px;
+}
+
+.tablet-navbar .navbar-left {
+  margin-left: 4%;
+}
+
+.tablet-navbar .navbar-right {
+  margin-right: 4%;
 }

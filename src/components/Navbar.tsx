@@ -4,11 +4,13 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  useMediaQuery,
 } from "@mui/material";
 import { MdLogout } from "react-icons/md";
 import { RiAccountBoxFill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Languages from "../components/Json/languages.json";
 import useLogout from "../hooks/useLogout";
 import { updateLanguage } from "../redux/langSlice";
 import "./Navbar.css";
@@ -17,11 +19,16 @@ const Navbar = () => {
   const language = useSelector((state: any) => state.language.language);
   const logout = useLogout();
   const dispatch = useDispatch();
+  const isMobile = useMediaQuery("(max-width:600px)");
+  const isTablet = useMediaQuery("(max-width:900px)");
 
   return (
-    <Box id="navbar">
+    <Box
+      id="navbar"
+      className={isMobile ? "mobile-navbar" : isTablet ? "tablet-navbar" : ""}
+    >
       <Box className="navbar-left">
-        <Link to="/" className="navbar-text app-logo">
+        <Link to="/" className="navbar-text">
           TB Alert
         </Link>
       </Box>
@@ -34,20 +41,30 @@ const Navbar = () => {
             onChange={(e) => {
               dispatch(updateLanguage(e.target.value));
             }}
-            input={<OutlinedInput sx={{ height: "30px" }} />}
+            input={
+              <OutlinedInput
+                sx={{ height: "30px", fontSize: isMobile ? "12px" : "14px" }}
+              />
+            }
           >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="hi">Hindi</MenuItem>
-            <MenuItem value="te">Telugu</MenuItem>
+            {Languages.map((lang) => (
+              <MenuItem key={lang.code} value={lang.code}>
+                {lang.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
         <Link to="/profile" className="navbar-text">
-          <RiAccountBoxFill title="Profile" size={25} />
+          <RiAccountBoxFill title="Profile" size={isMobile ? 20 : 25} />
         </Link>
-        <Link to="#" className="navbar-text">
-          <MdLogout title="Log Out" size={25} onClick={logout} />
-        </Link>
+        <Box className="navbar-text">
+          <MdLogout
+            title="Log Out"
+            size={isMobile ? 20 : 25}
+            onClick={logout}
+          />
+        </Box>
       </Box>
     </Box>
   );
