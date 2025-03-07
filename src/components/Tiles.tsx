@@ -17,7 +17,13 @@ export const tiles: Tile[] = [
   {
     path: "/register/patient",
     label: "Register Patient",
-    allowedRoles: ["SuperAdmin", "StateCoordinator", "Telecaller"],
+    allowedRoles: [
+      "SuperAdmin",
+      "StateCoordinator",
+      "Telecaller",
+      "FieldCoordinator",
+      "GpHead",
+    ],
     Icon: FaUserPlus,
   },
   {
@@ -65,7 +71,13 @@ export const tiles: Tile[] = [
   {
     path: "/patient-dashboard",
     label: "Patient Dashboard",
-    allowedRoles: ["SuperAdmin", "StateCoordinator", "Telecaller"],
+    allowedRoles: [
+      "SuperAdmin",
+      "StateCoordinator",
+      "Telecaller",
+      "FieldCoordinator",
+      "GpHead",
+    ],
     Icon: MdDashboard,
   },
   {

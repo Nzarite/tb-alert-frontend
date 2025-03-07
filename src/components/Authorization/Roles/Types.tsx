@@ -3,7 +3,7 @@ export type Role =
   | "StateCoordinator"
   | "Telecaller"
   | "FieldCoordinator"
-  | "GPHead";
+  | "GpHead";
 
 export interface ProtectedRouteProps {
   allowedRoles: Role[];

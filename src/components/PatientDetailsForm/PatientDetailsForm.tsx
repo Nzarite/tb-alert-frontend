@@ -151,7 +151,10 @@ const PatientDetailsForm = ({
 
       setBackendStates(stateNames);
     } catch (error) {
-      if (error.status === 401) setBackendStates(userState);
+      if (error.status === 401) {
+        setBackendStates(userState);
+        selectedState = backendStates[0];
+      }
       console.error("Error fetching states:", error);
     }
   };
@@ -235,7 +238,7 @@ const PatientDetailsForm = ({
     mode: "onChange",
   });
 
-  const selectedState = useWatch({ control, name: "state" });
+  let selectedState = useWatch({ control, name: "state" });
 
   useEffect(() => {
     if (selectedState && allDistricts.length) {
