@@ -2,7 +2,6 @@
   background-color: #0b455c;
   width: 100%;
   color: white;
-  padding: 10px;
   display: flex;
   justify-content: space-between;
   position: sticky;
@@ -54,4 +53,17 @@
 
 .tablet-navbar .navbar-right {
   margin-right: 4%;
+}
+
+.app-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
 }
