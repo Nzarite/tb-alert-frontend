@@ -1,7 +1,10 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Navbar from "../components/Navbar";
+import useLogout from "../hooks/useLogout";
 
 const breadcrumbNameMap: { [key: string]: string } = {
   "/": "Home",
@@ -11,6 +14,8 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/register/patient": "Patient",
   "/register/statehead": "State Head",
   "/register/telecaller": "Telecaller",
+  "/register/fieldcoordinator": "Field Coordinator",
+  "/register/gphead": "GP Head",
 
   "/visit": "Visit Follow-Up",
   "/patient-dashboard": "Patient Search",
@@ -22,6 +27,8 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/user": "User",
   "/user/statehead": "State head",
   "/user/telecaller": "Telecaller",
+  "/user/fieldcoordinator": "Field Coordinator",
+  "/user/gphead": "GP Head",
 };
 
 const PageLayout = () => {

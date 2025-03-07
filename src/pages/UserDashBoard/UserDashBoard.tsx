@@ -1,15 +1,21 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import UserPersonalDetails from "./UserPersonalDetails";
-import { Paper, Box } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { Typography } from "antd";
-import { RiPencilLine } from "react-icons/ri";
+import { useEffect, useState } from "react";
 import { MdPerson } from "react-icons/md";
-import UserDetailsModal from "./UserDetailsModal";
-import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
+import { RiPencilLine } from "react-icons/ri";
+import { useAuth } from "react-oidc-context";
+import { useParams } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
+import {
+  FieldCoordinator,
+  GPHead,
+  StateHead,
+  TeleCaller,
+} from "../../components/datatypes/DataTypes";
 import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
+import UserDetailsModal from "./UserDetailsModal";
+import UserPersonalDetails from "./UserPersonalDetails";
 
 interface SearchProps {
   role: string;
@@ -18,13 +24,15 @@ interface SearchProps {
 const UserDashBoard = ({ role }: SearchProps) => {
   const { userId } = useParams<{ userId: string }>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [userData, setUserData] = useState<TeleCaller | StateHead | null>(null);
+  const [userData, setUserData] = useState<
+    TeleCaller | StateHead | FieldCoordinator | GPHead | null
+  >(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = role === "telecaller" ? `/telecaller/${userId}` : `/statehead/${userId}`;
+        const url = `/${role}/${userId}`;
         const response = await axiosInstance.get(url);
         setUserData(response.data);
       } catch (error) {
@@ -35,16 +43,48 @@ const UserDashBoard = ({ role }: SearchProps) => {
     fetchData();
   }, [userId, role]);
 
-  const handleUpdate = (updatedUser: TeleCaller | StateHead) => {
+  const handleUpdate = (
+    updatedUser: TeleCaller | StateHead | FieldCoordinator | GPHead
+  ) => {
     setUserData(updatedUser);
   };
 
-  const isStateHead = userData?.hasOwnProperty("stateHeadId");
-  const deleteUrl = isStateHead
-    ? `statehead/${userData?.stateHeadId}`
-    : `telecaller/${userData?.teleCallerId}`;
-  const navigateUrl = isStateHead ? "/user/statehead" : "/user/telecaller";
-  const person = isStateHead ? "StateHead" : "TeleCaller";
+  let deleteUrl = "",
+    navigateUrl = "",
+    person = "";
+  if (role === "statehead") {
+    deleteUrl = `statehead/${userData?.stateHeadId}`;
+    navigateUrl = "/user/statehead";
+    person = "StateHead";
+  } else if (role === "telecaller") {
+    deleteUrl = `telecaller/${userData?.teleCallerId}`;
+    navigateUrl = "/user/telecaller";
+    person = "TeleCaller";
+  } else if (role === "fieldcoordinator") {
+    deleteUrl = `fieldcoordinator/${userData?.id}`;
+    navigateUrl = "/user/fieldcoordinator";
+    person = "FieldCoordinator";
+  } else if (role === "gphead") {
+    deleteUrl = `gphead/${userData?.id}`;
+    navigateUrl = "/user/gphead";
+    person = "GPHead";
+  }
+
+  const roles: string[] = useAuth().user?.profile.client_roles as string[];
+  const isAdmin = roles.includes("SuperAdmin");
+
+  const getTitle = (role: string) => {
+    switch (role) {
+      case "telecaller":
+        return "Telecaller Details";
+      case "statehead":
+        return "Statehead Details";
+      case "fieldcoordinator":
+        return "Field Coordinator Details";
+      case "gphead":
+        return "GP Head details";
+    }
+  };
 
   return (
     <div>
@@ -57,32 +97,32 @@ const UserDashBoard = ({ role }: SearchProps) => {
               fontWeight="bold"
               sx={{ mb: 2, color: "#1976d2" }}
             >
-              {role === "telecaller"
-                ? "Telecaller Details"
-                : "State Coordinator Details"}
+              {getTitle(role)}
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
-            <DeleteIcon
-              sx={{ cursor: "pointer" }}
-              color="error"
-              onClick={() => setDeleteModalOpen(true)}
-            />
+          {isAdmin && (
+            <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+              <DeleteIcon
+                sx={{ cursor: "pointer" }}
+                color="error"
+                onClick={() => setDeleteModalOpen(true)}
+              />
 
-            <DeletePersonModal
-              open={deleteModalOpen}
-              onClose={() => setDeleteModalOpen(false)}
-              deleteUrl={deleteUrl}
-              navigateUrl={navigateUrl}
-              person={person}
-            />
+              <DeletePersonModal
+                open={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                deleteUrl={deleteUrl}
+                navigateUrl={navigateUrl}
+                person={person}
+              />
 
-            <RiPencilLine
-              style={{ fontSize: "20px", cursor: "pointer" }}
-              onClick={() => setModalOpen(true)}
-            />
-          </Box>
+              <RiPencilLine
+                style={{ fontSize: "20px", cursor: "pointer" }}
+                onClick={() => setModalOpen(true)}
+              />
+            </Box>
+          )}
         </Box>
         {userData && <UserPersonalDetails user={userData} />}
       </Paper>

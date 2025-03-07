@@ -5,12 +5,14 @@ import {
   OutlinedInput,
   Select,
 } from "@mui/material";
+import { useState } from "react";
 import { MdLogout } from "react-icons/md";
 import { RiAccountBoxFill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
 import { updateLanguage } from "../redux/langSlice";
+import LogOutModal from "./Modal/LogOutModal";
 import "./Navbar.css";
 import logo from "/TB_Alert_India_Logo-removebg-preview.png";
 
@@ -18,6 +20,7 @@ const Navbar = () => {
   const language = useSelector((state: any) => state.language.language);
   const logout = useLogout();
   const dispatch = useDispatch();
+  const [logoutModalOpen, setlogOutModalOpen] = useState(false);
 
   return (
     <Box id="navbar">
@@ -48,8 +51,18 @@ const Navbar = () => {
           <RiAccountBoxFill title="Profile" size={25} />
         </Link>
         <Link to="#" className="navbar-text">
-          <MdLogout title="Log Out" size={25} onClick={logout} />
+          <MdLogout
+            title="Log Out"
+            size={25}
+            onClick={() => setlogOutModalOpen(true)}
+          />
         </Link>
+
+        <LogOutModal
+          open={logoutModalOpen}
+          onClose={() => setlogOutModalOpen(false)}
+          onConfirm={logout}
+        />
       </Box>
     </Box>
   );
