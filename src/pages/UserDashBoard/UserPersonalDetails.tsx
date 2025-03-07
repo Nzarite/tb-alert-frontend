@@ -1,15 +1,27 @@
 import { Divider, Grid, Typography } from "@mui/material";
-import { renderField } from "../PatientDashboard/PatientNikshayDetails";
-import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
 import { useEffect, useState } from "react";
-import { ScTcRegistrationFormLabelsData } from "../Registration/StateHead/StateHeadRegistrationPage";
 import { useSelector } from "react-redux";
+import {
+  FieldCoordinator,
+  GPHead,
+  StateHead,
+  TeleCaller,
+} from "../../components/datatypes/DataTypes";
+import { renderField } from "../PatientDashboard/PatientNikshayDetails";
+import { ScTcRegistrationFormLabelsData } from "../Registration/StateHead/StateHeadRegistrationPage";
 
 interface SearchProps {
-  user: TeleCaller | StateHead;
+  user: TeleCaller | StateHead | FieldCoordinator | GPHead;
 }
 
 const UserPersonalDetails = ({ user }: SearchProps) => {
+  const getUserIdFieldName = (user: any) => {
+    if (user.hasOwnProperty("stateHeadId")) return "stateHeadId";
+    else if (user.hasOwnProperty("teleCallerId")) return "teleCallerId";
+    else if (user.hasOwnProperty("fieldCoordinatorId"))
+      return "fieldCoordinatorId";
+    else if (user.hasOwnProperty("gpHeadId")) return "gpHeadId";
+  };
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
     userIdLabel: "",
     firstNameLabel: "",
@@ -35,7 +47,7 @@ const UserPersonalDetails = ({ user }: SearchProps) => {
 
   let fields = [
     {
-      name: user.hasOwnProperty("stateHeadId") ? "stateHeadId" : "teleCallerId",
+      name: getUserIdFieldName(user),
       label: labels.userIdLabel,
       size: 12,
     },

@@ -1,7 +1,15 @@
-import { Alert, Box, CircularProgress, Modal, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+
+  CircularProgress,
+  Modal,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 import axiosInstance from "../axiosInstance";
 import ContactScreeningDetailsForm, {
   ContactScreeningData,
@@ -24,7 +32,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state) => state.user?.profile?.email) ||
+    useSelector((state: RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
 
   const [originalData, setOriginalData] = useState<any>(null);

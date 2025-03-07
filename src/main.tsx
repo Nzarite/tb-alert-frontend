@@ -19,6 +19,8 @@ import PageLayout from "./pages/PageLayout";
 import PatientDashboardPage from "./pages/PatientDashboard/PatientDashboardPage";
 import PatientSearchPage from "./pages/PatientDashboard/PatientSearchPage";
 import CaregiverRegistrationPage from "./pages/Registration/Caregiver/CaregiverRegistrationPage";
+import FieldCoordinatorRegistrationPage from "./pages/Registration/FieldCoordinator/FieldCoordinatorRegistrationPage.tsx";
+import GPHeadRegistrationPage from "./pages/Registration/GPHead/GPHeadRegistrationPage.tsx";
 import PatientRegistrationPage from "./pages/Registration/Patient/PatientRegistrationPage";
 import StateHeadRegistrationPage from "./pages/Registration/StateHead/StateHeadRegistrationPage";
 import TelecallerRegistrationPage from "./pages/Registration/Telecaller/TeleCallerRegistrationPage";
@@ -102,6 +104,15 @@ const router = createBrowserRouter(
           path="/user/telecaller/:userId"
           element={<UserDashBoard role="telecaller" />}
         />
+        <Route
+          path="/user/fieldcoordinator/:userId"
+          element={<UserDashBoard role="fieldcoordinator" />}
+        />
+        <Route
+          path="/register/fieldcoordinator"
+          element={<FieldCoordinatorRegistrationPage />}
+        />
+        <Route path="/user/fieldcoordinator" element={<UserSearch />} />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
@@ -116,6 +127,25 @@ const router = createBrowserRouter(
           element={<UserDashBoard role="statehead" />}
         />
         <Route path="/sms-module" element={<SmsModulePage />} />
+      </Route>
+
+      <Route
+        element={
+          <ProtectedRoute
+            allowedRoles={[
+              "SuperAdmin",
+              "StateCoordinator",
+              "FieldCoordinator",
+            ]}
+          />
+        }
+      >
+        <Route path="/register/gphead" element={<GPHeadRegistrationPage />} />
+        <Route path="/user/gphead" element={<UserSearch />} />
+        <Route
+          path="/user/gphead/:userId"
+          element={<UserDashBoard role="gphead" />}
+        />
       </Route>
     </Route>
   )

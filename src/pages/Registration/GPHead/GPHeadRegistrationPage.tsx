@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Divider,
   Paper,
+  Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
@@ -16,11 +17,11 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import { Role } from "../../../components/Authorization/Roles/Types";
+import axiosInstance from "../../../components/axiosInstance";
 import FormFieldRenderer from "../../../components/FormFieldRender";
 import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
-import axiosInstance from "../../../components/axiosInstance";
-import { LabelOption } from "../../../components/datatypes/DataTypes";
-import { RootState } from "../../../redux/store";
+import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -40,24 +41,12 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export interface ScTcRegistrationFormLabelsData {
-  userIdLabel: string;
-  firstNameLabel: string;
-  lastNameLabel: string;
-  genderLabel: LabelOption;
-  phoneNumberLabel: string;
-  emailLabel: string;
-  dateOfJoiningLabel: string;
-  dateOfLeavingLabel: string;
-  stateLabel: string;
-}
-
-const StateHeadRegistrationPage = () => {
+const GPHeadRegistrationPage = () => {
   const auth = useAuth();
-  const userEmail =
-    useSelector((state: RootState) => state.user?.profile?.email) ||
-    auth.user?.profile?.email;
   const navigate = useNavigate();
+  const userEmail =
+    useSelector((state: any) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
 
   const {
     handleSubmit,
@@ -89,6 +78,15 @@ const StateHeadRegistrationPage = () => {
   const [backendStates, setBackendStates] = useState<string[]>([]);
   const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
 
+  const userState =
+    useSelector((state: any) => state.userState) ||
+    localStorage.getItem("userState");
+
+  const userRoles: Role[] = useSelector(
+    (state: any) =>
+      state.user?.profile?.client_roles || auth?.user?.profile?.client_roles
+  ) as Role[];
+
   useEffect(() => {
     fetch(`/locales/sc_tc_registration_form_${language}.json`)
       .then((response) => response.json())
@@ -117,7 +115,8 @@ const StateHeadRegistrationPage = () => {
       );
 
       setBackendStates(stateNames);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.status === 401) setBackendStates(userState);
       console.error("Error fetching states:", error);
     }
   };
@@ -176,7 +175,9 @@ const StateHeadRegistrationPage = () => {
     {
       name: "state",
       label: labels.stateLabel,
-      options: filteredStates,
+      options: userRoles.includes("SuperAdmin")
+        ? filteredStates
+        : filteredStates.filter((option) => option.value === userState),
       type: "select",
       disabled: loading,
     },
@@ -187,13 +188,13 @@ const StateHeadRegistrationPage = () => {
     setErrorMessage(null);
     const formData = { ...data, createdBy: userEmail };
     try {
-      await axiosInstance.post("/statehead/register", formData);
-      reset();
+      await axiosInstance.post("/gphead/register", formData);
       navigate("/");
       toast.success(
-        "The person has been registered successfully as a State Head. An email has been sent for password reset.",
+        "The person has been registered successfully as a GP Head. An email has been sent for password reset.",
         { autoClose: 5000 }
       );
+      reset();
     } catch (err: any) {
       setErrorMessage(
         err.response?.data?.message ||
@@ -216,7 +217,7 @@ const StateHeadRegistrationPage = () => {
       }}
     >
       <Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>
-        Register State Head
+        Register GP Head
       </Typography>
       <Divider sx={{ marginBottom: "30px" }} />
       <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
@@ -264,8 +265,23 @@ const StateHeadRegistrationPage = () => {
           </Box>
         </Stack>
       </Box>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity="success"
+          variant="filled"
+        >
+          The person has been registered successfully as a GP Head. An email has
+          been sent for password reset.
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 };
 
-export default StateHeadRegistrationPage;
+export default GPHeadRegistrationPage;
