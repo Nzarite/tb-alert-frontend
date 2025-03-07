@@ -28,6 +28,16 @@ const fetchMedications = async () => {
   }
 };
 
+const fetchStates = async () => {
+  try {
+    const response = await axiosInstance.get("/state/all");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching states:", error);
+    return [];
+  }
+};
+
 const updateSetting = async (keyName: string, value) => {
   try {
     await axiosInstance.put("/setting", { keyName, value });
@@ -36,4 +46,10 @@ const updateSetting = async (keyName: string, value) => {
   }
 };
 
-export { fetchMedications, fetchSettings, postSetting, updateSetting };
+export {
+  fetchMedications,
+  fetchSettings,
+  fetchStates,
+  postSetting,
+  updateSetting,
+};
