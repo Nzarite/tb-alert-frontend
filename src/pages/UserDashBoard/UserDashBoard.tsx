@@ -1,5 +1,5 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, Paper } from "@mui/material";
+import { Box, IconButton, Paper } from "@mui/material";
 import { Typography } from "antd";
 import { useEffect, useState } from "react";
 import { MdPerson } from "react-icons/md";
@@ -103,11 +103,13 @@ const UserDashBoard = ({ role }: SearchProps) => {
 
           {isAdmin && (
             <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
-              <DeleteIcon
-                sx={{ cursor: "pointer" }}
-                color="error"
-                onClick={() => setDeleteModalOpen(true)}
-              />
+              <IconButton>
+                <DeleteIcon
+                  sx={{ cursor: "pointer" }}
+                  color="error"
+                  onClick={() => setDeleteModalOpen(true)}
+                />
+              </IconButton>
 
               <DeletePersonModal
                 open={deleteModalOpen}
@@ -117,10 +119,13 @@ const UserDashBoard = ({ role }: SearchProps) => {
                 person={person}
               />
 
-              <RiPencilLine
-                style={{ fontSize: "20px", cursor: "pointer" }}
-                onClick={() => setModalOpen(true)}
-              />
+              <IconButton>
+                <RiPencilLine
+                  color="black"
+                  style={{ fontSize: "20px", cursor: "pointer" }}
+                  onClick={() => setModalOpen(true)}
+                />
+              </IconButton>
             </Box>
           )}
         </Box>
