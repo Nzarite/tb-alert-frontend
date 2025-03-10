@@ -9,17 +9,16 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "react-oidc-context";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import FormFieldRenderer from "../../../components/FormFieldRender";
-import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
-import { LabelOption } from "../../../components/datatypes/DataTypes";
+import { useSelector } from "react-redux";
+import { useAuth } from "react-oidc-context";
+import { useNavigate } from "react-router-dom";
+import { LabelOption, StateOption} from "../../../components/datatypes/DataTypes";
+import { toast } from "react-toastify";
 import { RootState } from "../../../redux/store";
 
 const schema = z.object({
@@ -84,7 +83,6 @@ const StateHeadRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [states, setStates] = useState<StateOption[]>([]);
   const [backendStates, setBackendStates] = useState<string[]>([]);
   const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
