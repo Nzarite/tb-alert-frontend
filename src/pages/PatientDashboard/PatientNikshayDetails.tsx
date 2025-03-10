@@ -45,11 +45,7 @@ export const renderField = (
   );
 };
 
-const PatientNikshayDetails = ({
-  patientId,
-  refreshKey,
-  setRefreshKey,
-}: any) => {
+const PatientNikshayDetails = ({ patientId, refresh }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -115,12 +111,11 @@ const PatientNikshayDetails = ({
 
   useEffect(() => {
     getData();
-  }, [patientId, refreshKey]);
+  }, [patientId, refresh]);
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setAreDetailsNull(false);
-    setRefreshKey((prevKey: number) => prevKey + 1);
+    getData();
   };
 
   if (loading) {
@@ -134,20 +129,23 @@ const PatientNikshayDetails = ({
 
   if (areDetailsNull && !patientData) {
     return (
-      <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          m: 5,
+        }}
+      >
         <Button variant="contained" onClick={() => setModalOpen(true)}>
           Set Nikshay Details
         </Button>
-        {modalOpen && (
-          <EditPatientDetailsModal
-            open={modalOpen}
-            onClose={handleModalClose}
-            prop={"nikshaymitra"}
-            patientId={patientId}
-            getData={getData}
-          />
-        )}
-      </>
+        <EditPatientDetailsModal
+          open={modalOpen}
+          onClose={handleModalClose}
+          prop={"nikshaymitra"}
+          patientId={patientId}
+        />
+      </Box>
     );
   }
 

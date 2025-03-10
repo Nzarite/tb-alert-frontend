@@ -190,8 +190,7 @@ const TelecallerRegistrationPage = () => {
       await axiosInstance.post("/telecaller/register", formData);
       navigate("/");
       toast.success(
-        "The person has been registered successfully as a Telecaller. An email has been sent for password reset.",
-        { autoClose: 5000 }
+        "The person has been registered successfully as a Telecaller. An email has been sent for password reset."
       );
       reset();
     } catch (err: any) {

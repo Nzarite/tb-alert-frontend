@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Box,
-
-  CircularProgress,
-  Modal,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Modal, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
@@ -230,13 +223,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
             : "Update Contact Screening Details"}
         </Typography>
         {renderForm()}
-        <Box mt={2} display="flex" justifyContent="space-between">
-          {error && (
-            <Alert severity="error" sx={{ mt: 3, mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-        </Box>
+        <Box mt={2} display="flex" justifyContent="space-between"></Box>
       </Box>
     </Modal>
   );
