@@ -7,6 +7,7 @@
   position: sticky;
   z-index: 100;
   top: 0;
+  padding: 8px;
 }
 
 .navbar-left,
@@ -37,13 +38,21 @@
 }
 
 /* Mobile Styles */
-.mobile-navbar {
-  padding: 5px;
+.mobile-navbar .navbar-left {
+  margin-left: 3%;
+}
+
+.mobile-navbar .navbar-right {
+  margin-right: 3%;
+  gap: 10px;
+}
+
+.mobile-navbar .logo-wrapper {
+  gap: 1px; /* Closer text-logo spacing on mobile */
 }
 
 /* Tablet Styles */
 .tablet-navbar {
-  padding: 8px;
   gap: 15px;
 }
 
@@ -56,8 +65,8 @@
 }
 
 .app-logo {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
 }
 
