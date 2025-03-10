@@ -114,7 +114,6 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
             details: `${item.gender} | ${item.state}`,
           }));
         } else if (role === "fieldcoordinator") {
-          console.log(response.data);
           data = response.data.map((item: FieldCoordinator) => ({
             value: item.id,
             label: `${item.firstName} ${item.lastName}`,

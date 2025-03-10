@@ -251,7 +251,6 @@ const PatientDetailsForm = ({
           `/telecaller/state/${selectedState}`
         );
         setTelecallers(response.data);
-        console.log(telecallers);
       } catch (error) {}
     };
     fetchTelecaller();
@@ -271,7 +270,6 @@ const PatientDetailsForm = ({
     //   onNext();
     // }
   };
-  console.log(selectedState);
 
   const consentForMessage = useWatch({ control, name: "consentForMessage" });
 
@@ -356,7 +354,6 @@ const PatientDetailsForm = ({
   ];
 
   if (!labels || !states) return <CircularProgress />;
-  console.log(userRoles);
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>

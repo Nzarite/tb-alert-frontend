@@ -31,6 +31,7 @@ import UserDashBoard from "./pages/UserDashBoard/UserDashBoard.tsx";
 import UserSearch from "./pages/UserDashBoard/UserSearch.tsx";
 import UserProfile from "./pages/UserProfile";
 import { store } from "./redux/store";
+import App from "./App.tsx";
 
 const oidcConfig = {
   authority: import.meta.env.VITE_OIDC_AUTHORITY,
@@ -69,83 +70,85 @@ const theme = createTheme({
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<PageLayout />}>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/register/patient" element={<PatientRegistrationPage />} />
-      <Route
-        path="/register/caregiver"
-        element={<CaregiverRegistrationPage />}
-      />
-      <Route path="/visit" element={<VisitFollowUpPage />} />
-      <Route path="/patient-dashboard" element={<PatientSearchPage />} />
-      <Route
-        path="/patient-dashboard/:patientId"
-        element={<PatientDashboardPage />}
-      />
-      <Route path="/reports" element={<Reports />} />
-      <Route path="/profile" element={<UserProfile />} />
-      <Route path="*" element={<ErrorPage />} />
+    <Route element={<App />}>
+      <Route element={<PageLayout />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/register/patient" element={<PatientRegistrationPage />} />
+        <Route
+          path="/register/caregiver"
+          element={<CaregiverRegistrationPage />}
+        />
+        <Route path="/visit" element={<VisitFollowUpPage />} />
+        <Route path="/patient-dashboard" element={<PatientSearchPage />} />
+        <Route
+          path="/patient-dashboard/:patientId"
+          element={<PatientDashboardPage />}
+        />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="*" element={<ErrorPage />} />
 
-      <Route path="/register" element={<Navigate to={"/"} />} />
-      <Route path="/user" element={<Navigate to={"/"} />} />
-      <Route path="/unauthorized" element={<Navigate to={"/"} />} />
+        <Route path="/register" element={<Navigate to={"/"} />} />
+        <Route path="/user" element={<Navigate to={"/"} />} />
+        <Route path="/unauthorized" element={<Navigate to={"/"} />} />
 
-      <Route
-        element={
-          <ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />
-        }
-      >
         <Route
-          path="/register/telecaller"
-          element={<TelecallerRegistrationPage />}
-        />
-        <Route path="/user/telecaller" element={<UserSearch />} />
-        <Route
-          path="/user/telecaller/:userId"
-          element={<UserDashBoard role="telecaller" />}
-        />
-        <Route
-          path="/user/fieldcoordinator/:userId"
-          element={<UserDashBoard role="fieldcoordinator" />}
-        />
-        <Route
-          path="/register/fieldcoordinator"
-          element={<FieldCoordinatorRegistrationPage />}
-        />
-        <Route path="/user/fieldcoordinator" element={<UserSearch />} />
-      </Route>
-
-      <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
-        <Route
-          path="/register/statehead"
-          element={<StateHeadRegistrationPage />}
-        />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/user/statehead" element={<UserSearch />} />
-        <Route
-          path="/user/statehead/:userId"
-          element={<UserDashBoard role="statehead" />}
-        />
-        <Route path="/sms-module" element={<SmsModulePage />} />
-      </Route>
-
-      <Route
-        element={
-          <ProtectedRoute
-            allowedRoles={[
-              "SuperAdmin",
-              "StateCoordinator",
-              "FieldCoordinator",
-            ]}
+          element={
+            <ProtectedRoute allowedRoles={["SuperAdmin", "StateCoordinator"]} />
+          }
+        >
+          <Route
+            path="/register/telecaller"
+            element={<TelecallerRegistrationPage />}
           />
-        }
-      >
-        <Route path="/register/gphead" element={<GPHeadRegistrationPage />} />
-        <Route path="/user/gphead" element={<UserSearch />} />
+          <Route path="/user/telecaller" element={<UserSearch />} />
+          <Route
+            path="/user/telecaller/:userId"
+            element={<UserDashBoard role="telecaller" />}
+          />
+          <Route
+            path="/user/fieldcoordinator/:userId"
+            element={<UserDashBoard role="fieldcoordinator" />}
+          />
+          <Route
+            path="/register/fieldcoordinator"
+            element={<FieldCoordinatorRegistrationPage />}
+          />
+          <Route path="/user/fieldcoordinator" element={<UserSearch />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
+          <Route
+            path="/register/statehead"
+            element={<StateHeadRegistrationPage />}
+          />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/user/statehead" element={<UserSearch />} />
+          <Route
+            path="/user/statehead/:userId"
+            element={<UserDashBoard role="statehead" />}
+          />
+          <Route path="/sms-module" element={<SmsModulePage />} />
+        </Route>
+
         <Route
-          path="/user/gphead/:userId"
-          element={<UserDashBoard role="gphead" />}
-        />
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                "SuperAdmin",
+                "StateCoordinator",
+                "FieldCoordinator",
+              ]}
+            />
+          }
+        >
+          <Route path="/register/gphead" element={<GPHeadRegistrationPage />} />
+          <Route path="/user/gphead" element={<UserSearch />} />
+          <Route
+            path="/user/gphead/:userId"
+            element={<UserDashBoard role="gphead" />}
+          />
+        </Route>
       </Route>
     </Route>
   )

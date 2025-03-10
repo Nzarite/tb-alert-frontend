@@ -10,10 +10,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  IconButton,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-
 import { useEffect, useState } from "react";
 import {
   MdAssessment,
@@ -26,7 +23,6 @@ import { RiPencilLine } from "react-icons/ri";
 import { useAuth } from "react-oidc-context";
 import { useNavigate, useParams } from "react-router-dom";
 import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
-import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 import axiosInstance from "../../components/axiosInstance";
 import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
 import PatientFollowUpDetails from "./PatientFollowUpDetails";
@@ -34,6 +30,7 @@ import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
@@ -46,6 +43,7 @@ const PatientDashboardPage = () => {
   const roles: string[] = useAuth().user?.profile.client_roles as string[];
   const isAdmin = roles.includes("SuperAdmin");
   const canDiagnose = roles.includes("GpHead");
+  const [refreshKey, setRefreshKey] = useState(0);
   const [diagnosedWithTB, setDiagnosedWithTB] = useState<boolean>(true);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
@@ -54,7 +52,6 @@ const PatientDashboardPage = () => {
       try {
         const response = await axiosInstance.get(`/patient/${patientId}`);
         setDiagnosedWithTB(response.data.isDiagnosedWithTB);
-       
       } catch (error) {
         console.error(error);
       }
@@ -63,7 +60,6 @@ const PatientDashboardPage = () => {
   }, [patientId]);
 
   const handleEditClick = (section: any) => {
-    console.log(section);
     if (section.editURL) {
       navigate(section.editURL, { state: { prop: section.prop } });
     } else {
@@ -76,6 +72,7 @@ const PatientDashboardPage = () => {
     setModalOpen(false);
     setSelectedPatientData(null);
     setRefreshData((prev) => !prev);
+    setRefreshKey((prevKey: number) => prevKey + 1);
   };
 
   const handleConfirmDialogClose = async (confirm: boolean) => {
@@ -128,14 +125,14 @@ const PatientDashboardPage = () => {
               justifyContent: "flex-end",
             }}
           >
-            <Button
-              color="error"
-              variant="contained"
+        <Button
+          color="error"
+          variant="contained"
               size="large"
-              onClick={() => setDeleteModalOpen(true)}
-            >
-              <DeleteIcon />
-            </Button>
+          onClick={() => setDeleteModalOpen(true)}
+        >
+          <DeleteIcon />
+        </Button>
           </Box>
         )}
       </Box>
@@ -243,7 +240,7 @@ const PatientDashboardPage = () => {
                     </Box>
                     {isAdmin && section.title !== "Medicines" && (
                       <IconButton>
-                        <RiPencilLine
+                    <RiPencilLine
                           color="black"
                           cursor="pointer"
                           style={{
@@ -256,8 +253,8 @@ const PatientDashboardPage = () => {
                           onMouseLeave={(e) => {
                             e.currentTarget.style.transform = "scale(1)";
                           }}
-                          onClick={() => handleEditClick(section)}
-                        />
+                      onClick={() => handleEditClick(section)}
+                    />
                       </IconButton>
                     )}
                   </Box>
