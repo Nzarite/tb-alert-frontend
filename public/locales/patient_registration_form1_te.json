@@ -1,0 +1,31 @@
+{
+  "patientdetailsform": {
+    "patientIdLabel": "రోగి ఐడి",
+    "firstNameLabel": "మొదటి పేరు",
+    "lastNameLabel": "చివరి పేరు",
+    "genderLabel": {
+      "label": "లింగం",
+      "options": [
+        { "label": "పురుషుడు", "value": "Male" },
+        { "label": "స్త్రీ", "value": "Female" }
+      ]
+    },
+    "phoneNumberLabel": "సంపర్క నంబర్",
+    "ageLabel": "రోగి వయస్సు",
+    "stateLabel": "రాష్ట్రం పేరు",
+    "districtLabel": "జిల్లా పేరు",
+    "villageLabel": "గ్రామం పేరు",
+    "blockLabel": "బ్లాక్ పేరు",
+    "gpLabel": "జిపి పేరు",
+    "consentForMessageLabel": {
+      "label": "సందేశానికి సమ్మతి",
+      "options": [
+        { "label": "అవును", "value": true },
+        { "label": "కాదు", "value": false }
+      ]
+    },
+    "createdByLabel": "టెలికాలర్‌కు అప్పగించబడింది",
+    "currentStatusLabel": "స్థితి",
+    "reminderTimeLabel": "గుర్తు చేసుకునే సమయం"
+  }
+}

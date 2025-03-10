@@ -1,0 +1,12 @@
+{
+  "diagnoseWithTBForm": {
+    "patientNameLabel": "रोगी का नाम",
+    "diagnosedWithTBLabel": {
+      "label": "टीबी का निदान किया गया",
+      "options": [
+        { "label": "हाँ", "value": "true" },
+        { "label": "नहीं", "value": "false" }
+      ]
+    }
+  }
+}

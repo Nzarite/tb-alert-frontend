@@ -1,0 +1,38 @@
+{
+  "tbdetailsform": {
+    "patientNameLabel": "रोगी का नाम",
+    "typeOfPwtbLabel": {
+      "label": "PwTB का प्रकार",
+      "options": [
+        {
+          "label": "परियोजना द्वारा पहचाना गया",
+          "value": "Identified by Project"
+        },
+        { "label": "NTEP से प्राप्त", "value": "Received from NTEP" }
+      ]
+    },
+    "clinicalOrMicrobiologicalLabel": {
+      "label": "क्लिनिकल/सूक्ष्मजीवविज्ञानी",
+      "options": [
+        { "label": "क्लिनिकल", "value": "Clinical" },
+        { "label": "सूक्ष्मजीवविज्ञानी", "value": "Microbiological" }
+      ]
+    },
+    "dateOfDiagnosisLabel": "निदान की तिथि",
+    "dateOfTreatmentInitiationLabel": "उपचार प्रारंभ करने की तिथि",
+    "typeOfTbLabel": {
+      "label": "टीबी का प्रकार (PTB/EPTB)",
+      "options": [
+        { "label": "पीटीबी", "value": "PTB" },
+        { "label": "ईपीटीबी", "value": "EPTB" }
+      ]
+    },
+    "dstbOrDrtbLabel": {
+      "label": "डीएस-टीबी/डीआर-टीबी",
+      "options": [
+        { "label": "डीएस-टीबी", "value": "DS-TB" },
+        { "label": "डीआर-टीबी", "value": "DR-TB" }
+      ]
+    }
+  }
+}

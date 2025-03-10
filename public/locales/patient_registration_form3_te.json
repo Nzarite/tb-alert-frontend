@@ -1,0 +1,38 @@
+{
+  "nikshaydetailsform": {
+    "patientNameLabel": "రోగి పేరు",
+    "nikshayIdLabel": "నిక్షయ్ ఐడి",
+    "udstStatusLabel": {
+      "label": "PwTB కోసం UDST చేసినారా?",
+      "options": [
+        { "label": "అవును", "value": true },
+        { "label": "కాదు", "value": false }
+      ]
+    },
+    "dateOfUdstLabel": "UDST పరీక్ష తేది",
+    "resultOfUdstLabel": {
+      "label": "UDST పరీక్ష ఫలితం",
+      "options": [
+        { "label": "రిఫాంపిసిన్ రెసిస్టెంట్", "value": "Rifampicin Resistant" },
+        { "label": "రిఫాంపిసిన్ సెన్సిటివ్", "value": "Rifampicin Sensitive" }
+      ]
+    },
+    "dbtStatusLabel": {
+      "label": "DBT కోసం నమోదు చేసుకున్నారా?",
+      "options": [
+        { "label": "అవును", "value": true },
+        { "label": "కాదు", "value": false }
+      ]
+    },
+    "dateOfDbtLabel": "DBT నమోదు తేది",
+    "nikshayMitraStatusLabel": {
+      "label": "నిక్షయ్ మిత్ర లింక్ అయ్యిందా?",
+      "options": [
+        { "label": "అవును", "value": true },
+        { "label": "కాదు", "value": false }
+      ]
+    },
+    "nikshayMitraDateLabel": "నిక్షయ్ మిత్ర లింక్ తేది",
+    "nikshayMitraNameLabel": "నిక్షయ్ మిత్ర పేరు"
+  }
+}

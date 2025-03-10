@@ -1,0 +1,22 @@
+{
+  "nikshaydetailsform": {
+    "patientNameLabel": "रोगी का नाम",
+    "contactScreeningDoneLabel": {
+      "label": "संपर्क जांच पूरी हुई",
+      "options": [
+        { "label": "हाँ", "value": true },
+        { "label": "नहीं", "value": false }
+      ]
+    },
+    "dateOfContactScreeningLabel": "संपर्क जांच की तिथि",
+    "noOfHHCsAvailableLabel": "उपलब्ध HHCs की संख्या",
+    "noOfHHCsScreenedLabel": "जांच किए गए HHCs की संख्या",
+    "noOfHHCsWithTBSymptomsLabel": "टीबी के लक्षण वाले HHCs की संख्या",
+    "noOfHHCsReferredTBTestingLabel": "टीबी परीक्षण के लिए संदर्भित HHCs की संख्या",
+    "noOfHHCsDiagnosedTBLabel": "टीबी से पीड़ित HHCs की संख्या",
+    "noOfHHCsTBInitiatedATTLabel": "टीबी से पीड़ित HHCs जिन्हें एटीटी शुरू किया गया",
+    "noOfHHCsUndergoneLTBITestLabel": "एलटीबीआई परीक्षण कराने वाले HHCs की संख्या",
+    "noOfEligibleForTPTLabel": "टीपीटी के लिए पात्र HHCs की संख्या",
+    "noOfHHCsInitiatedTPTLabel": "टीपीटी शुरू किए गए HHCs की संख्या"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "nikshaydetailsform": {
+    "patientNameLabel": "రోగి పేరు",
+    "contactScreeningDoneLabel": {
+      "label": "కాంటాక్ట్ స్క్రీనింగ్ పూర్తి అయిందా?",
+      "options": [
+        { "label": "అవును", "value": true },
+        { "label": "కాదు", "value": false }
+      ]
+    },
+    "dateOfContactScreeningLabel": "కాంటాక్ట్ స్క్రీనింగ్ తేది",
+    "noOfHHCsAvailableLabel": "లభ్యమైన HHCs సంఖ్య",
+    "noOfHHCsScreenedLabel": "స్క్రీనింగ్ చేసిన HHCs సంఖ్య",
+    "noOfHHCsWithTBSymptomsLabel": "టీబీ లక్షణాలు ఉన్న HHCs సంఖ్య",
+    "noOfHHCsReferredTBTestingLabel": "టీబీ పరీక్షకు రిఫర్ చేసిన HHCs సంఖ్య",
+    "noOfHHCsDiagnosedTBLabel": "టీబీగా నిర్ధారించిన HHCs సంఖ్య",
+    "noOfHHCsTBInitiatedATTLabel": "టీబీ నిర్ధారించిన HHCs కి ATT ప్రారంభించబడింది",
+    "noOfHHCsUndergoneLTBITestLabel": "LTBI పరీక్ష చేసిన HHCs సంఖ్య",
+    "noOfEligibleForTPTLabel": "TPT కి అర్హమైన HHCs సంఖ్య",
+    "noOfHHCsInitiatedTPTLabel": "TPT ప్రారంభించిన HHCs సంఖ్య"
+  }
+}

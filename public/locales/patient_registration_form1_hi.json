@@ -1,0 +1,31 @@
+{
+  "patientdetailsform": {
+    "patientIdLabel": "रोगी आईडी",
+    "firstNameLabel": "पहला नाम",
+    "lastNameLabel": "अंतिम नाम",
+    "genderLabel": {
+      "label": "लिंग",
+      "options": [
+        { "label": "पुरुष", "value": "Male" },
+        { "label": "महिला", "value": "Female" }
+      ]
+    },
+    "phoneNumberLabel": "संपर्क नंबर",
+    "ageLabel": "रोगी की आयु",
+    "stateLabel": "राज्य का नाम",
+    "districtLabel": "जिले का नाम",
+    "villageLabel": "गाँव का नाम",
+    "blockLabel": "ब्लॉक का नाम",
+    "gpLabel": "जीपी का नाम",
+    "consentForMessageLabel": {
+      "label": "संदेश के लिए सहमति",
+      "options": [
+        { "label": "हाँ", "value": true },
+        { "label": "नहीं", "value": false }
+      ]
+    },
+    "createdByLabel": "टेली-कॉलर को सौंपा गया",
+    "currentStatusLabel": "स्थिति",
+    "reminderTimeLabel": "अनुस्मारक समय"
+  }
+}

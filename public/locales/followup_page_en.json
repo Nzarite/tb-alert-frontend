@@ -1,0 +1,30 @@
+{
+  "followUp": "Follow Up",
+  "isPatientAlive": "Is Patient Alive?",
+  "isPatientCured": "Is Patient Cured?",
+  "patientCondition": "Patient's Condition",
+  "recoveryStatus": "Recovery Status",
+  "enterConditionDetail": "Enter the condition of the patient in detail",
+  "medicationName": "Medication Name",
+  "missedDoses": "Missed Doses",
+  "comments": "Comments",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "loading": "Loading...",
+  "noMedicationsFound": "No Medications Found",
+  "pleaseCompleteRegistration": "Please complete Patient Registration",
+  "goToDashboard": "Go to Dashboard",
+  "patientConditionLabels": {
+    "1": "Need Urgent Support",
+    "2": "Poor",
+    "3": "Ok",
+    "4": "Improving",
+    "5": "Excellent"
+  },
+  "validation": {
+    "remarksRequired": "Description can't be null",
+    "enterNumber": "Please enter a number",
+    "validNumber": "Input must be a valid number",
+    "missedDosesNegative": "Missed doses cannot be negative"
+  }
+}

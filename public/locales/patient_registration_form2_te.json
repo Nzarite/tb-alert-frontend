@@ -1,0 +1,38 @@
+{
+  "tbdetailsform": {
+    "patientNameLabel": "రోగి పేరు",
+    "typeOfPwtbLabel": {
+      "label": "PwTB రకం",
+      "options": [
+        {
+          "label": "ప్రాజెక్ట్ ద్వారా గుర్తించబడింది",
+          "value": "Identified by Project"
+        },
+        { "label": "NTEP నుండి అందుకుంది", "value": "Received from NTEP" }
+      ]
+    },
+    "clinicalOrMicrobiologicalLabel": {
+      "label": "క్లినికల్/సూక్ష్మజీవ శాస్త్రం",
+      "options": [
+        { "label": "క్లినికల్", "value": "Clinical" },
+        { "label": "సూక్ష్మజీవ శాస్త్రం", "value": "Microbiological" }
+      ]
+    },
+    "dateOfDiagnosisLabel": "నిర్ధారణ తేది",
+    "dateOfTreatmentInitiationLabel": "చికిత్స ప్రారంభ తేది",
+    "typeOfTbLabel": {
+      "label": "టీబీ రకం (PTB/EPTB)",
+      "options": [
+        { "label": "పీటీబీ", "value": "PTB" },
+        { "label": "ఈపీటీబీ", "value": "EPTB" }
+      ]
+    },
+    "dstbOrDrtbLabel": {
+      "label": "డి‌ఎస్-టీబీ / డి‌ఆర్-టీబీ",
+      "options": [
+        { "label": "డి‌ఎస్-టీబీ", "value": "DS-TB" },
+        { "label": "డి‌ఆర్-టీబీ", "value": "DR-TB" }
+      ]
+    }
+  }
+}

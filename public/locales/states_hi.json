@@ -1,0 +1,46 @@
+{
+  "stateslist": [
+    { "label": "आंध्र प्रदेश", "value": "ANDHRA PRADESH" },
+    { "label": "अरुणाचल प्रदेश", "value": "ARUNACHAL PRADESH" },
+    { "label": "असम", "value": "ASSAM" },
+    { "label": "बिहार", "value": "BIHAR" },
+    { "label": "छत्तीसगढ़", "value": "CHHATTISGARH" },
+    { "label": "गोवा", "value": "GOA" },
+    { "label": "गुजरात", "value": "GUJARAT" },
+    { "label": "हरियाणा", "value": "HARYANA" },
+    { "label": "हिमाचल प्रदेश", "value": "HIMACHAL PRADESH" },
+    { "label": "झारखंड", "value": "JHARKHAND" },
+    { "label": "कर्नाटक", "value": "KARNATAKA" },
+    { "label": "केरल", "value": "KERALA" },
+    { "label": "मध्य प्रदेश", "value": "MADHYA PRADESH" },
+    { "label": "महाराष्ट्र", "value": "MAHARASHTRA" },
+    { "label": "मणिपुर", "value": "MANIPUR" },
+    { "label": "मेघालय", "value": "MEGHALAYA" },
+    { "label": "मिजोरम", "value": "MIZORAM" },
+    { "label": "नागालैंड", "value": "NAGALAND" },
+    { "label": "ओडिशा", "value": "ODISHA" },
+    { "label": "पंजाब", "value": "PUNJAB" },
+    { "label": "राजस्थान", "value": "RAJASTHAN" },
+    { "label": "सिक्किम", "value": "SIKKIM" },
+    { "label": "तमिलनाडु", "value": "TAMIL NADU" },
+    { "label": "तेलंगाना", "value": "TELANGANA" },
+    { "label": "त्रिपुरा", "value": "TRIPURA" },
+    { "label": "उत्तर प्रदेश", "value": "UTTAR PRADESH" },
+    { "label": "उत्तराखंड", "value": "UTTARAKHAND" },
+    { "label": "पश्चिम बंगाल", "value": "WEST BENGAL" },
+    {
+      "label": "अंडमान और निकोबार द्वीपसमूह",
+      "value": "ANDAMAN AND NICOBAR ISLANDS"
+    },
+    { "label": "चंडीगढ़", "value": "CHANDIGARH" },
+    {
+      "label": "दादरा और नगर हवेली और दमन और दीव",
+      "value": "DADRA AND NAGAR HAVELI AND DAMAN AND DIU"
+    },
+    { "label": "लक्षद्वीप", "value": "LAKSHADWEEP" },
+    { "label": "दिल्ली", "value": "DELHI" },
+    { "label": "पुडुचेरी", "value": "PUDUCHERRY" },
+    { "label": "जम्मू और कश्मीर", "value": "JAMMU AND KASHMIR" },
+    { "label": "लद्दाख", "value": "LADAKH" }
+  ]
+}

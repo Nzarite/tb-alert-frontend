@@ -1,0 +1,46 @@
+{
+  "stateslist": [
+    { "label": "ఆంధ్రప్రదేశ్", "value": "ANDHRA PRADESH" },
+    { "label": "అరుణాచల్ ప్రదేశ్", "value": "ARUNACHAL PRADESH" },
+    { "label": "అస్సాం", "value": "ASSAM" },
+    { "label": "బీహార్", "value": "BIHAR" },
+    { "label": "ఛత్తీస్‌గఢ్", "value": "CHHATTISGARH" },
+    { "label": "గోవా", "value": "GOA" },
+    { "label": "గుజరాత్", "value": "GUJARAT" },
+    { "label": "హర్యానా", "value": "HARYANA" },
+    { "label": "హిమాచల్ ప్రదేశ్", "value": "HIMACHAL PRADESH" },
+    { "label": "జార్ఖండ్", "value": "JHARKHAND" },
+    { "label": "కర్ణాటక", "value": "KARNATAKA" },
+    { "label": "కేరళ", "value": "KERALA" },
+    { "label": "మధ్యప్రదేశ్", "value": "MADHYA PRADESH" },
+    { "label": "మహారాష్ట్ర", "value": "MAHARASHTRA" },
+    { "label": "మణిపూర్", "value": "MANIPUR" },
+    { "label": "మేఘాలయ", "value": "MEGHALAYA" },
+    { "label": "మిజోరం", "value": "MIZORAM" },
+    { "label": "నాగాలాండ్", "value": "NAGALAND" },
+    { "label": "ఒడిశా", "value": "ODISHA" },
+    { "label": "పంజాబ్", "value": "PUNJAB" },
+    { "label": "రాజస్థాన్", "value": "RAJASTHAN" },
+    { "label": "సిక్కిం", "value": "SIKKIM" },
+    { "label": "తమిళనాడు", "value": "TAMIL NADU" },
+    { "label": "తెలంగాణ", "value": "TELANGANA" },
+    { "label": "త్రిపుర", "value": "TRIPURA" },
+    { "label": "ఉత్తర ప్రదేశ్", "value": "UTTAR PRADESH" },
+    { "label": "ఉత్తరాఖండ్", "value": "UTTARAKHAND" },
+    { "label": "పశ్చిమ బెంగాల్", "value": "WEST BENGAL" },
+    {
+      "label": "అండమాన్ మరియు నికోబార్ దీవులు",
+      "value": "ANDAMAN AND NICOBAR ISLANDS"
+    },
+    { "label": "చండీగఢ్", "value": "CHANDIGARH" },
+    {
+      "label": "దాద్రా మరియు నగర్ హవేలీ మరియు దమన్ మరియు దీవ్",
+      "value": "DADRA AND NAGAR HAVELI AND DAMAN AND DIU"
+    },
+    { "label": "లక్షద్వీప్", "value": "LAKSHADWEEP" },
+    { "label": "ఢిల్లీ", "value": "DELHI" },
+    { "label": "పుదుచ్చేరి", "value": "PUDUCHERRY" },
+    { "label": "జమ్మూ మరియు కాశ్మీర్", "value": "JAMMU AND KASHMIR" },
+    { "label": "లడఖ్", "value": "LADAKH" }
+  ]
+}

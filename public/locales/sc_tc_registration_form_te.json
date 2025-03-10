@@ -1,0 +1,19 @@
+{
+  "scandtcregistrationform": {
+    "userIdLabel": "యూజర్ ఐడి",
+    "firstNameLabel": "మొదటి పేరు",
+    "lastNameLabel": "చివరి పేరు",
+    "genderLabel": {
+      "label": "లింగం",
+      "options": [
+        { "label": "పురుషుడు", "value": "Male" },
+        { "label": "స్త్రీ", "value": "Female" }
+      ]
+    },
+    "phoneNumberLabel": "సంప్రదింపు సంఖ్య",
+    "emailLabel": "ఇమెయిల్",
+    "dateOfJoiningLabel": "చేరిన తేదీ",
+    "dateOfLeavingLabel": "విడిచిన తేదీ",
+    "stateLabel": "రాష్ట్రం"
+  }
+}

@@ -1,13 +1,12 @@
 {
-    "diagnoseWithTBForm": {
-      "patientNameLabel": "Name of the Patient",
-      "diagnosedWithTBLabel": {
+  "diagnoseWithTBForm": {
+    "patientNameLabel": "Name of the Patient",
+    "diagnosedWithTBLabel": {
       "label": "Diagnose With TB",
       "options": [
         { "label": "Yes", "value": "true" },
         { "label": "No", "value": "false" }
       ]
     }
-    }
   }
-  
+}

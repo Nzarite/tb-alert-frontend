@@ -11,7 +11,7 @@ import {
   Step,
   StepLabel,
   Stepper,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -50,7 +50,7 @@ const PatientRegistrationPage = () => {
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state:RootState) => state.user?.profile?.email) ||
+    useSelector((state: RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
   const userRole = auth.user?.profile.client_roles || {};
 
@@ -61,7 +61,7 @@ const PatientRegistrationPage = () => {
     "Nikshay Details",
     "Contact Screening Details",
   ];
- 
+
   const [formData, setFormData] = useState({
     patientDetails: {} as PatientDetailsData,
     tbDetails: {} as TbDetailsData,
@@ -72,7 +72,7 @@ const PatientRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
 
   const { handleSubmit } = useForm();
- 
+
   const onSubmit = (data: any) => {
     console.log("Final Submitted Data:", data);
   };
@@ -83,7 +83,7 @@ const PatientRegistrationPage = () => {
     setError(null);
     try {
       let response;
- 
+
       if (activeStep === 0) {
         let createdBy;
         if (stepData.createdBy === "") createdBy = userEmail;
@@ -152,7 +152,9 @@ const PatientRegistrationPage = () => {
         });
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, contactScreeningDetails: stepData });
-          toast.success("Contact screening details saved and Patient registration done successfully!");
+          toast.success(
+            "Contact screening details saved and Patient registration done successfully!"
+          );
           navigate(`/patient-dashboard/${patientId}`);
           // setTimeout(() => {
           //   navigate(`/patient-dashboard/${patientId}`);
@@ -178,7 +180,11 @@ const PatientRegistrationPage = () => {
         ...step1Data,
       });
 
-      if (response.status === 200 || response.status === 201 || response.status === 202) {
+      if (
+        response.status === 200 ||
+        response.status === 201 ||
+        response.status === 202
+      ) {
         setActiveStep(activeStep + 1);
       }
     }
@@ -199,7 +205,15 @@ const PatientRegistrationPage = () => {
     <>
       <Container maxWidth="md">
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            sx={{
+              order: { xs: -1, md: 0 },
+              width: { sm: "90%", md: "80%", lg: "50%" },
+            }}
+          >
             <Paper sx={{ p: 3, height: "100%" }}>
               <Typography variant="h5" gutterBottom>
                 Patient Registration
@@ -213,8 +227,16 @@ const PatientRegistrationPage = () => {
               </Stepper>
             </Paper>
           </Grid>
- 
-          <Grid item xs={8}>
+
+          <Grid
+            item
+            xs={12}
+            md={8}
+            sx={{
+              width: { sm: "90%", md: "80%", lg: "50%" },
+              margin: "auto",
+            }}
+          >
             <Paper sx={{ p: 3 }}>
               {activeStep === 0 && (
                 <PatientDetailsForm

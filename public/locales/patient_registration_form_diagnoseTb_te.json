@@ -1,0 +1,12 @@
+{
+  "diagnoseWithTBForm": {
+    "patientNameLabel": "రోగి పేరు",
+    "diagnosedWithTBLabel": {
+      "label": "టీబీ నిర్ధారణ చేయబడిందా?",
+      "options": [
+        { "label": "అవును", "value": "true" },
+        { "label": "కాదు", "value": "false" }
+      ]
+    }
+  }
+}

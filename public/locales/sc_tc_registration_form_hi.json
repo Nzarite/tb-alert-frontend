@@ -1,0 +1,19 @@
+{
+  "scandtcregistrationform": {
+    "userIdLabel": "यूज़र आईडी",
+    "firstNameLabel": "पहला नाम",
+    "lastNameLabel": "अंतिम नाम",
+    "genderLabel": {
+      "label": "लिंग",
+      "options": [
+        { "label": "पुरुष", "value": "Male" },
+        { "label": "महिला", "value": "Female" }
+      ]
+    },
+    "phoneNumberLabel": "संपर्क नंबर",
+    "emailLabel": "ईमेल",
+    "dateOfJoiningLabel": "ज्वाइनिंग की तारीख",
+    "dateOfLeavingLabel": "छोड़ने की तारीख",
+    "stateLabel": "राज्य"
+  }
+}

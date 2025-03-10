@@ -1,0 +1,38 @@
+{
+  "nikshaydetailsform": {
+    "patientNameLabel": "रोगी का नाम",
+    "nikshayIdLabel": "निक्षय आईडी",
+    "udstStatusLabel": {
+      "label": "क्या PwTB के लिए UDST किया गया",
+      "options": [
+        { "label": "हाँ", "value": true },
+        { "label": "नहीं", "value": false }
+      ]
+    },
+    "dateOfUdstLabel": "यूडीएसटी परीक्षण तिथि",
+    "resultOfUdstLabel": {
+      "label": "यूडीएसटी परीक्षण परिणाम",
+      "options": [
+        { "label": "रिफाम्पिसिन प्रतिरोधी", "value": "Rifampicin Resistant" },
+        { "label": "रिफाम्पिसिन संवेदनशील", "value": "Rifampicin Sensitive" }
+      ]
+    },
+    "dbtStatusLabel": {
+      "label": "डीबीटी के लिए नामांकित",
+      "options": [
+        { "label": "हाँ", "value": true },
+        { "label": "नहीं", "value": false }
+      ]
+    },
+    "dateOfDbtLabel": "डीबीटी नामांकन तिथि",
+    "nikshayMitraStatusLabel": {
+      "label": "निक्षय मित्र से जुड़ा हुआ",
+      "options": [
+        { "label": "हाँ", "value": true },
+        { "label": "नहीं", "value": false }
+      ]
+    },
+    "nikshayMitraDateLabel": "निक्षय मित्र लिंक तिथि",
+    "nikshayMitraNameLabel": "निक्षय मित्र का नाम"
+  }
+}

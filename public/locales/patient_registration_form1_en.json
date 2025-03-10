@@ -26,7 +26,6 @@
     },
     "createdByLabel":"Assigned to Telecaller",
     "currentStatusLabel": "Status",
-    "reminderTimeLabel": "Reminder Time",
-    "stateLabel": "State"
+    "reminderTimeLabel": "Reminder Time"
   }
 }
