@@ -191,8 +191,7 @@ const StateHeadRegistrationPage = () => {
       reset();
       navigate("/");
       toast.success(
-        "The person has been registered successfully as a State Head. An email has been sent for password reset.",
-        { autoClose: 5000 }
+        "The person has been registered successfully as a State Head. An email has been sent for password reset."
       );
     } catch (err: any) {
       setErrorMessage(

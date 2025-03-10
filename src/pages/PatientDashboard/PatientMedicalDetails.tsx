@@ -14,11 +14,7 @@ import EditPatientDetailsModal from "../../components/PatientRegistrationModals/
 import { TbDetailsFormLabelsData } from "../../components/TbDetailsForm/TbDetailsForm";
 import { renderField } from "./PatientNikshayDetails";
 
-const PatientMedicalDetails = ({
-  patientId,
-  refreshKey,
-  setRefreshKey,
-}: any) => {
+const PatientMedicalDetails = ({ patientId, refresh }: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -82,12 +78,11 @@ const PatientMedicalDetails = ({
 
   useEffect(() => {
     getData();
-  }, [patientId, refreshKey]);
+  }, [patientId, refresh]);
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setAreDetailsNull(false);
-    setRefreshKey((prevKey: number) => prevKey + 1);
+    getData();
   };
 
   if (loading) {
@@ -101,20 +96,23 @@ const PatientMedicalDetails = ({
 
   if (areDetailsNull && !patientData) {
     return (
-      <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          m: 5,
+        }}
+      >
         <Button variant="contained" onClick={() => setModalOpen(true)}>
           Set TB Details
         </Button>
-        {modalOpen && (
-          <EditPatientDetailsModal
-            open={modalOpen}
-            onClose={handleModalClose}
-            prop={"tbdetails"}
-            patientId={patientId}
-            getData={getData}
-          />
-        )}
-      </>
+        <EditPatientDetailsModal
+          open={modalOpen}
+          onClose={handleModalClose}
+          prop={"tbdetails"}
+          patientId={patientId}
+        />
+      </Box>
     );
   }
 

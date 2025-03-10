@@ -11,6 +11,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useEffect, useState } from "react";
 import {
   MdAssessment,
@@ -23,6 +24,7 @@ import { RiPencilLine } from "react-icons/ri";
 import { useAuth } from "react-oidc-context";
 import { useNavigate, useParams } from "react-router-dom";
 import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
+import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 import axiosInstance from "../../components/axiosInstance";
 import PatientContactScreeningDetails from "./PatientContactScreeningDetails";
 import PatientFollowUpDetails from "./PatientFollowUpDetails";
@@ -30,7 +32,6 @@ import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
@@ -42,7 +43,7 @@ const PatientDashboardPage = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const roles: string[] = useAuth().user?.profile.client_roles as string[];
   const isAdmin = roles.includes("SuperAdmin");
-  const [refreshKey, setRefreshKey] = useState(0);
+  const canDiagnose = roles.includes("GpHead");
   const [diagnosedWithTB, setDiagnosedWithTB] = useState<boolean>(true);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
@@ -73,21 +74,22 @@ const PatientDashboardPage = () => {
   const handleModalClose = () => {
     setModalOpen(false);
     setSelectedPatientData(null);
-    setRefreshKey((prevKey: number) => prevKey + 1);
+    setRefreshData((prev) => !prev);
   };
 
-  const handleConfirmDialogClose = async(confirm: boolean) => {
+  const handleConfirmDialogClose = async (confirm: boolean) => {
     setConfirmDialogOpen(false);
     if (confirm) {
       try {
-        const diagnosedWithTB={
-          isDiagnosedWithTB:true,
-        }
-        const response= await axiosInstance.put(`/patient/update/${patientId}`,diagnosedWithTB);
+        const diagnosedWithTB = {
+          isDiagnosedWithTB: true,
+        };
+        const response = await axiosInstance.put(
+          `/patient/update/${patientId}`,
+          diagnosedWithTB
+        );
         setDiagnosedWithTB(true);
-      } catch (error) {
-
-      }
+      } catch (error) {console.log(error);}
     }
   };
 
@@ -105,9 +107,7 @@ const PatientDashboardPage = () => {
           p: 2,
         }}
       >
-        {diagnosedWithTB ? (
-          <Box sx={{ width: "200px" }} /> // Adjust width as needed
-        ) : (
+        {!diagnosedWithTB && canDiagnose && (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography variant="body1">Mark as Diagnosed with TB</Typography>
             <Switch
@@ -117,22 +117,33 @@ const PatientDashboardPage = () => {
             />
           </Box>
         )}
-        <Button
-          color="error"
-          variant="contained"
-          onClick={() => setDeleteModalOpen(true)}
-        >
-          <DeleteIcon />
-        </Button>
+        {isAdmin && (
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              color="error"
+              variant="contained"
+              size="large"
+              onClick={() => setDeleteModalOpen(true)}
+            >
+              <DeleteIcon />
+            </Button>
+          </Box>
+        )}
       </Box>
 
-            <DeletePersonModal
-                open={deleteModalOpen}
-                onClose={() => setDeleteModalOpen(false)}
-                deleteUrl={`patient/${patientId}`}
-                navigateUrl="/patient-dashboard"
-                person={"Patient"}
-            />
+      <DeletePersonModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        deleteUrl={`patient/${patientId}`}
+        navigateUrl="/patient-dashboard"
+        person={"Patient"}
+      />
 
       <Grid container spacing={2} sx={{ p: 2 }}>
         {[
@@ -227,10 +238,25 @@ const PatientDashboardPage = () => {
                         {section.title}
                       </Typography>
                     </Box>
-                    <RiPencilLine
-                      style={{ fontSize: "20px" }}
-                      onClick={() => handleEditClick(section)}
-                    />
+                    {isAdmin && section.title !== "Medicines" && (
+                      <IconButton>
+                        <RiPencilLine
+                          color="black"
+                          cursor="pointer"
+                          style={{
+                            fontSize: "20px",
+                            transition: "transform 0.2s, color 0.2s",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = "scale(1.2)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = "scale(1)";
+                          }}
+                          onClick={() => handleEditClick(section)}
+                        />
+                      </IconButton>
+                    )}
                   </Box>
                   {section.component}
                 </Paper>
@@ -261,6 +287,13 @@ const PatientDashboardPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+  <EditPatientDetailsModal
+        open={modalOpen}
+        onClose={handleModalClose}
+        prop={selectedPatientData}
+        patientId={patientId}
+      />
     </>
   );
 };
