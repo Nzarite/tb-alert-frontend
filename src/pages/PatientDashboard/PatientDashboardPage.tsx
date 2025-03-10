@@ -35,6 +35,8 @@ const PatientDashboardPage = () => {
       try {
         const response = await axiosInstance.get(`/patient/${patientId}`);
         setDiagnosedWithTB(response.data.isDiagnosedWithTB);
+        setSelectedPatientData("nikshaymitra");
+        setModalOpen(true);
       } catch (error) {
         console.error(error);
       }
