@@ -69,6 +69,7 @@ const PatientRegistrationPage = () => {
     contactScreeningDetails: {} as ContactScreeningData,
   });
 
+  console.log(userRole);
   const language = useSelector((state: any) => state.language.language);
 
   const { handleSubmit } = useForm();

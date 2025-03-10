@@ -1,18 +1,19 @@
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   Button,
+  Grid,
+  Paper,
+  Typography,
+  Switch,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid,
   IconButton,
-  Paper,
-  Switch,
-  Typography,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import { useEffect, useState } from "react";
 import {
   MdAssessment,
@@ -53,6 +54,7 @@ const PatientDashboardPage = () => {
       try {
         const response = await axiosInstance.get(`/patient/${patientId}`);
         setDiagnosedWithTB(response.data.isDiagnosedWithTB);
+       
       } catch (error) {
         console.error(error);
       }
@@ -88,7 +90,9 @@ const PatientDashboardPage = () => {
           diagnosedWithTB
         );
         setDiagnosedWithTB(true);
-      } catch (error) {}
+        setSelectedPatientData("nikshaymitra");
+        setModalOpen(true);
+      } catch (error) {console.log(error);}
     }
   };
 
@@ -287,7 +291,7 @@ const PatientDashboardPage = () => {
         </DialogActions>
       </Dialog>
 
-      <EditPatientDetailsModal
+  <EditPatientDetailsModal
         open={modalOpen}
         onClose={handleModalClose}
         prop={selectedPatientData}
