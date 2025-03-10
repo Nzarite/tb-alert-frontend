@@ -2,11 +2,12 @@ import { Box, Button, Chip, Paper, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
 import FollowUpStatus from "../../components/Json/FollowUpStatus.json";
 import AddFollowupDialog from "./AddFollowupDialog";
+import { useSelector } from "react-redux";
 
 interface FollowUpSidebarProps {
   selectedIndex: number;
@@ -67,6 +68,18 @@ export default function FollowUpSidebar({
 }: FollowUpSidebarProps) {
   // State for toggling add followup dialog
   const [open, setOpen] = useState(false);
+  const [labels, setLabels] = useState<any>(null);
+  const language = useSelector((state: any) => state.language.language);
+
+  useEffect(() => {
+    fetch(`/locales/followup_page_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.followuppage))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
 
   // Enables/disables list button based on followup status and date
   const isEditable = (followUpStatus: string, dateOfFollowUp: string) => {
@@ -91,7 +104,7 @@ export default function FollowUpSidebar({
             textTransform: "uppercase",
           }}
         >
-          Patient Overview
+          {labels?.patientOverview}
         </Typography>
         <Box>
           <Stack spacing={1} sx={{ px: 1 }}>
@@ -104,7 +117,7 @@ export default function FollowUpSidebar({
                 fontWeight={600}
                 color="text.secondary"
               >
-                Name:{" "}
+                {labels?.name}:{" "}
               </Typography>
               {data.patient.firstName} {data.patient.lastName}
             </Typography>
@@ -117,7 +130,7 @@ export default function FollowUpSidebar({
                 fontWeight={600}
                 color="text.secondary"
               >
-                Gender:{" "}
+                {labels?.gender}:{" "}
               </Typography>
               {data.patient.gender}
             </Typography>
@@ -130,7 +143,7 @@ export default function FollowUpSidebar({
                 fontWeight={600}
                 color="text.secondary"
               >
-                Age:{" "}
+                {labels?.age}:{" "}
               </Typography>
               {data.patient.age}
             </Typography>
@@ -143,7 +156,7 @@ export default function FollowUpSidebar({
                 fontWeight={600}
                 color="text.secondary"
               >
-                Phone:{" "}
+                {labels?.phone}:{" "}
               </Typography>
               {data.patient.phoneNumber}
             </Typography>
@@ -172,7 +185,7 @@ export default function FollowUpSidebar({
                 textTransform: "uppercase",
               }}
             >
-              Follow-up Visits
+              {labels?.followUpVisits}
             </Typography>
 
             <List disablePadding>
@@ -193,7 +206,7 @@ export default function FollowUpSidebar({
                   <ListItemText
                     primary={
                       <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        Follow Up #{index + 1}
+                        {labels?.followUp} #{index + 1}
                       </Typography>
                     }
                     secondary={
@@ -247,7 +260,7 @@ export default function FollowUpSidebar({
                 >
                   <FaPlusCircle size={10} />
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    Add a Follow-up
+                    {labels?.addFollowUp}
                   </Typography>
                 </Button>
                 <AddFollowupDialog
@@ -261,7 +274,7 @@ export default function FollowUpSidebar({
           </>
         ) : (
           <Typography align="center" variant="body2" color="textSecondary">
-            No Follow ups found
+            {labels?.noFollowUps}
           </Typography>
         )}
       </Paper>

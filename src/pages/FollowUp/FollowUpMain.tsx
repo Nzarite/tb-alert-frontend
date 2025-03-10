@@ -29,6 +29,7 @@ import {
 } from "../../components/datatypes/DataTypes";
 import axiosInstance from "../../components/axiosInstance";
 import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
+import { useSelector } from "react-redux";
 
 interface Props {
   index: number;
@@ -74,6 +75,8 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [labels, setLabels] = useState<any>(null);
+  const language = useSelector((state: any) => state.language.language);
 
   const {
     control,
@@ -117,6 +120,16 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
     }
   }, [index, data, reset, isEditable]);
 
+  useEffect(() => {
+    fetch(`/locales/followup_page_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.followuppage))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
+
   // Helper function for rating labels
   function getLabelText(value: number) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${
@@ -124,7 +137,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
     }`;
   }
 
-  const handleModalClose = async() => {
+  const handleModalClose = async () => {
     setModalOpen(false);
     if (data?.patient.patientId) {
       await getPatientData(data.patient.patientId.toString());
@@ -225,7 +238,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
             variant="h6"
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            Follow Up {index + 1}{" "}
+            {labels?.followUp} {index + 1}{" "}
             <RiPencilFill onClick={() => setIsEditable(!isEditable)} />
           </Typography>
           <Typography variant="subtitle1" mb={2}>
@@ -247,7 +260,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                     }}
                   >
                     <Typography variant="subtitle1">
-                      Is Patient Alive ?
+                      {labels?.isPatientAlive}
                     </Typography>
                     <Switch
                       {...field}
@@ -272,7 +285,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                     }}
                   >
                     <Typography variant="subtitle1">
-                      Is Patient Cured?
+                      {labels?.isPatientCured}
                     </Typography>
                     <Switch
                       {...field}
@@ -295,7 +308,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                       gap: "50px",
                     }}
                   >
-                    <Typography>Patient's Condition</Typography>
+                    <Typography>{labels?.patientCondition}</Typography>
                     <Box display={"flex"}>
                       <Rating
                         name="patientCondition"
@@ -324,8 +337,8 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
               {/* Patient Condition Description */}
               <TextField
                 id="recoveryStatus-desc"
-                label="Recovery Status"
-                placeholder="Enter the condition of the patient in detail"
+                label={labels?.recoveryStatus}
+                placeholder={labels?.enterConditionDetail}
                 multiline
                 rows={3}
                 error={!!errors.remarks}
@@ -344,9 +357,9 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Medication Name</TableCell>
-                      <TableCell>Missed Doses</TableCell>
-                      <TableCell>Comments</TableCell>
+                      <TableCell>{labels?.medicationName}</TableCell>
+                      <TableCell>{labels?.missedDoses}</TableCell>
+                      <TableCell>{labels?.comments}</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -365,7 +378,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
                       <TableRow>
                         <TableCell colSpan={3} align="center">
                           <Typography variant="body2" color="textSecondary">
-                            No Medications Found
+                            {labels?.noMedicationsFound}
                           </Typography>
                         </TableCell>
                       </TableRow>
@@ -416,10 +429,10 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
           }}
         >
           <Typography align="center" variant="body1" color="textSecondary">
-            Please complete Patient TB details Registration
+            {labels?.pleaseCompleteTbDetailsRegistration}
           </Typography>
           <Button variant="contained" onClick={() => setModalOpen(true)}>
-            Register TB details
+            {labels?.registerTbDetails}
           </Button>
           {modalOpen && (
             <EditPatientDetailsModal

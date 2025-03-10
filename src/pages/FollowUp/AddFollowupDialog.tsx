@@ -12,7 +12,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
 import axiosInstance from "../../components/axiosInstance";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 interface DialogProps {
   open: boolean;
@@ -48,6 +49,19 @@ const AddFollowupDialog = ({
     reset,
   } = useForm<FormData>({ resolver: zodResolver(schema), mode: "onChange" });
 
+  const [labels, setLabels] = useState<any>(null);
+  const language = useSelector((state: any) => state.language.language);
+
+  useEffect(() => {
+    fetch(`/locales/followup_page_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.followuppage))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
+
   // Resets the form when the dialog opens
   useEffect(() => {
     if (open) reset();
@@ -71,10 +85,10 @@ const AddFollowupDialog = ({
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth>
-      <DialogTitle>Add Follow up</DialogTitle>
+      <DialogTitle>{labels?.addFollowUp}</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Please enter date of next follow-up
+          {labels?.pleaseEnterDateOfNextFollowUp}
         </DialogContentText>
         <form onSubmit={handleSubmit(submitHandler)}>
           <TextField
