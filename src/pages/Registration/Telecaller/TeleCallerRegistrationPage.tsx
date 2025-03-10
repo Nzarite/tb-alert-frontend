@@ -11,16 +11,17 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { z } from "zod";
-import { Role } from "../../../components/Authorization/Roles/Types";
 import FormFieldRenderer from "../../../components/FormFieldRender";
-import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
+import { useAuth } from "react-oidc-context";
+import { useNavigate } from "react-router-dom";
+import { LabelOption } from "../../../components/datatypes/DataTypes";
 import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
+import { Role } from "../../../components/Authorization/Roles/Types";
+import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -72,7 +73,6 @@ const TelecallerRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [states, setStates] = useState<StateOption[]>([]);
   const [backendStates, setBackendStates] = useState<string[]>([]);
   const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
@@ -114,8 +114,8 @@ const TelecallerRegistrationPage = () => {
       );
 
       setBackendStates(stateNames);
-    } catch (error: any) {
-      if (error.status === 401) setBackendStates(userState);
+    } catch (error) {
+      if(error.status === 401) setBackendStates(userState)
       console.error("Error fetching states:", error);
     }
   };
@@ -190,8 +190,7 @@ const TelecallerRegistrationPage = () => {
       await axiosInstance.post("/telecaller/register", formData);
       navigate("/");
       toast.success(
-        "The person has been registered successfully as a Telecaller. An email has been sent for password reset.",
-        { autoClose: 5000 }
+        "The person has been registered successfully as a Telecaller. An email has been sent for password reset."
       );
       reset();
     } catch (err: any) {
@@ -208,19 +207,25 @@ const TelecallerRegistrationPage = () => {
     <Paper
       variant="outlined"
       sx={{
-        height: "85vh",
+        height: { xs: "auto", md: "85vh" },
         overflow: "auto",
-        padding: 4,
-        width: "40vw",
+        padding: { xs: 2, sm: 3, md: 4 },
+        width: { xs: "90%", sm: "70%", md: "50%" },
         margin: "30px auto 0px auto",
       }}
     >
-      <Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>
+      <Typography
+        variant="h5"
+        sx={{
+          margin: "0px auto 15px auto",
+          fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.75rem" },
+        }}
+      >
         Register Telecaller
       </Typography>
       <Divider sx={{ marginBottom: "30px" }} />
       <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
-        <Stack spacing={3}>
+        <Stack spacing={{ xs: 2, sm: 3 }}>
           {formFields.map((field) => (
             <FormFieldRenderer
               key={field.name}
@@ -235,7 +240,11 @@ const TelecallerRegistrationPage = () => {
             </Alert>
           )}
           <Box
-            sx={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "center", md: "flex-end" },
+              gap: "10px",
+            }}
           >
             <Button
               onClick={() => {

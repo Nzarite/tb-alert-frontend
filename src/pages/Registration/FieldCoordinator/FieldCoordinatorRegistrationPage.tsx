@@ -190,8 +190,7 @@ const FieldCoordinatorRegistrationPage = () => {
       await axiosInstance.post("/fieldcoordinator/register", formData);
       navigate("/");
       toast.success(
-        "The person has been registered successfully as a Field Coordinator Head. An email has been sent for password reset.",
-        { autoClose: 5000 }
+        "The person has been registered successfully as a Field Coordinator. An email has been sent for password reset."
       );
       reset();
     } catch (err: any) {
@@ -208,19 +207,25 @@ const FieldCoordinatorRegistrationPage = () => {
     <Paper
       variant="outlined"
       sx={{
-        height: "85vh",
+        height: { xs: "auto", md: "85vh" },
         overflow: "auto",
-        padding: 4,
-        width: "40vw",
+        padding: { xs: 2, sm: 3, md: 4 },
+        width: { xs: "90%", sm: "70%", md: "50%" },
         margin: "30px auto 0px auto",
       }}
     >
-      <Typography variant="h5" sx={{ margin: "0px auto 15px auto" }}>
+      <Typography
+        variant="h5"
+        sx={{
+          margin: "0px auto 15px auto",
+          fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.75rem" },
+        }}
+      >
         Register Field Coordinator
       </Typography>
       <Divider sx={{ marginBottom: "30px" }} />
       <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>
-        <Stack spacing={3}>
+        <Stack spacing={{ xs: 2, sm: 3 }}>
           {formFields.map((field) => (
             <FormFieldRenderer
               key={field.name}
@@ -235,7 +240,11 @@ const FieldCoordinatorRegistrationPage = () => {
             </Alert>
           )}
           <Box
-            sx={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "center", md: "flex-end" },
+              gap: "10px",
+            }}
           >
             <Button
               onClick={() => {

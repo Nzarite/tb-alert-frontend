@@ -60,6 +60,8 @@ Thumbs.db
 *.jpeg
 *.png
 
+!TB_Alert_India_Logo-removebg-preview.png
+
 # Testing
 coverage/
 *.lcov
