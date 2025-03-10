@@ -1,7 +1,9 @@
+import { CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
 import Select from "react-select";
+import { toast } from "react-toastify";
 import { Role } from "./Authorization/Roles/Types";
 import axiosInstance from "./axiosInstance";
 import {
@@ -82,6 +84,8 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
     const fetchOptions = async (search: string) => {
       if (!search || search === lastSearched) return;
 
+      setLoading(true);
+
       try {
         const response = await axiosInstance.get(url + search);
         let data;
@@ -121,9 +125,17 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
         setLastSearched(search);
       } catch (error: any) {
         console.error("Error fetching options:", error);
-        setError(
+        toast.error(
           error.response?.data ||
-            "Failed to fetch patient data. Please try again."
+            "Failed to fetch patient data. Please try again.",
+          {
+            position: "bottom-center",
+            autoClose: 3000,
+            style: {
+              padding: "15px",
+              width: "500px"
+            }
+          }
         );
       } finally {
         setLoading(false);
@@ -197,6 +209,9 @@ const SearchBox = ({ changeSearch, role }: SearchProps) => {
         components={{ Option: CustomOption }}
         styles={customStyles}
         placeholder={`Search ${getPersons(role)} ...`}
+        noOptionsMessage={() =>
+          loading ? <CircularProgress size={20} /> : "No results found"
+        }
       />
       {error && <p style={{ color: "red", marginTop: "5px" }}>{error}</p>}
     </>

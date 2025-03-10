@@ -11,16 +11,17 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { z } from "zod";
-import { Role } from "../../../components/Authorization/Roles/Types";
 import FormFieldRenderer from "../../../components/FormFieldRender";
-import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
+import { useAuth } from "react-oidc-context";
+import { useNavigate } from "react-router-dom";
+import { LabelOption } from "../../../components/datatypes/DataTypes";
 import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
+import { Role } from "../../../components/Authorization/Roles/Types";
+import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -72,7 +73,6 @@ const TelecallerRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [states, setStates] = useState<StateOption[]>([]);
   const [backendStates, setBackendStates] = useState<string[]>([]);
   const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
@@ -114,8 +114,8 @@ const TelecallerRegistrationPage = () => {
       );
 
       setBackendStates(stateNames);
-    } catch (error: any) {
-      if (error.status === 401) setBackendStates(userState);
+    } catch (error) {
+      if(error.status === 401) setBackendStates(userState)
       console.error("Error fetching states:", error);
     }
   };
@@ -190,8 +190,7 @@ const TelecallerRegistrationPage = () => {
       await axiosInstance.post("/telecaller/register", formData);
       navigate("/");
       toast.success(
-        "The person has been registered successfully as a Telecaller. An email has been sent for password reset.",
-        { autoClose: 5000 }
+        "The person has been registered successfully as a Telecaller. An email has been sent for password reset."
       );
       reset();
     } catch (err: any) {

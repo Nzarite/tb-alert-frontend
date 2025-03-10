@@ -190,8 +190,7 @@ const FieldCoordinatorRegistrationPage = () => {
       await axiosInstance.post("/fieldcoordinator/register", formData);
       navigate("/");
       toast.success(
-        "The person has been registered successfully as a Field Coordinator Head. An email has been sent for password reset.",
-        { autoClose: 5000 }
+        "The person has been registered successfully as a Field Coordinator. An email has been sent for password reset."
       );
       reset();
     } catch (err: any) {

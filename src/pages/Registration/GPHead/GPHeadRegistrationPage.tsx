@@ -191,8 +191,7 @@ const GPHeadRegistrationPage = () => {
       await axiosInstance.post("/gphead/register", formData);
       navigate("/");
       toast.success(
-        "The person has been registered successfully as a GP Head. An email has been sent for password reset.",
-        { autoClose: 5000 }
+        "The person has been registered successfully as a GP Head. An email has been sent for password reset."
       );
       reset();
     } catch (err: any) {

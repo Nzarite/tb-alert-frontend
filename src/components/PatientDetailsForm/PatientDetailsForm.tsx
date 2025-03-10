@@ -15,12 +15,12 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { Role } from "../Authorization/Roles/Types";
+import { useAuth } from "react-oidc-context";
+import { LabelOption, StateOption, TeleCaller } from "../datatypes/DataTypes";
 import axiosInstance from "../axiosInstance";
-import { LabelOption, TeleCaller } from "../datatypes/DataTypes";
 
 export type PatientDetailsData = {
   firstName: string;
@@ -55,11 +55,6 @@ export interface PatientDetailsFormLabelsData {
   reminderTimeLabel: string;
   createdByLabel: string;
 }
-
-export type StateOption = {
-  label: string;
-  value: string;
-};
 
 const PatientDetailsForm = ({
   language,
@@ -153,7 +148,6 @@ const PatientDetailsForm = ({
     } catch (error) {
       if (error.status === 401) {
         setBackendStates(userState);
-        selectedState = backendStates[0];
       }
       console.error("Error fetching states:", error);
     }
@@ -238,7 +232,7 @@ const PatientDetailsForm = ({
     mode: "onChange",
   });
 
-  let selectedState = useWatch({ control, name: "state" });
+  const selectedState = useWatch({ control, name: "state" });
 
   useEffect(() => {
     if (selectedState && allDistricts.length) {
@@ -403,11 +397,6 @@ const PatientDetailsForm = ({
                       },
                     },
                   }}
-                  // value={
-                  //   field.options?.length === 1
-                  //     ? field.options[0].value
-                  //     : controllerField.value || ""
-                  // }
                   // disabled={
                   //   field.name === "district" && !selectedState ? true : false
                   // }

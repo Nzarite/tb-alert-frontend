@@ -1,10 +1,8 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, Zoom } from "react-toastify";
 import Navbar from "../components/Navbar";
-import useLogout from "../hooks/useLogout";
+import "../index.css";
 
 const breadcrumbNameMap: { [key: string]: string } = {
   "/": "Home",
@@ -37,7 +35,13 @@ const PageLayout = () => {
 
   return (
     <>
-      <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+      <ToastContainer
+        position="bottom-center"
+        transition={Zoom}
+        autoClose={5000}
+        hideProgressBar
+        theme="colored"
+      />
       <Navbar />
       {/* Breadcrumbs Section */}
       <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2, mb: 1, ml: 2 }}>
