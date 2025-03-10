@@ -204,7 +204,7 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 600,
+          width: { xs: "90%", sm: "70%", md: "50%" },
           maxHeight: "90vh",
           overflowY: "auto",
           bgcolor: "background.paper",
@@ -223,7 +223,6 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
             : "Update Contact Screening Details"}
         </Typography>
         {renderForm()}
-        <Box mt={2} display="flex" justifyContent="space-between"></Box>
       </Box>
     </Modal>
   );
