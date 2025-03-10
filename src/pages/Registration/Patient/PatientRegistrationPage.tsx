@@ -28,11 +28,11 @@ import NikshayDetailsForm, {
 import PatientDetailsForm, {
   PatientDetailsData,
 } from "../../../components/PatientDetailsForm/PatientDetailsForm";
+import DiagnosedWithTB from "../../../components/TbDetailsForm/DiagnosedWithTB";
 import TbDetailsForm, {
   TbDetailsData,
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
-import DiagnosedWithTB from "../../../components/TbDetailsForm/DiagnosedWithTB";
 import { RootState } from "../../../redux/store";
 
 const PatientRegistrationPage = () => {
@@ -48,14 +48,15 @@ const PatientRegistrationPage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [step1Data, setStep1Data] = useState<any>(null);
-  const [snackString,setSnackString]=useState<string>("Patient registered successfully with Personal, TB, Nikshay & Contact Screening details.")
+  const [snackString, setSnackString] = useState<string>(
+    "Patient registered successfully with Personal, TB, Nikshay & Contact Screening details."
+  );
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state:RootState) => state.user?.profile?.email) ||
+    useSelector((state: RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
   const userRole = auth.user?.profile.client_roles || {};
-  
 
   const steps = [
     "Patient Details",
@@ -80,7 +81,6 @@ const PatientRegistrationPage = () => {
   const onSubmit = (data: any) => {
     console.log("Final Submitted Data:", data);
   };
-
   //use switch here instead
   const handleSave = async (stepData: any) => {
     setLoading(true);
@@ -90,12 +90,12 @@ const PatientRegistrationPage = () => {
 
       if (activeStep === 0) {
         let createdBy;
-        if(stepData.createdBy==="") createdBy=userEmail;
-        else createdBy=stepData.createdBy; 
-        
+        if (stepData.createdBy === "") createdBy = userEmail;
+        else createdBy = stepData.createdBy;
+
         response = await axiosInstance.post("/patient/register", {
           ...stepData,
-          createdBy:createdBy
+          createdBy: createdBy,
         });
         console.log(stepData);
         if (response.status === 200 || 201 || 202) {
@@ -117,7 +117,7 @@ const PatientRegistrationPage = () => {
           setLoading(false);
           return;
         }
-        setSnackString("Referal Patient Registered")
+        setSnackString("Referal Patient Registered");
         setOpenSnackbar(true);
         setTimeout(() => {
           navigate(`/patient-dashboard/${patientId}`);
@@ -156,7 +156,9 @@ const PatientRegistrationPage = () => {
         });
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, contactScreeningDetails: stepData });
-          setSnackString("Patient registered successfully with Personal, TB, Nikshay & Contact Screening details.")
+          setSnackString(
+            "Patient registered successfully with Personal, TB, Nikshay & Contact Screening details."
+          );
           setOpenSnackbar(true);
           setTimeout(() => {
             navigate(`/patient-dashboard/${patientId}`);
@@ -175,18 +177,21 @@ const PatientRegistrationPage = () => {
   };
   const handleConfirm = async (confirmed: boolean) => {
     setConfirmModalOpen(false);
-  
+
     if (confirmed) {
       // User confirmed, proceed with API call
       const response = await axiosInstance.put(`/patient/update/${patientId}`, {
         ...step1Data,
       });
-  
-      if (response.status === 200 || response.status === 201 || response.status === 202) {
+
+      if (
+        response.status === 200 ||
+        response.status === 201 ||
+        response.status === 202
+      ) {
         setActiveStep(activeStep + 1);
       }
     }
-   
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
@@ -298,21 +303,25 @@ const PatientRegistrationPage = () => {
           </Grid>
         </Grid>
         <Dialog open={confirmModalOpen} onClose={() => handleConfirm(false)}>
-      <DialogTitle>Confirm Diagnosis</DialogTitle>
-      <DialogContent>
-        <Typography>
-          Are you sure you want to proceed with the TB diagnosis?
-        </Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => handleConfirm(false)} color="secondary">
-          No
-        </Button>
-        <Button onClick={() => handleConfirm(true)} color="primary" autoFocus>
-          Yes
-        </Button>
-      </DialogActions>
-    </Dialog>
+          <DialogTitle>Confirm Diagnosis</DialogTitle>
+          <DialogContent>
+            <Typography>
+              Are you sure you want to proceed with the TB diagnosis?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => handleConfirm(false)} color="secondary">
+              No
+            </Button>
+            <Button
+              onClick={() => handleConfirm(true)}
+              color="primary"
+              autoFocus
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );

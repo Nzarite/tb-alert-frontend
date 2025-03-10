@@ -1,10 +1,10 @@
-import { FaUserPlus } from "react-icons/fa";
-import { Role } from "./Authorization/Roles/Types";
 import { IconType } from "react-icons";
 import { AiFillSchedule } from "react-icons/ai";
+import { FaUserPlus } from "react-icons/fa";
+import { IoIosSettings } from "react-icons/io";
 import { MdDashboard } from "react-icons/md";
 import { TbReportMedical } from "react-icons/tb";
-import { IoIosSettings } from "react-icons/io";
+import { Role } from "./Authorization/Roles/Types";
 
 export interface Tile {
   path: string;
@@ -17,7 +17,13 @@ export const tiles: Tile[] = [
   {
     path: "/register/patient",
     label: "Register Patient",
-    allowedRoles: ["SuperAdmin", "StateCoordinator", "Telecaller"],
+    allowedRoles: [
+      "SuperAdmin",
+      "StateCoordinator",
+      "Telecaller",
+      "FieldCoordinator",
+      "GpHead",
+    ],
     Icon: FaUserPlus,
   },
   {
@@ -30,6 +36,18 @@ export const tiles: Tile[] = [
     path: "/register/statehead",
     label: "Register State Head",
     allowedRoles: ["SuperAdmin"],
+    Icon: FaUserPlus,
+  },
+  {
+    path: "/register/fieldcoordinator",
+    label: "Register Field Coordinator",
+    allowedRoles: ["SuperAdmin", "StateCoordinator"],
+    Icon: FaUserPlus,
+  },
+  {
+    path: "/register/gphead",
+    label: "Register GP Head",
+    allowedRoles: ["SuperAdmin", "StateCoordinator", "FieldCoordinator"],
     Icon: FaUserPlus,
   },
   {
@@ -53,7 +71,13 @@ export const tiles: Tile[] = [
   {
     path: "/patient-dashboard",
     label: "Patient Dashboard",
-    allowedRoles: ["SuperAdmin", "StateCoordinator", "Telecaller"],
+    allowedRoles: [
+      "SuperAdmin",
+      "StateCoordinator",
+      "Telecaller",
+      "FieldCoordinator",
+      "GpHead",
+    ],
     Icon: MdDashboard,
   },
   {
@@ -66,6 +90,18 @@ export const tiles: Tile[] = [
     path: "/user/statehead",
     label: "State Coordinator Dashboard",
     allowedRoles: ["SuperAdmin"],
+    Icon: MdDashboard,
+  },
+  {
+    path: "/user/fieldcoordinator",
+    label: "Field Coordinator Dashboard",
+    allowedRoles: ["SuperAdmin", "StateCoordinator"],
+    Icon: MdDashboard,
+  },
+  {
+    path: "/user/gphead",
+    label: "GP Head Dashboard",
+    allowedRoles: ["SuperAdmin", "StateCoordinator", "FieldCoordinator"],
     Icon: MdDashboard,
   },
   {

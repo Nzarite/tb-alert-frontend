@@ -1,11 +1,24 @@
-import { Alert, Box, Divider, Grid, Skeleton, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
-import axiosInstance from "../../components/axiosInstance";
-import { renderField } from "./PatientNikshayDetails";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../components/axiosInstance";
+import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 import { TbDetailsFormLabelsData } from "../../components/TbDetailsForm/TbDetailsForm";
+import { renderField } from "./PatientNikshayDetails";
 
-const PatientMedicalDetails = ({ patientId, refresh }: any) => {
+const PatientMedicalDetails = ({
+  patientId,
+  refreshKey,
+  setRefreshKey,
+}: any) => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +32,9 @@ const PatientMedicalDetails = ({ patientId, refresh }: any) => {
     typeOfTbLabel: { label: "", options: [] },
     dstbOrDrtbLabel: { label: "", options: [] },
   });
-  
+  const [areDetailsNull, setAreDetailsNull] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
   useEffect(() => {
     fetch(`/locales/patient_registration_form2_${language}.json`)
       .then((response) => response.json())
@@ -38,7 +53,11 @@ const PatientMedicalDetails = ({ patientId, refresh }: any) => {
       size: 6,
     },
     { name: "typeOfPwtb", label: labels.typeOfPwtbLabel, size: 6 },
-    { name: "clinicalOrMicrobiological", label: labels.clinicalOrMicrobiologicalLabel, size: 6 },
+    {
+      name: "clinicalOrMicrobiological",
+      label: labels.clinicalOrMicrobiologicalLabel,
+      size: 6,
+    },
     { name: "typeOfTb", label: labels.typeOfTbLabel, size: 6 },
     { name: "dstbOrDrtb", label: labels.dstbOrDrtbLabel, size: 6 },
   ];
@@ -50,9 +69,11 @@ const PatientMedicalDetails = ({ patientId, refresh }: any) => {
       setPatientData(res.data);
       setError(null);
     } catch (err: any) {
+      if (err.status == 400) {
+        setAreDetailsNull(true);
+      }
       setError(
-        err.response?.data?.message ||
-          "Failed to fetch patient medical details"
+        err.response?.data?.message || "Failed to fetch patient medical details"
       );
     } finally {
       setLoading(false);
@@ -61,7 +82,13 @@ const PatientMedicalDetails = ({ patientId, refresh }: any) => {
 
   useEffect(() => {
     getData();
-  }, [patientId, refresh]);
+  }, [patientId, refreshKey]);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setAreDetailsNull(false);
+    setRefreshKey((prevKey: number) => prevKey + 1);
+  };
 
   if (loading) {
     return (
@@ -69,6 +96,25 @@ const PatientMedicalDetails = ({ patientId, refresh }: any) => {
         <Skeleton variant="rectangular" width="100%" height={100} />
         <Skeleton variant="text" sx={{ mt: 1, width: "60%" }} />
       </Box>
+    );
+  }
+
+  if (areDetailsNull && !patientData) {
+    return (
+      <>
+        <Button variant="contained" onClick={() => setModalOpen(true)}>
+          Set TB Details
+        </Button>
+        {modalOpen && (
+          <EditPatientDetailsModal
+            open={modalOpen}
+            onClose={handleModalClose}
+            prop={"tbdetails"}
+            patientId={patientId}
+            getData={getData}
+          />
+        )}
+      </>
     );
   }
 

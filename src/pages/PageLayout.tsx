@@ -1,11 +1,10 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Navbar from "../components/Navbar";
-import useCustomEffect from "../hooks/useCustomEffect";
 import useLogout from "../hooks/useLogout";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
 
 const breadcrumbNameMap: { [key: string]: string } = {
   "/": "Home",
@@ -15,6 +14,8 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/register/patient": "Patient",
   "/register/statehead": "State Head",
   "/register/telecaller": "Telecaller",
+  "/register/fieldcoordinator": "Field Coordinator",
+  "/register/gphead": "GP Head",
 
   "/visit": "Visit Follow-Up",
   "/patient-dashboard": "Patient Search",
@@ -26,30 +27,11 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/user": "User",
   "/user/statehead": "State head",
   "/user/telecaller": "Telecaller",
+  "/user/fieldcoordinator": "Field Coordinator",
+  "/user/gphead": "GP Head",
 };
 
 const PageLayout = () => {
-  const logout = useLogout();
-  const userState = useSelector((state: any) => state.userState); // Replace `auth.user` with your actual state path
-
-  useEffect(() => {
-    if (userState !== null) return; // Wait until Redux state is available
-
-    const handleStorageChange = () => {
-      if (!localStorage.getItem("userState")) {
-        logout();
-      }
-    };
-
-    // Check initially and listen for changes
-    handleStorageChange();
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, [localStorage.getItem("userState")]); // Run only when userState updates
-
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
 

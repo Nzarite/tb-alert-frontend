@@ -1,18 +1,23 @@
-import React, { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Modal,
   Box,
-  Typography,
-  TextField,
   Button,
   Grid,
   MenuItem,
+  Modal,
+  TextField,
+  Typography,
 } from "@mui/material";
-import axiosInstance from "../../components/axiosInstance";
-import { StateHead, TeleCaller } from "../../components/datatypes/DataTypes";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import axiosInstance from "../../components/axiosInstance";
+import {
+  FieldCoordinator,
+  GPHead,
+  StateHead,
+  TeleCaller,
+} from "../../components/datatypes/DataTypes";
 
 // Define Zod schema for validation
 const userSchema = z.object({
@@ -23,15 +28,15 @@ const userSchema = z.object({
   phoneNumber: z
     .string()
     .regex(/^[0-9]{10}$/, "Phone number must be 10 digits"),
-  dateOfJoining: z.string({message:"Select Valid date of Joining"}),
-  dateOfLeaving: z.string({message:"Select Valid date of leaving"}),
-  createdBy:z.string()
+  dateOfJoining: z.string({ message: "Select Valid date of Joining" }),
+  dateOfLeaving: z.string({ message: "Select Valid date of leaving" }),
+  createdBy: z.string(),
 });
 
 interface UserDetailsModalProps {
   open: boolean;
   onClose: () => void;
-  user: TeleCaller | StateHead;
+  user: TeleCaller | StateHead | FieldCoordinator | GPHead;
   role: string;
   onUpdate: (updatedUser: TeleCaller | StateHead) => void;
 }
@@ -51,7 +56,7 @@ const UserDetailsModal = ({
   } = useForm({
     resolver: zodResolver(userSchema),
     defaultValues: user,
-    mode:"all",
+    mode: "all",
   });
 
   // Update form fields when user changes
@@ -64,21 +69,34 @@ const UserDetailsModal = ({
       setValue("phoneNumber", user.phoneNumber || "");
       setValue("dateOfJoining", user.dateOfJoining || "");
       setValue("dateOfLeaving", user.dateOfLeaving || "");
-      setValue("createdBy",user.createdBy||"")
+      setValue("createdBy", user.createdBy || "");
     }
   }, [user, setValue]);
 
+  const getUpdateUrl = () => {
+    switch (role) {
+      case "telecaller":
+        return `/telecaller/update/${user.teleCallerId}`;
+
+      case "statehead":
+        return `/statehead/update/${user.stateHeadId}`;
+
+      case "fieldcoordinator":
+        return `/fieldcoordinator/${user.id}`;
+
+      case "gphead":
+        return `/gphead/${user.id}`;
+    }
+  };
+
   const onSubmit = async (formData: any) => {
     try {
-      const updateUrl =
-        role === "telecaller"
-          ? `/telecaller/update/${user.teleCallerId}`
-          : `/statehead/update/${user.stateHeadId}`;
+      const updateUrl = getUpdateUrl();
 
       const formattedData = {
         ...formData,
-        
-        createdBy:user.createdBy
+
+        createdBy: user.createdBy,
       };
 
       const response = await axiosInstance.put(updateUrl, formattedData);
@@ -182,7 +200,9 @@ const UserDetailsModal = ({
               />
             </Grid>
           </Grid>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3, gap: 2 }}>
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", mt: 3, gap: 2 }}
+          >
             <Button onClick={onClose} color="secondary" variant="outlined">
               Close
             </Button>

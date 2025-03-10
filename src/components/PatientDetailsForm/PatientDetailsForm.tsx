@@ -15,12 +15,12 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { Role } from "../Authorization/Roles/Types";
-import { useAuth } from "react-oidc-context";
-import { LabelOption, TeleCaller } from "../datatypes/DataTypes";
 import axiosInstance from "../axiosInstance";
+import { LabelOption, TeleCaller } from "../datatypes/DataTypes";
 
 export type PatientDetailsData = {
   firstName: string;
@@ -34,7 +34,8 @@ export type PatientDetailsData = {
   block: string;
   gp: string;
   consentForMessage: boolean;
-  createdBy:string;
+  createdBy: string;
+  reminderTime?: string;
 };
 
 export interface PatientDetailsFormLabelsData {
@@ -51,7 +52,8 @@ export interface PatientDetailsFormLabelsData {
   gpLabel: string;
   consentForMessageLabel: LabelOption;
   currentStatusLabel: string;
-  createdByLabel:string;
+  reminderTimeLabel: string;
+  createdByLabel: string;
 }
 
 export type StateOption = {
@@ -80,8 +82,8 @@ const PatientDetailsForm = ({
     { value: string; telecallers: string[] }[]
   >([]);
   const [telecallers, setTelecallers] = useState<TeleCaller[]>();
+
   const auth = useAuth();
-  
 
   const userState =
     useSelector((state: any) => state.userState) ||
@@ -106,7 +108,8 @@ const PatientDetailsForm = ({
     gpLabel: "",
     consentForMessageLabel: { label: "", options: [] },
     currentStatusLabel: "",
-    createdByLabel:"",
+    reminderTimeLabel: "",
+    createdByLabel: "",
   });
 
   useEffect(() => {
@@ -148,12 +151,13 @@ const PatientDetailsForm = ({
 
       setBackendStates(stateNames);
     } catch (error) {
-      if(error.status===401) setBackendStates(userState);
+      if (error.status === 401) {
+        setBackendStates(userState);
+        selectedState = backendStates[0];
+      }
       console.error("Error fetching states:", error);
     }
   };
-
-
 
   useEffect(() => {
     fetchStates();
@@ -168,42 +172,59 @@ const PatientDetailsForm = ({
     }
   }, [backendStates, states]);
 
-
-
-  const patientDetailsSchema = z.object({
-    firstName: z.string().min(1, "First Name is required"),
-    lastName: z.string().optional(),
-    gender: z.enum(["Male", "Female"], {
-      errorMap: () => ({ message: "Gender is required" }),
-    }),
-    phoneNumber: z
-      .string()
-      .regex(/^\d+$/, "Contact number must contain only numbers")
-      .min(10, "Contact number must be at least 10 digits")
-      .max(15, "Contact number can't exceed 15 digits"),
-    age: z
-      .number()
-      .int("Age must be an integer")
-      .min(1, "Age must be at least 1")
-      .max(150, "Age must be at most 150"),
-    state: z.string().min(1, "State Name is required"),
-    district: z.string().min(1, "District Name is required"),
-    village: z.string().min(1, "Village Name is required"),
-    block: z.string().min(1, "Block Name is required"),
-    gp: z.string().min(1, "GP Name is required"),
-    consentForMessage: z.boolean({
-      errorMap: () => ({ message: "Consent for message is required" }),
-    }),
-    createdBy: z.string().superRefine((val, ctx) => {
-      if (telecallers && telecallers.length > 0 && !val) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Select a Telecaller",
-        });
+  const patientDetailsSchema = z
+    .object({
+      firstName: z.string().min(1, "First Name is required"),
+      lastName: z.string().optional(),
+      gender: z.enum(["Male", "Female"], {
+        errorMap: () => ({ message: "Gender is required" }),
+      }),
+      phoneNumber: z
+        .string()
+        .regex(/^\d+$/, "Contact number must contain only numbers")
+        .min(10, "Contact number must be at least 10 digits")
+        .max(15, "Contact number can't exceed 15 digits"),
+      age: z
+        .number()
+        .int("Age must be an integer")
+        .min(1, "Age must be at least 1")
+        .max(150, "Age must be at most 150"),
+      state: z.string().min(1, "State Name is required"),
+      district: z.string().min(1, "District Name is required"),
+      village: z.string().min(1, "Village Name is required"),
+      block: z.string().min(1, "Block Name is required"),
+      gp: z.string().min(1, "GP Name is required"),
+      consentForMessage: z.boolean({
+        errorMap: () => ({ message: "Consent for message is required" }),
+      }),
+      createdBy: z.string().superRefine((val, ctx) => {
+        if (telecallers && telecallers.length > 0 && !val) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Select a Telecaller",
+          });
+        }
+      }),
+      reminderTime: z.string().optional(),
+    })
+    .superRefine((data, ctx) => {
+      if (data.consentForMessage) {
+        if (!data.reminderTime) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["reminderTime"],
+            message:
+              "Reminder time is required when consent for message is given",
+          });
+        } else if (!/^\d{2}:\d{2}$/.test(data.reminderTime)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["reminderTime"],
+            message: "Reminder time must be in HH:MM format",
+          });
+        }
       }
-    }),
-  });
-
+    });
 
   const {
     control,
@@ -217,7 +238,7 @@ const PatientDetailsForm = ({
     mode: "onChange",
   });
 
-  const selectedState = useWatch({ control, name: "state" });
+  let selectedState = useWatch({ control, name: "state" });
 
   useEffect(() => {
     if (selectedState && allDistricts.length) {
@@ -229,20 +250,18 @@ const PatientDetailsForm = ({
     }
   }, [selectedState, setValue, allDistricts]);
 
-
-  useEffect(()=>{
-    const fetchTelecaller=async()=>{
+  useEffect(() => {
+    const fetchTelecaller = async () => {
       try {
-        const response=await axiosInstance.get(`/telecaller/state/${selectedState}`);
+        const response = await axiosInstance.get(
+          `/telecaller/state/${selectedState}`
+        );
         setTelecallers(response.data);
         console.log(telecallers);
-      } catch (error) {
-        
-      }
-    }
+      } catch (error) {}
+    };
     fetchTelecaller();
-  },[selectedState])
-
+  }, [selectedState]);
 
   useEffect(() => {
     if (data) {
@@ -258,25 +277,43 @@ const PatientDetailsForm = ({
     //   onNext();
     // }
   };
-  console.log(selectedState)
+  console.log(selectedState);
+
+  const consentForMessage = useWatch({ control, name: "consentForMessage" });
+
   const formFields: {
     name: keyof PatientDetailsData;
     type: "text" | "select" | "date" | "radio" | "number";
     label: string;
     options?: { label: string; value: string }[];
-    disabled:boolean;
+    disabled: boolean;
   }[] = [
-    { name: "firstName", type: "text", label: labels.firstNameLabel, disabled:false },
-    { name: "lastName", type: "text", label: labels.lastNameLabel, disabled:false },
+    {
+      name: "firstName",
+      type: "text",
+      label: labels.firstNameLabel,
+      disabled: false,
+    },
+    {
+      name: "lastName",
+      type: "text",
+      label: labels.lastNameLabel,
+      disabled: false,
+    },
     {
       name: "gender",
       type: "radio",
       label: labels.genderLabel.label,
       options: labels.genderLabel.options,
-      disabled:false
+      disabled: false,
     },
-    { name: "phoneNumber", type: "text", label: labels.phoneNumberLabel, disabled:false },
-    { name: "age", type: "number", label: labels.ageLabel, disabled:false },
+    {
+      name: "phoneNumber",
+      type: "text",
+      label: labels.phoneNumberLabel,
+      disabled: false,
+    },
+    { name: "age", type: "number", label: labels.ageLabel, disabled: false },
     {
       name: "state",
       type: "select",
@@ -284,7 +321,7 @@ const PatientDetailsForm = ({
       options: userRoles.includes("SuperAdmin")
         ? filteredStates
         : filteredStates.filter((option) => option.value === userState),
-      disabled:false,  
+      disabled: false,
     },
     {
       name: "district",
@@ -292,31 +329,40 @@ const PatientDetailsForm = ({
       label: labels.districtLabel,
       options: districts.map((d) => ({ label: d, value: d })),
       disabled: !selectedState,
-
     },
-    { name: "village", type: "text", label: labels.villageLabel, disabled:false },
-    { name: "block", type: "text", label: labels.blockLabel, disabled:false },
-    { name: "gp", type: "text", label: labels.gpLabel, disabled:false },
+    {
+      name: "village",
+      type: "text",
+      label: labels.villageLabel,
+      disabled: false,
+    },
+    { name: "block", type: "text", label: labels.blockLabel, disabled: false },
+    { name: "gp", type: "text", label: labels.gpLabel, disabled: false },
+    {
+      name: "createdBy",
+      type: "select",
+      label: labels.createdByLabel,
+      options: telecallers?.map((t) => ({
+        label: t.firstName + " " + t.lastName,
+        value: t.email,
+      })),
+      disabled:
+        telecallers?.length == 0 ||
+        (userRoles.includes("Telecaller") &&
+          !userRoles.includes("SuperAdmin") &&
+          !userRoles.includes("StateCoordinator")),
+    },
     {
       name: "consentForMessage",
       type: "radio",
       label: labels.consentForMessageLabel.label,
       options: labels.consentForMessageLabel.options,
-      disabled:false,
-    },
-
-    {
-      name: "createdBy",
-      type: "select",
-      label: labels.createdByLabel,
-      options: telecallers?.map((t) => ({ label: t.firstName+" "+t.lastName, value: t.email })),
-      disabled: telecallers?.length==0 || (userRoles.includes("Telecaller") && !userRoles.includes("SuperAdmin") && !userRoles.includes("StateCoordinator")),
+      disabled: false,
     },
   ];
-  
 
   if (!labels || !states) return <CircularProgress />;
-console.log(userRoles)
+  console.log(userRoles);
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -368,7 +414,6 @@ console.log(userRoles)
                   onChange={(e) => controllerField.onChange(e.target.value)}
                   error={!!errors[field.name]}
                   disabled={field.disabled}
-
                   helperText={errors[field.name]?.message}
                 >
                   {field.options?.map((option) => (
@@ -439,11 +484,33 @@ console.log(userRoles)
                   onChange={(e) =>
                     controllerField.onChange(Number(e.target.value) || "")
                   }
-                
                 />
               )}
             />
           ) : null
+        )}
+        {consentForMessage && (
+          <Controller
+            key="reminderTime"
+            name="reminderTime"
+            control={control}
+            render={({ field: controllerField }) => (
+              <TextField
+                {...controllerField}
+                label={labels.reminderTimeLabel}
+                type="time"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                slotProps={{ inputLabel: { shrink: true } }}
+                // defaultValue={}
+                disabled={loading}
+                error={!!errors.reminderTime}
+                helperText={errors.reminderTime?.message}
+                onChange={(e) => controllerField.onChange(e.target.value)}
+              />
+            )}
+          />
         )}
         <Box mt={3} display="flex" justifyContent="space-between">
           {functionality === "editdetails" && (
