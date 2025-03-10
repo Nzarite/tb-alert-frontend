@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
@@ -11,10 +12,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { z } from "zod";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { LabelOption } from "../datatypes/DataTypes";
 
 export type DiagnosedWithTBData = {
@@ -44,7 +44,7 @@ const DiagnosedWithTB = ({
 }: any) => {
   const [labels, setLabels] = useState<DiagnosedWithTBLabelsData>({
     diagnosedWithTBLabel: { label: "", options: [] },
-    patientNameLabel:"",
+    patientNameLabel: "",
   });
 
   useEffect(() => {
@@ -103,63 +103,63 @@ const DiagnosedWithTB = ({
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h6">Diagnosed With TB</Typography>
-          {functionality === "register" && (
-                    <TextField
-                      label={labels.patientNameLabel}
-                      value={patientName}
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      disabled
-                      sx={{
-                        "& .MuiInputBase-input.Mui-disabled": {
-                          WebkitTextFillColor: "black", // Ensures text remains black
-                        },
-                      }}
+        {functionality === "register" && (
+          <TextField
+            label={labels.patientNameLabel}
+            value={patientName}
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            disabled
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "black", // Ensures text remains black
+              },
+            }}
+          />
+        )}
+        {formFields.map((field) => (
+          <FormControl
+            key={field.name}
+            margin="normal"
+            disabled={loading}
+            error={!!errors[field.name]}
+          >
+            <FormLabel>{field.label}</FormLabel>
+            <Controller
+              name={field.name}
+              control={control}
+              defaultValue={data?.name || ""}
+              rules={{ required: `${field.label} is required` }}
+              render={({ field: radioField }) => (
+                <RadioGroup
+                  {...radioField}
+                  row
+                  onChange={(e) =>
+                    radioField.onChange(
+                      field.name === "isDiagnosedWithTB"
+                        ? e.target.value === "true"
+                        : e.target.value
+                    )
+                  }
+                >
+                  {field.options?.map((option) => (
+                    <FormControlLabel
+                      key={option.value.toString()}
+                      value={option.value.toString()}
+                      control={<Radio />}
+                      label={option.label}
                     />
-                  )}
-          {formFields.map((field) => (
-            <FormControl
-              key={field.name}
-              margin="normal"
-              disabled={loading}
-              error={!!errors[field.name]}
-            >
-              <FormLabel>{field.label}</FormLabel>
-              <Controller
-                name={field.name}
-                control={control}
-                defaultValue={data?.name || ""}
-                rules={{ required: `${field.label} is required` }}
-                render={({ field: radioField }) => (
-                  <RadioGroup
-                    {...radioField}
-                    row
-                    onChange={(e) =>
-                      radioField.onChange(
-                        field.name === "isDiagnosedWithTB"
-                          ? e.target.value === "true"
-                          : e.target.value
-                      )
-                    }
-                  >
-                    {field.options?.map((option) => (
-                      <FormControlLabel
-                        key={option.value.toString()}
-                        value={option.value.toString()}
-                        control={<Radio />}
-                        label={option.label}
-                      />
-                    ))}
-                  </RadioGroup>
-                )}
-              />
-              {errors[field.name] && (
-                <FormHelperText>{errors[field.name]?.message}</FormHelperText>
+                  ))}
+                </RadioGroup>
               )}
-            </FormControl>
-          ))}
-        
+            />
+            {errors[field.name] && (
+              <FormHelperText>{errors[field.name]?.message}</FormHelperText>
+            )}
+          </FormControl>
+        ))}
+
         <Box mt={3} display="flex" justifyContent="space-between">
           {functionality === "editdetails" && (
             <Button
