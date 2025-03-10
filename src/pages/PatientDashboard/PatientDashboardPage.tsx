@@ -10,8 +10,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+
 import { useEffect, useState } from "react";
 import {
   MdAssessment,
@@ -52,8 +54,7 @@ const PatientDashboardPage = () => {
       try {
         const response = await axiosInstance.get(`/patient/${patientId}`);
         setDiagnosedWithTB(response.data.isDiagnosedWithTB);
-        setSelectedPatientData("nikshaymitra");
-        setModalOpen(true);
+       
       } catch (error) {
         console.error(error);
       }
@@ -89,6 +90,8 @@ const PatientDashboardPage = () => {
           diagnosedWithTB
         );
         setDiagnosedWithTB(true);
+        setSelectedPatientData("nikshaymitra");
+        setModalOpen(true);
       } catch (error) {console.log(error);}
     }
   };
