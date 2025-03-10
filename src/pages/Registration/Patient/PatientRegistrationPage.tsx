@@ -8,17 +8,17 @@ import {
   DialogTitle,
   Grid,
   Paper,
-  Snackbar,
   Step,
   StepLabel,
   Stepper,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import ContactScreeningDetailsForm, {
   ContactScreeningData,
 } from "../../../components/ContactScreeningDetailsForm/ContactScreeningDetailsForm";
@@ -45,16 +45,12 @@ const PatientRegistrationPage = () => {
   const [patientName, setPatientName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [step1Data, setStep1Data] = useState<any>(null);
-  const [snackString, setSnackString] = useState<string>(
-    "Patient registered successfully with Personal, TB, Nikshay & Contact Screening details."
-  );
 
   const auth = useAuth();
   const userEmail =
-    useSelector((state: RootState) => state.user?.profile?.email) ||
+    useSelector((state:RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
   const userRole = auth.user?.profile.client_roles || {};
 
@@ -65,7 +61,7 @@ const PatientRegistrationPage = () => {
     "Nikshay Details",
     "Contact Screening Details",
   ];
-
+ 
   const [formData, setFormData] = useState({
     patientDetails: {} as PatientDetailsData,
     tbDetails: {} as TbDetailsData,
@@ -77,17 +73,18 @@ const PatientRegistrationPage = () => {
   const language = useSelector((state: any) => state.language.language);
 
   const { handleSubmit } = useForm();
-
+ 
   const onSubmit = (data: any) => {
     console.log("Final Submitted Data:", data);
   };
+
   //use switch here instead
   const handleSave = async (stepData: any) => {
     setLoading(true);
     setError(null);
     try {
       let response;
-
+ 
       if (activeStep === 0) {
         let createdBy;
         if (stepData.createdBy === "") createdBy = userEmail;
@@ -106,6 +103,7 @@ const PatientRegistrationPage = () => {
           );
           setFormData({ ...formData, patientDetails: stepData });
           setActiveStep(activeStep + 1);
+          toast.success("Patient details registered successfully!");
         }
       } else if (activeStep === 1) {
         if (!patientId) {
@@ -117,11 +115,8 @@ const PatientRegistrationPage = () => {
           setLoading(false);
           return;
         }
-        setSnackString("Referal Patient Registered");
-        setOpenSnackbar(true);
-        setTimeout(() => {
-          navigate(`/patient-dashboard/${patientId}`);
-        }, 2000);
+        toast.success("Referral Patient Registered");
+        navigate(`/patient-dashboard/${patientId}`);
       } else if (activeStep === 2) {
         if (!patientId) {
           throw new Error("Patient ID not found. Please complete step 1.");
@@ -133,6 +128,7 @@ const PatientRegistrationPage = () => {
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, tbDetails: stepData });
           setActiveStep(activeStep + 1);
+          toast.success("TB details registered successfully!");
         }
       } else if (activeStep === 3) {
         if (!formData.tbDetails) {
@@ -145,6 +141,7 @@ const PatientRegistrationPage = () => {
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, nikshayDetails: stepData });
           setActiveStep(activeStep + 1);
+          toast.success("Nikshay details registered successfully!");
         }
       } else if (activeStep === 4) {
         if (!formData.nikshayDetails) {
@@ -156,13 +153,11 @@ const PatientRegistrationPage = () => {
         });
         if (response.status === 200 || 201 || 202) {
           setFormData({ ...formData, contactScreeningDetails: stepData });
-          setSnackString(
-            "Patient registered successfully with Personal, TB, Nikshay & Contact Screening details."
-          );
-          setOpenSnackbar(true);
-          setTimeout(() => {
-            navigate(`/patient-dashboard/${patientId}`);
-          }, 2000);
+          toast.success("Contact screening details saved and Patient registration done successfully!");
+          navigate(`/patient-dashboard/${patientId}`);
+          // setTimeout(() => {
+          //   navigate(`/patient-dashboard/${patientId}`);
+          // }, 1000);
         }
       }
     } catch (error: any) {
@@ -184,11 +179,7 @@ const PatientRegistrationPage = () => {
         ...step1Data,
       });
 
-      if (
-        response.status === 200 ||
-        response.status === 201 ||
-        response.status === 202
-      ) {
+      if (response.status === 200 || response.status === 201 || response.status === 202) {
         setActiveStep(activeStep + 1);
       }
     }
@@ -223,7 +214,7 @@ const PatientRegistrationPage = () => {
               </Stepper>
             </Paper>
           </Grid>
-
+ 
           <Grid item xs={8}>
             <Paper sx={{ p: 3 }}>
               {activeStep === 0 && (
@@ -289,16 +280,6 @@ const PatientRegistrationPage = () => {
                   {error}
                 </Alert>
               )}
-              <Snackbar
-                open={openSnackbar}
-                autoHideDuration={4000}
-                onClose={() => setOpenSnackbar(false)}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-              >
-                <Alert severity="success" variant="filled">
-                  {snackString}
-                </Alert>
-              </Snackbar>
             </Paper>
           </Grid>
         </Grid>

@@ -14,43 +14,102 @@ import {
 import axiosInstance from "../components/axiosInstance";
 import { useSelector } from "react-redux";
 import { useAuth } from "react-oidc-context";
+import { StateOption } from "../components/datatypes/DataTypes";
 
 const Reports = () => {
   const auth = useAuth();
   const userEmail =
     useSelector((state: any) => state.user?.profile?.email) ||
     auth.user?.profile.email;
-  const userRole = auth.user?.profile.client_roles || {};
+  const userRole: Role[] = useSelector(
+    (state: any) =>
+      state.user?.profile?.client_roles || auth?.user?.profile?.client_roles
+  ) as Role[];
 
-  const userState = useSelector((state: any) => state.user?.userState) || localStorage.getItem("userState");
+  const userState =
+    useSelector((state: any) => state.user?.userState) ||
+    localStorage.getItem("userState");
   console.log(userState, userRole);
 
+  const language = useSelector((state: any) => state.language.language);
   const [currentRole, setCurrentRole] = useState("patient");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentStatus, setCurrentStatus] = useState("");
-  const [state, setState] = useState<string>("");
+  const [selectedState, setSelectedState] = useState<string>("");
+  const [state, setState] = useState<StateOption[]>([]);
+  const [availableStates, setAvailableStates] = useState<StateOption[]>([]);
+  const [backendStates, setBackendStates] = useState<string[]>([]);
+  const [filteredStates, setFilteredStates] = useState<StateOption[]>([]);
   const [dsOrDr, setDsOrDr] = useState<string>("");
   const [udstStatus, setUdstStatus] = useState<boolean | "">("");
   const [dbtStatus, setDbtStatus] = useState<boolean | "">("");
   const [createdBy, setCreatedBy] = useState<string>("");
   const [isDeleted, setIsDeleted] = useState("");
-  console.log(userState); 
-  
+  console.log(userState);
+
   useEffect(() => {
-    if (
+    fetch(`/locales/states_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setAvailableStates(data.stateslist))
+      .catch((err) => {
+        console.error("Error fetching states:", err);
+        alert("Failed to load states data. Please try again.");
+      });
+  }, [language]);
+
+  const fetchStates = async () => {
+    try {
+      const response = await axiosInstance.get("/state/all");
+      const stateNames = response.data.map(
+        (state: { stateName: string }) => state.stateName
+      );
+
+      setBackendStates(stateNames);
+    } catch (error:any) {
+      if(error.status === 401) setBackendStates(userState)
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStates();
+  }, []);
+
+  useEffect(() => {
+    if (backendStates.length > 0) {
+      const filtered = availableStates.filter((state) =>
+        backendStates.includes(state.value)
+      );
+      setFilteredStates(filtered);
+    }
+  }, [backendStates, availableStates]);
+
+  useEffect(() => {
+    if (userRole.length === 5 && userRole.includes("SuperAdmin"))
+      setState([{ label: "All", value: "" }, ...filteredStates]);
+    else if (
       (userRole.length === 1 && userRole.includes("Telecaller")) ||
-      (userRole.length == 2 && userRole.includes("StateCoordinator"))
+      (userRole.length == 4 && userRole.includes("StateCoordinator"))
     )
-      setState(userState);
+      setState(filteredStates.filter((option) => option.value === userState));
     if (
       userRole.includes("SuperAdmin") ||
       userRole.includes("StateCoordinator")
     )
       setCreatedBy("");
-  }, [userRole]);
+  }, [userRole, filteredStates, userState]);
+
+  useEffect(() => {
+    if (
+      state.length > 0 &&
+      ((userRole.length === 1 && userRole.includes("Telecaller")) ||
+        (userRole.length == 4 && userRole.includes("StateCoordinator")))
+    )
+      setSelectedState(state[0].value);
+  }, [userRole, state]);
 
   const handleTeleCallerReport = async () => {
     try {
@@ -60,7 +119,7 @@ const Reports = () => {
         startDate: startDate || null,
         endDate: endDate || null,
         currentStatus: currentStatus || null,
-        state: state,
+        state: selectedState,
         dstbOrDrtb: dsOrDr,
         udstStatus: udstStatus,
         dbtStatus: dbtStatus,
@@ -83,7 +142,7 @@ const Reports = () => {
         startDate: startDate || null,
         endDate: endDate || null,
         currentStatus: currentStatus || null,
-        state: state,
+        state: selectedState,
         dstbOrDrtb: dsOrDr,
         udstStatus: udstStatus,
         dbtStatus: dbtStatus,
@@ -114,7 +173,7 @@ const Reports = () => {
         startDate: startDate || null,
         endDate: endDate || null,
         currentStatus: currentStatus || null,
-        state: state,
+        state: selectedState,
         dstbOrDrtb: dsOrDr,
         udstStatus: udstStatus,
         dbtStatus: dbtStatus,
@@ -135,7 +194,7 @@ const Reports = () => {
       const response = await axiosInstance.post(
         "/report/patient/followup/today",
         {
-          state: state,
+          state: selectedState,
           createdBy: createdBy === "self" ? userEmail : "",
         },
         {
@@ -156,9 +215,9 @@ const Reports = () => {
     setCurrentStatus("");
     if (
       !(userRole.length === 1 && userRole.includes("Telecaller")) &&
-      !(userRole.length == 2 && userRole.includes("StateCoordinator"))
+      !(userRole.length == 4 && userRole.includes("StateCoordinator"))
     )
-      setState("");
+      setSelectedState("");
     setDsOrDr("");
     setUdstStatus("");
     setDbtStatus("");
@@ -295,20 +354,21 @@ const Reports = () => {
                   select
                   label="State"
                   InputLabelProps={{ shrink: true }}
-                  value={state}
+                  value={selectedState}
                   disabled={
                     (userRole.length === 1 &&
                       userRole.includes("Telecaller")) ||
-                    (userRole.length == 2 &&
+                    (userRole.length == 4 &&
                       userRole.includes("StateCoordinator"))
                   }
-                  onChange={(e) => setState(e.target.value)}
+                  onChange={(e) => setSelectedState(e.target.value)}
                   variant="outlined"
                 >
-                  <MenuItem value="">All</MenuItem>
-                  <MenuItem value="TELANGANA">Telangana</MenuItem>
-                  <MenuItem value="UTTAR PRADESH">Uttar Pradesh</MenuItem>
-                  <MenuItem value="BIHAR">Bihar</MenuItem>
+                  {state?.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
                 </TextField>
               </Grid>
               <Grid
