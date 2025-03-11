@@ -13,7 +13,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "react-oidc-context";
 import { useSelector } from "react-redux";
@@ -47,6 +47,8 @@ const PatientRegistrationPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [step1Data, setStep1Data] = useState<any>(null);
+  const [labels, setLabels] = useState<any>(null);
+  const language = useSelector((state: any) => state.language.language);
 
   const auth = useAuth();
   const userEmail =
@@ -54,12 +56,22 @@ const PatientRegistrationPage = () => {
     auth.user?.profile?.email;
   const userRole = auth.user?.profile.client_roles || {};
 
+  useEffect(() => {
+      fetch(`/locales/patientregistration_steppers_${language}.json`)
+        .then((response) => response.json())
+        .then((data) => setLabels(data.patientRegistration))
+        .catch((error) => {
+          console.error("Error loading form labels file:", error);
+          alert("Failed to load form labels data. Please try again.");
+        });
+    }, [language]);
+
   const steps = [
-    "Patient Details",
-    "Current TB Status",
-    "TB Details",
-    "Nikshay Details",
-    "Contact Screening Details",
+    labels?.patientDetails,
+    labels?.currentTbStatus,
+    labels?.tbDetails,
+    labels?.nikshayDetails,
+    labels?.contactScreeningDetails
   ];
 
   const [formData, setFormData] = useState({
@@ -70,7 +82,6 @@ const PatientRegistrationPage = () => {
   });
 
   console.log(userRole);
-  const language = useSelector((state: any) => state.language.language);
 
   const { handleSubmit } = useForm();
 
@@ -217,7 +228,7 @@ const PatientRegistrationPage = () => {
           >
             <Paper sx={{ p: 3, height: "100%" }}>
               <Typography variant="h5" gutterBottom>
-                Patient Registration
+                {labels?.patientRegistration}
               </Typography>
               <Stepper activeStep={activeStep} orientation="vertical">
                 {steps.map((label, index) => (

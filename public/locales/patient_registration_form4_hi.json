@@ -1,5 +1,6 @@
 {
   "nikshaydetailsform": {
+    "contactScreeningDetailsLabel": "संपर्क जांच विवरण",
     "patientNameLabel": "रोगी का नाम",
     "contactScreeningDoneLabel": {
       "label": "संपर्क जांच पूरी हुई",

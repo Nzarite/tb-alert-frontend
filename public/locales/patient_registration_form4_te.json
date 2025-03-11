@@ -1,5 +1,6 @@
 {
   "nikshaydetailsform": {
+      "contactScreeningDetailsLabel": "సంప్రదింపు స్క్రీనింగ్ వివరాలు",
     "patientNameLabel": "రోగి పేరు",
     "contactScreeningDoneLabel": {
       "label": "కాంటాక్ట్ స్క్రీనింగ్ పూర్తి అయిందా?",

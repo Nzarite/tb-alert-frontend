@@ -20,6 +20,7 @@ const PatientMedicalDetails = ({ patientId, refresh }: any) => {
   const [error, setError] = useState<string | null>(null);
   const language = useSelector((state: any) => state.language.language);
   const [labels, setLabels] = useState<TbDetailsFormLabelsData>({
+    tbDetailsLabel: "",
     patientNameLabel: "",
     typeOfPwtbLabel: { label: "", options: [] },
     clinicalOrMicrobiologicalLabel: { label: "", options: [] },

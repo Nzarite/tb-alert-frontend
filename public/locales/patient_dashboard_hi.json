@@ -1,0 +1,12 @@
+{
+  "patientDashboard": {
+    "noPatientSelected": "कोई रोगी चयनित नहीं है",
+    "markAsDiagnosedWithTB": "टीबी से ग्रसित के रूप में चिह्नित करें",
+    "personalDetails": "व्यक्तिगत विवरण",
+    "nikshayDetails": "निक्षय विवरण",
+    "medicalReport": "चिकित्सा रिपोर्ट",
+    "contactScreening": "संपर्क जांच",
+    "medicines": "दवाइयाँ",
+    "followUp": "अनुवर्ती"
+  }
+}

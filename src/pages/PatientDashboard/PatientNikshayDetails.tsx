@@ -51,6 +51,7 @@ const PatientNikshayDetails = ({ patientId, refresh }: any) => {
   const [error, setError] = useState<string | null>(null);
   const language = useSelector((state: any) => state.language.language);
   const [labels, setLabels] = useState<NikshayDetailsFormLabelsData>({
+    nikshayDetailsLabel: "",
     patientNameLabel: "",
     nikshayIdLabel: "",
     udstStatusLabel: { label: "", options: [] },

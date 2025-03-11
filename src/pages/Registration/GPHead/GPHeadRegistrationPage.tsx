@@ -20,8 +20,8 @@ import { z } from "zod";
 import { Role } from "../../../components/Authorization/Roles/Types";
 import axiosInstance from "../../../components/axiosInstance";
 import FormFieldRenderer from "../../../components/FormFieldRender";
-import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
+import { StateOption } from "../../../components/datatypes/DataTypes";
 
 const schema = z.object({
   firstName: z.string().min(1, "First name can't be empty"),
@@ -59,6 +59,10 @@ const GPHeadRegistrationPage = () => {
   });
 
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
+    registerTelecaller: "",
+    registerStateHead: "",
+    registerFieldCoordinator: "",
+    registerGpHead: "",
     userIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
@@ -222,7 +226,7 @@ const GPHeadRegistrationPage = () => {
           fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.75rem" },
         }}
       >
-        Register GP Head
+        {labels.registerGpHead}
       </Typography>
       <Divider sx={{ marginBottom: "30px" }} />
       <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>

@@ -26,6 +26,7 @@ export type NikshayDetailsData = {
 };
 
 export interface NikshayDetailsFormLabelsData {
+  nikshayDetailsLabel: string,
   patientNameLabel: string;
   nikshayIdLabel: string;
   udstStatusLabel: LabelOption;
@@ -115,6 +116,7 @@ const NikshayDetailsForm = ({
 }: any) => {
 
   const [labels, setLabels] = useState<NikshayDetailsFormLabelsData>({
+    nikshayDetailsLabel: "",
     patientNameLabel: "",
     nikshayIdLabel: "",
     udstStatusLabel: { label: "", options: [] },
@@ -194,7 +196,7 @@ const NikshayDetailsForm = ({
 
   return (
     <Box>
-      <Typography variant="h6">Nikshay Details</Typography>
+      <Typography variant="h6">{labels.nikshayDetailsLabel}</Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         {functionality === "register" && (
           <TextField

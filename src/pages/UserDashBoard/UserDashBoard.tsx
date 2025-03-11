@@ -16,6 +16,7 @@ import {
 import DeletePersonModal from "../../components/PatientDeletionModals/DeletePersonModal";
 import UserDetailsModal from "./UserDetailsModal";
 import UserPersonalDetails from "./UserPersonalDetails";
+import { useSelector } from "react-redux";
 
 interface SearchProps {
   role: string;
@@ -28,6 +29,9 @@ const UserDashBoard = ({ role }: SearchProps) => {
     TeleCaller | StateHead | FieldCoordinator | GPHead | null
   >(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [labels, setLabels] = useState<any>(null);
+  const language = useSelector((state:any) => state.language.language)
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +46,16 @@ const UserDashBoard = ({ role }: SearchProps) => {
 
     fetchData();
   }, [userId, role]);
+
+  useEffect(() => {
+    fetch(`/locales/user_dashboard_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.userDashboard))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
 
   const handleUpdate = (
     updatedUser: TeleCaller | StateHead | FieldCoordinator | GPHead
@@ -76,13 +90,13 @@ const UserDashBoard = ({ role }: SearchProps) => {
   const getTitle = (role: string) => {
     switch (role) {
       case "telecaller":
-        return "Telecaller Details";
+        return labels?.telecallerDetails;
       case "statehead":
-        return "Statehead Details";
+        return labels?.stateHeadDetails;
       case "fieldcoordinator":
-        return "Field Coordinator Details";
+        return labels?.fieldCoordinatorDetails;
       case "gphead":
-        return "GP Head details";
+        return labels?.gpHeadDetails;
     }
   };
 

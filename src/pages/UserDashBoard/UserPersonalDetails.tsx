@@ -23,6 +23,10 @@ const UserPersonalDetails = ({ user }: SearchProps) => {
     else if (user.hasOwnProperty("gpHeadId")) return "gpHeadId";
   };
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
+    registerTelecaller: "",
+    registerStateHead: "",
+    registerFieldCoordinator: "",
+    registerGpHead: "",
     userIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",

@@ -26,11 +26,14 @@
     "gender": "Gender",
     "age": "Age",
     "phone": "Phone",
+    "date": "Date",
     "followUpVisits": "Follow-up Visits",
     "noFollowUps": "No Follow-ups found",
     "scheduled": "Scheduled",
+    "status": "Status",
     "missed": "Missed",
     "captured": "Captured",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "nofollowupsFoundPleaseRegisterTbDetails": "No Follow Ups Found. Please register TB Details."
   }
 }

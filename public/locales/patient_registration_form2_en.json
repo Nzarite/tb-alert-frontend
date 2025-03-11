@@ -1,5 +1,6 @@
 {
   "tbdetailsform": {
+    "tbDetailsLabel":"TB Details",
     "patientNameLabel": "Name of the Patient",
     "typeOfPwtbLabel": {
       "label": "Type of PwTB",

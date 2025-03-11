@@ -1,5 +1,6 @@
 {
   "tbdetailsform": {
+    "tbDetailsLabel": "టీబీ వివరాలు",
     "patientNameLabel": "రోగి పేరు",
     "typeOfPwtbLabel": {
       "label": "PwTB రకం",

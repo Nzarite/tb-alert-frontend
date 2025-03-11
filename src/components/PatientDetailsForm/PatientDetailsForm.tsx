@@ -39,6 +39,7 @@ export type PatientDetailsData = {
 };
 
 export interface PatientDetailsFormLabelsData {
+  paientDetailsLabel: string,
   patientIdLabel: string;
   firstNameLabel: string;
   lastNameLabel: string;
@@ -90,6 +91,7 @@ const PatientDetailsForm = ({
   ) as Role[];
 
   const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
+    paientDetailsLabel: "",
     patientIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
@@ -128,7 +130,8 @@ const PatientDetailsForm = ({
   }, [language]);
 
   useEffect(() => {
-    fetch(`/locales/districts_${language}.json`)
+    // fetch(`/locales/districts_${language}.json`)
+    fetch(`/locales/districts_en.json`)
       .then((response) => response.json())
       .then((data) => setAllDistricts(data))
       .catch((err) => {
@@ -145,7 +148,7 @@ const PatientDetailsForm = ({
       );
 
       setBackendStates(stateNames);
-    } catch (error) {
+    } catch (error:any) {
       if (error.status === 401) {
         setBackendStates(userState);
       }
@@ -360,7 +363,7 @@ const PatientDetailsForm = ({
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h6">Patient Details</Typography>
+        <Typography variant="h6">{labels.paientDetailsLabel}</Typography>
         {formFields.map((field) =>
           field.type === "text" || field.type === "date" ? (
             <TextField

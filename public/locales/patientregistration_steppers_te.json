@@ -1,0 +1,10 @@
+{
+  "patientRegistration": {
+    "patientRegistration": "రోగి నమోదు",
+    "patientDetails": "రోగి వివరాలు",
+    "currentTbStatus": "ప్రస్తుత టిబి స్థితి",
+    "tbDetails": "టిబి వివరాలు",
+    "nikshayDetails": "నిక్షయ్ వివరాలు",
+    "contactScreeningDetails": "సంపర్క స్క్రీనింగ్ వివరాలు"
+  }
+}

@@ -1,5 +1,6 @@
 {
   "patientdetailsform": {
+    "paientDetailsLabel": "రోగి వివరాలు",
     "patientIdLabel": "రోగి ఐడి",
     "firstNameLabel": "మొదటి పేరు",
     "lastNameLabel": "చివరి పేరు",

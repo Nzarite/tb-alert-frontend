@@ -1,5 +1,6 @@
 {
   "patientdetailsform": {
+    "paientDetailsLabel": "रोगी विवरण",
     "patientIdLabel": "रोगी आईडी",
     "firstNameLabel": "पहला नाम",
     "lastNameLabel": "अंतिम नाम",

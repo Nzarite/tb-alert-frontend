@@ -17,10 +17,9 @@ import FormFieldRenderer from "../../../components/FormFieldRender";
 import axiosInstance from "../../../components/axiosInstance";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
-import { LabelOption } from "../../../components/datatypes/DataTypes";
+import { StateOption } from "../../../components/datatypes/DataTypes";
 import { ScTcRegistrationFormLabelsData } from "../StateHead/StateHeadRegistrationPage";
 import { Role } from "../../../components/Authorization/Roles/Types";
-import { StateOption } from "../../../components/PatientDetailsForm/PatientDetailsForm";
 import { toast } from "react-toastify";
 
 const schema = z.object({
@@ -59,6 +58,10 @@ const TelecallerRegistrationPage = () => {
   });
 
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
+    registerTelecaller: "",
+    registerStateHead: "",
+    registerFieldCoordinator: "",
+    registerGpHead: "",
     userIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
@@ -114,7 +117,7 @@ const TelecallerRegistrationPage = () => {
       );
 
       setBackendStates(stateNames);
-    } catch (error) {
+    } catch (error:any) {
       if(error.status === 401) setBackendStates(userState)
       console.error("Error fetching states:", error);
     }
@@ -221,7 +224,7 @@ const TelecallerRegistrationPage = () => {
           fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.75rem" },
         }}
       >
-        Register Telecaller
+        {labels.registerTelecaller}
       </Typography>
       <Divider sx={{ marginBottom: "30px" }} />
       <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>

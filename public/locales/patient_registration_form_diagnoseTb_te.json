@@ -1,5 +1,6 @@
 {
   "diagnoseWithTBForm": {
+    "diagnosedWithTBHeadingLabel": "టీబీ నిర్ధారణ చేయబడింది",
     "patientNameLabel": "రోగి పేరు",
     "diagnosedWithTBLabel": {
       "label": "టీబీ నిర్ధారణ చేయబడిందా?",

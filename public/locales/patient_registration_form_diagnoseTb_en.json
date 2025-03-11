@@ -1,5 +1,6 @@
 {
   "diagnoseWithTBForm": {
+    "diagnosedWithTBHeadingLabel": "Diagnosed With TB",
     "patientNameLabel": "Name of the Patient",
     "diagnosedWithTBLabel": {
       "label": "Diagnose With TB",

@@ -37,13 +37,13 @@ interface Props {
   getPatientData: (input: string) => void;
 }
 
-export const patientConditionLabels: { [key: number]: string } = {
-  1: "Need Urgent Support",
-  2: "Poor",
-  3: "Ok",
-  4: "Improving",
-  5: "Excellent",
-};
+// export const patientConditionLabels: { [key: number]: string } = {
+//   1: "Need Urgent Support",
+//   2: "Poor",
+//   3: "Ok",
+//   4: "Improving",
+//   5: "Excellent",
+// };
 
 const schema = z.object({
   remarks: z.string().min(1, "Description can't be null"),
@@ -77,6 +77,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [labels, setLabels] = useState<any>(null);
   const language = useSelector((state: any) => state.language.language);
+  const [patientConditionLabels, setPatientConditionLabels] = useState<{ [key: number]: string }>({});
 
   const {
     control,
@@ -123,7 +124,10 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   useEffect(() => {
     fetch(`/locales/followup_page_${language}.json`)
       .then((response) => response.json())
-      .then((data) => setLabels(data.followuppage))
+      .then((data) => {
+        setLabels(data.followuppage)
+        setPatientConditionLabels(data.followuppage.patientConditionLabels)
+      })
       .catch((error) => {
         console.error("Error loading form labels file:", error);
         alert("Failed to load form labels data. Please try again.");

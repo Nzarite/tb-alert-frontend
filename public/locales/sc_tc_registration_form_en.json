@@ -1,5 +1,9 @@
 {
   "scandtcregistrationform": {
+    "registerTelecaller": "Register Telecaller",
+    "registerStateHead": "Register State Head",
+    "registerFieldCoordinator": "Register Field Coordinator",
+    "registerGpHead": "Register GP Head",
     "userIdLabel": "User ID",
     "firstNameLabel": "First Name",
     "lastNameLabel": "Last Name",

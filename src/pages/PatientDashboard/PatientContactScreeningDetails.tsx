@@ -20,6 +20,7 @@ const PatientContactScreeningDetails = ({ patientId, refresh }: any) => {
   const [error, setError] = useState<string | null>(null);
   const language = useSelector((state: any) => state.language.language);
   const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
+    contactScreeningDetailsLabel: "",
     patientNameLabel: "",
     contactScreeningDoneLabel: { label: "", options: [] },
     dateOfContactScreeningLabel: "",

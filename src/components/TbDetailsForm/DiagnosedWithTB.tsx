@@ -22,6 +22,7 @@ export type DiagnosedWithTBData = {
 };
 
 export interface DiagnosedWithTBLabelsData {
+  diagnosedWithTBHeadingLabel: string;
   diagnosedWithTBLabel: LabelOption;
   patientNameLabel: string;
 }
@@ -43,6 +44,7 @@ const DiagnosedWithTB = ({
   patientId,
 }: any) => {
   const [labels, setLabels] = useState<DiagnosedWithTBLabelsData>({
+    diagnosedWithTBHeadingLabel: "",
     diagnosedWithTBLabel: { label: "", options: [] },
     patientNameLabel: "",
   });
@@ -102,7 +104,7 @@ const DiagnosedWithTB = ({
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h6">Diagnosed With TB</Typography>
+        <Typography variant="h6">{labels.diagnosedWithTBHeadingLabel}</Typography>
         {functionality === "register" && (
           <TextField
             label={labels.patientNameLabel}

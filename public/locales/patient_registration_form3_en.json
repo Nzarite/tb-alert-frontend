@@ -1,5 +1,6 @@
 {
   "nikshaydetailsform": {
+    "nikshayDetailsLabel": "Nikshay Details",
     "patientNameLabel": "Name of the Patient",
     "nikshayIdLabel": "Nikshay Id",
     "udstStatusLabel": {

@@ -1,15 +1,9 @@
 import { useState, useEffect } from "react";
 import {
   Box,
-  Container,
   Typography,
   Button,
-  Stepper,
-  Step,
-  StepLabel,
   TextField,
-  Grid,
-  Paper,
   CircularProgress,
 } from "@mui/material";
 import { useForm, Controller, useWatch } from "react-hook-form";
@@ -33,6 +27,7 @@ export type ContactScreeningData = {
 };
 
 export interface ContactScreeningDetailsFormLabelsData {
+  contactScreeningDetailsLabel: string;
   patientNameLabel: string;
   contactScreeningDoneLabel: LabelOption;
   dateOfContactScreeningLabel: string;
@@ -74,6 +69,7 @@ const ContactScreeningDetailsForm = ({
 }: any) => {
 
   const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
+    contactScreeningDetailsLabel: "",
     patientNameLabel: "",
     contactScreeningDoneLabel: { label: "", options: [] },
     dateOfContactScreeningLabel: "",
@@ -145,7 +141,7 @@ const ContactScreeningDetailsForm = ({
 
   return (
     <Box>
-      <Typography variant="h6">Contact Screening Details</Typography>
+      <Typography variant="h6">{labels.contactScreeningDetailsLabel}</Typography>
       <form onSubmit={handleSubmit(onFormSubmit)}>
         {functionality === "register" && (
           <TextField

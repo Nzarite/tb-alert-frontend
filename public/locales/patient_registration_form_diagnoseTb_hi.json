@@ -1,5 +1,6 @@
 {
   "diagnoseWithTBForm": {
+    "diagnosedWithTBHeadingLabel": "टीबी का निदान किया गया",
     "patientNameLabel": "रोगी का नाम",
     "diagnosedWithTBLabel": {
       "label": "टीबी का निदान किया गया",

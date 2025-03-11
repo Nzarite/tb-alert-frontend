@@ -1,5 +1,9 @@
 {
   "scandtcregistrationform": {
+    "registerTelecaller": "टेली-कॉलर पंजीकरण",
+    "registerStateHead": "राज्य प्रमुख पंजीकरण",
+    "registerFieldCoordinator": "फील्ड समन्वयक पंजीकरण",
+    "registerGpHead": "ग्राम पंचायत प्रमुख पंजीकरण",
     "userIdLabel": "यूज़र आईडी",
     "firstNameLabel": "पहला नाम",
     "lastNameLabel": "अंतिम नाम",

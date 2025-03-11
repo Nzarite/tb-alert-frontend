@@ -11,6 +11,7 @@ const PatientPersonalDetails = ({ patientId, refreshKey }: any) => {
   const [error, setError] = useState<string | null>(null);
   const language = useSelector((state: any) => state.language.language);
   const [labels, setLabels] = useState<PatientDetailsFormLabelsData>({
+    paientDetailsLabel: "",
     patientIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
@@ -24,6 +25,8 @@ const PatientPersonalDetails = ({ patientId, refreshKey }: any) => {
     consentForMessageLabel: { label: "", options: [] },
     currentStatusLabel: "",
     stateLabel: "",
+    reminderTimeLabel: "",
+    createdByLabel: "",
   });
 
   useEffect(() => {

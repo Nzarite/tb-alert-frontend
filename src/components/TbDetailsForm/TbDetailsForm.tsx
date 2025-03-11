@@ -22,6 +22,7 @@ export type TbDetailsData = {
 };
 
 export interface TbDetailsFormLabelsData {
+  tbDetailsLabel: string,
   patientNameLabel: string;
   typeOfPwtbLabel: LabelOption;
   clinicalOrMicrobiologicalLabel: LabelOption;
@@ -66,6 +67,7 @@ const TbDetailsForm = ({
 }: any) => {
 
   const [labels, setLabels] = useState<TbDetailsFormLabelsData>({
+    tbDetailsLabel: "",
     patientNameLabel: "",
     typeOfPwtbLabel: { label: "", options: [] },
     clinicalOrMicrobiologicalLabel: { label: "", options: [] },
@@ -157,7 +159,7 @@ const TbDetailsForm = ({
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h6">TB Details</Typography>
+        <Typography variant="h6">{labels.tbDetailsLabel}</Typography>
         {functionality === "register" && (
           <TextField
             label={labels.patientNameLabel}

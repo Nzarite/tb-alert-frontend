@@ -1,5 +1,6 @@
 {
   "patientdetailsform": {
+    "paientDetailsLabel": "Patient Details",
     "patientIdLabel": "Patient ID",
     "firstNameLabel": "First Name",
     "lastNameLabel": "Last Name",

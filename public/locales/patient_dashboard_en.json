@@ -1,0 +1,12 @@
+{
+  "patientDashboard": {
+    "noPatientSelected": "No patient selected",
+    "markAsDiagnosedWithTB": "Mark as Diagnosed with TB",
+    "personalDetails": "Personal Details",
+    "nikshayDetails": "Nikshay Details",
+    "medicalReport": "Medical Report",
+    "contactScreening": "Contact Screening",
+    "medicines": "Medicines",
+    "followUp": "Follow Up"
+  }
+}

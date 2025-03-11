@@ -1,0 +1,10 @@
+{
+  "patientRegistration": {
+    "patientRegistration": "Patient Registration",
+    "patientDetails": "Patient Details",
+    "currentTbStatus": "Current TB Status",
+    "tbDetails": "TB Details",
+    "nikshayDetails": "Nikshay Details",
+    "contactScreeningDetails": "Contact Screening Details"
+  }
+}

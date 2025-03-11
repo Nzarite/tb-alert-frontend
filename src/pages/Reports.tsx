@@ -15,6 +15,7 @@ import axiosInstance from "../components/axiosInstance";
 import { useSelector } from "react-redux";
 import { useAuth } from "react-oidc-context";
 import { StateOption } from "../components/datatypes/DataTypes";
+import { Role } from "../components/Authorization/Roles/Types";
 
 const Reports = () => {
   const auth = useAuth();

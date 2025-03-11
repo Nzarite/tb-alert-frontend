@@ -1,0 +1,39 @@
+{
+  "followuppage": {
+    "followUp": "ఫాలో అప్",
+    "isPatientAlive": "రోగి జీవించి ఉన్నారా?",
+    "isPatientCured": "రోగి పూర్తిగా కోలుకున్నారా?",
+    "patientCondition": "రోగి పరిస్థితి",
+    "recoveryStatus": "పునరుద్ధరణ స్థితి",
+    "enterConditionDetail": "దయచేసి రోగి పరిస్థితిని వివరంగా నమోదు చేయండి",
+    "medicationName": "మందుల పేరు",
+    "missedDoses": "మిస్సైన మోతాదులు",
+    "comments": "వ్యాఖ్యలు",
+    "noMedicationsFound": "ఏ మందులు కనుగొనబడలేదు",
+    "pleaseCompleteTbDetailsRegistration": "దయచేసి రోగి యొక్క టి.బి వివరాల నమోదు పూర్తి చేయండి",
+    "registerTbDetails": "టి.బి వివరాలు నమోదు చేయండి",
+    "patientConditionLabels": {
+      "1": "తక్షణ సహాయం అవసరం",
+      "2": "చాలా తక్కువ",
+      "3": "సరసమైనది",
+      "4": "మెరుగుపడుతోంది",
+      "5": "అత్యుత్తమం"
+    },
+    "addFollowUp": "ఫాలో అప్ జోడించండి",
+    "pleaseEnterDateOfNextFollowUp": "దయచేసి తదుపరి ఫాలో-అప్ తేదీ నమోదు చేయండి",
+    "patientOverview": "రోగి అవలోకనం",
+    "name": "పేరు",
+    "gender": "లింగం",
+    "age": "వయస్సు",
+    "phone": "ఫోన్",
+    "date": "తేదీ",
+    "followUpVisits": "ఫాలో అప్ సందర్శనలు",
+    "noFollowUps": "ఏ ఫాలో అప్ లభించలేదు",
+    "scheduled": "షెడ్యూల్ చేయబడింది",
+    "status": "స్థితి",
+    "missed": "మిస్సైంది",
+    "captured": "నమోదు చేయబడింది",
+    "cancelled": "రద్దు చేయబడింది",
+    "nofollowupsFoundPleaseRegisterTbDetails": "ఫాలో అప్‌లు కనుగొనబడలేదు. దయచేసి టిబి వివరాలను నమోదు చేయండి."
+  }
+}

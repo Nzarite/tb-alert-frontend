@@ -5,7 +5,6 @@ import ListItemText from "@mui/material/ListItemText";
 import { useEffect, useState } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
-import FollowUpStatus from "../../components/Json/FollowUpStatus.json";
 import AddFollowupDialog from "./AddFollowupDialog";
 import { useSelector } from "react-redux";
 
@@ -15,50 +14,6 @@ interface FollowUpSidebarProps {
   data: VisitDataInterface;
   getPatientData: (input: string) => void;
 }
-
-export const getStatusColor = (
-  dateOfFollowUp: string,
-  followUpStatus: string
-) => {
-  if (followUpStatus === FollowUpStatus.Cancelled) return "primary";
-
-  const today = new Date();
-  const dof = new Date(dateOfFollowUp);
-
-  // Normalize both dates to midnight for accurate date-only comparison
-  today.setHours(0, 0, 0, 0);
-  dof.setHours(0, 0, 0, 0);
-
-  if (dof.getTime() > today.getTime()) return "warning";
-  if (dof.getTime() === today.getTime())
-    return followUpStatus === FollowUpStatus.Missed ? "warning" : "success";
-  return followUpStatus === FollowUpStatus.Missed ? "error" : "success";
-};
-
-export const getStatusName = (
-  dateOfFollowUp: string,
-  followUpStatus: string
-) => {
-  if (followUpStatus === FollowUpStatus.Cancelled)
-    return FollowUpStatus.Cancelled;
-
-  const today = new Date();
-  const dof = new Date(dateOfFollowUp);
-
-  // Normalize both dates to midnight
-  today.setHours(0, 0, 0, 0);
-  dof.setHours(0, 0, 0, 0);
-
-  if (dof.getTime() > today.getTime()) return FollowUpStatus.Scheduled;
-  if (dof.getTime() === today.getTime()) {
-    return followUpStatus === FollowUpStatus.Missed
-      ? FollowUpStatus.Scheduled
-      : FollowUpStatus.Captured;
-  }
-  return followUpStatus === FollowUpStatus.Missed
-    ? FollowUpStatus.Missed
-    : FollowUpStatus.Captured;
-};
 
 export default function FollowUpSidebar({
   selectedIndex,
@@ -81,9 +36,53 @@ export default function FollowUpSidebar({
       });
   }, [language]);
 
+  const getStatusColor = (
+    dateOfFollowUp: string,
+    followUpStatus: string
+  ) => {
+    if (followUpStatus === labels?.cancelled) return "primary";
+  
+    const today = new Date();
+    const dof = new Date(dateOfFollowUp);
+  
+    // Normalize both dates to midnight for accurate date-only comparison
+    today.setHours(0, 0, 0, 0);
+    dof.setHours(0, 0, 0, 0);
+  
+    if (dof.getTime() > today.getTime()) return "warning";
+    if (dof.getTime() === today.getTime())
+      return followUpStatus === labels?.missed ? "warning" : "success";
+    return followUpStatus === labels?.missed ? "error" : "success";
+  };
+  
+  const getStatusName = (
+    dateOfFollowUp: string,
+    followUpStatus: string
+  ) => {
+    if (followUpStatus === labels?.cancelled)
+      return labels?.cancelled;
+  
+    const today = new Date();
+    const dof = new Date(dateOfFollowUp);
+  
+    // Normalize both dates to midnight
+    today.setHours(0, 0, 0, 0);
+    dof.setHours(0, 0, 0, 0);
+  
+    if (dof.getTime() > today.getTime()) return labels?.scheduled;
+    if (dof.getTime() === today.getTime()) {
+      return followUpStatus === labels?.missed
+        ? labels?.scheduled
+        : labels?.captured;
+    }
+    return followUpStatus === labels?.missed
+      ? labels?.missed
+      : labels?.captured;
+  };
+
   // Enables/disables list button based on followup status and date
   const isEditable = (followUpStatus: string, dateOfFollowUp: string) => {
-    if (followUpStatus === FollowUpStatus.Cancelled) return false;
+    if (followUpStatus === labels?.cancelled) return false;
 
     const today = Date.now();
     const dof = Date.parse(dateOfFollowUp);

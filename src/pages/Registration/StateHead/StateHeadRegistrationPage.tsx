@@ -17,7 +17,10 @@ import axiosInstance from "../../../components/axiosInstance";
 import { useSelector } from "react-redux";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
-import { LabelOption, StateOption} from "../../../components/datatypes/DataTypes";
+import {
+  LabelOption,
+  StateOption,
+} from "../../../components/datatypes/DataTypes";
 import { toast } from "react-toastify";
 import { RootState } from "../../../redux/store";
 
@@ -40,6 +43,10 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export interface ScTcRegistrationFormLabelsData {
+  registerTelecaller: string;
+  registerStateHead: string;
+  registerFieldCoordinator: string;
+  registerGpHead: string;
   userIdLabel: string;
   firstNameLabel: string;
   lastNameLabel: string;
@@ -69,6 +76,10 @@ const StateHeadRegistrationPage = () => {
   });
 
   const [labels, setLabels] = useState<ScTcRegistrationFormLabelsData>({
+    registerTelecaller: "",
+    registerStateHead: "",
+    registerFieldCoordinator: "",
+    registerGpHead: "",
     userIdLabel: "",
     firstNameLabel: "",
     lastNameLabel: "",
@@ -219,7 +230,7 @@ const StateHeadRegistrationPage = () => {
           fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.75rem" },
         }}
       >
-        Register State Head
+        {labels.registerStateHead}
       </Typography>
       <Divider sx={{ marginBottom: "30px" }} />
       <Box component="form" onSubmit={handleSubmit(formSubmitHandler)}>

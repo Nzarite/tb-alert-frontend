@@ -1,0 +1,12 @@
+{
+  "patientDashboard": {
+    "noPatientSelected": "ఏ రోగిని ఎంచుకోలేదు",
+    "markAsDiagnosedWithTB": "టీబీ నిర్ధారణ చేయబడినట్లు గుర్తించండి",
+    "personalDetails": "వ్యక్తిగత వివరాలు",
+    "nikshayDetails": "నిక్షయ్ వివరాలు",
+    "medicalReport": "వైద్య నివేదిక",
+    "contactScreening": "సంపర్క స్క్రీనింగ్",
+    "medicines": "మందులు",
+    "followUp": "ఫాలో అప్"
+  }
+}

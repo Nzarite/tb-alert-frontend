@@ -1,5 +1,6 @@
 {
   "tbdetailsform": {
+    "tbDetailsLabel": "टीबी विवरण",
     "patientNameLabel": "रोगी का नाम",
     "typeOfPwtbLabel": {
       "label": "PwTB का प्रकार",

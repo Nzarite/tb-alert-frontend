@@ -34,6 +34,7 @@ import PatientMedicalDetails from "./PatientMedicalDetails";
 import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
+import { useSelector } from "react-redux";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();
@@ -48,6 +49,18 @@ const PatientDashboardPage = () => {
   const canDiagnose = roles.includes("GpHead");
   const [diagnosedWithTB, setDiagnosedWithTB] = useState<boolean>(true);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [labels, setLabels] = useState<any>(null);
+  const language = useSelector((state: any) => state.language.language);
+
+  useEffect(() => {
+    fetch(`/locales/patient_dashboard_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.patientDashboard))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
 
   useEffect(() => {
     const fetchUserDiagnosis = async () => {
@@ -97,7 +110,7 @@ const PatientDashboardPage = () => {
   };
 
   if (!patientId) {
-    return <Typography variant="h6">No patient selected</Typography>;
+    return <Typography variant="h6">{labels?.noPatientSelected}</Typography>;
   }
 
   return (
@@ -112,7 +125,7 @@ const PatientDashboardPage = () => {
       >
         {!diagnosedWithTB && canDiagnose && (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography variant="body1">Mark as Diagnosed with TB</Typography>
+            <Typography variant="body1">{labels?.markAsDiagnosedWithTB}</Typography>
             <Switch
               checked={diagnosedWithTB}
               onChange={() => setConfirmDialogOpen(true)}
@@ -151,7 +164,7 @@ const PatientDashboardPage = () => {
       <Grid container spacing={2} sx={{ p: 2 }}>
         {[
           {
-            title: "Personal Details",
+            title: labels?.personalDetails,
             component: (
               <PatientPersonalDetails
                 patientId={patientId}
@@ -165,7 +178,7 @@ const PatientDashboardPage = () => {
             hidden: true,
           },
           {
-            title: "Nikshay Details",
+            title: labels?.nikshayDetails,
             component: (
               <PatientNikshayDetails
                 patientId={patientId}
@@ -179,7 +192,7 @@ const PatientDashboardPage = () => {
             hidden: diagnosedWithTB,
           },
           {
-            title: "Medical Report",
+            title: labels?.medicalReport,
             component: (
               <PatientMedicalDetails
                 patientId={patientId}
@@ -193,7 +206,7 @@ const PatientDashboardPage = () => {
             hidden: diagnosedWithTB,
           },
           {
-            title: "Contact Screening",
+            title: labels?.contactScreening,
             component: (
               <PatientContactScreeningDetails
                 patientId={patientId}
@@ -207,7 +220,7 @@ const PatientDashboardPage = () => {
             hidden: diagnosedWithTB,
           },
           {
-            title: "Medicines",
+            title: labels?.medicines,
             component: <PatientMedicineDetails patientId={patientId} />,
             icon: <MdVaccines style={{ fontSize: "20px" }} />,
             size: 6,
@@ -215,7 +228,7 @@ const PatientDashboardPage = () => {
             hidden: diagnosedWithTB,
           },
           {
-            title: "Follow Up",
+            title: labels?.followUp,
             component: <PatientFollowUpDetails patientId={patientId} />,
             icon: <MdAssessment style={{ fontSize: "22px" }} />,
             size: 6,

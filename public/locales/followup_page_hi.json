@@ -1,0 +1,39 @@
+{
+  "followuppage": {
+    "followUp": "अनुवर्ती जांच",
+    "isPatientAlive": "क्या मरीज जीवित है?",
+    "isPatientCured": "क्या मरीज ठीक हो गया है?",
+    "patientCondition": "मरीज की स्थिति",
+    "recoveryStatus": "स्वास्थ्य स्थिति",
+    "enterConditionDetail": "कृपया मरीज की स्थिति का विस्तृत विवरण दर्ज करें",
+    "medicationName": "दवा का नाम",
+    "missedDoses": "छूटी हुई खुराकें",
+    "comments": "टिप्पणियाँ",
+    "noMedicationsFound": "कोई दवा नहीं मिली",
+    "pleaseCompleteTbDetailsRegistration": "कृपया मरीज के टीबी विवरण का पंजीकरण पूरा करें",
+    "registerTbDetails": "टीबी विवरण पंजीकृत करें",
+    "patientConditionLabels": {
+      "1": "तत्काल सहायता की आवश्यकता",
+      "2": "बहुत खराब",
+      "3": "संतोषजनक",
+      "4": "सुधर रहा है",
+      "5": "बहुत अच्छा"
+    },
+    "addFollowUp": "अनुवर्ती जांच जोड़ें",
+    "pleaseEnterDateOfNextFollowUp": "कृपया अगली फॉलो-अप तिथि दर्ज करें",
+    "patientOverview": "मरीज का विवरण",
+    "name": "नाम",
+    "gender": "लिंग",
+    "age": "आयु",
+    "phone": "फ़ोन",
+    "date": "तारीख",
+    "followUpVisits": "अनुवर्ती जांच विज़िट्स",
+    "noFollowUps": "कोई फॉलो-अप नहीं मिला",
+    "scheduled": "अनुसूचित",
+    "status": "स्थिति",
+    "missed": "छूट गया",
+    "captured": "रिकॉर्ड किया गया",
+    "cancelled": "रद्द किया गया",
+    "nofollowupsFoundPleaseRegisterTbDetails": "कोई अनुवर्ती नहीं मिला। कृपया टीबी विवरण पंजीकृत करें।"
+  }
+}
