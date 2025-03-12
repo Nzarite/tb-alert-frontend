@@ -42,19 +42,36 @@ export interface ContactScreeningDetailsFormLabelsData {
   noOfHHCsInitiatedTPTLabel: string;
 }
 
-const contactScreeningDetailsSchema = z.object({
-  contactScreeningDone: z.boolean(),
-  dateOfContactScreening: z.string().optional(),
-  noOfHHCsAvailable: z.number().optional(),
-  noOfHHCsScreened: z.number().optional(),
-  noOfHHCsWithTBSymptoms: z.number().optional(),
-  noOfHHCsReferredTBTesting: z.number().optional(),
-  noOfHHCsDiagnosedTB: z.number().optional(),
-  noOfHHCsTBInitiatedATT: z.number().optional(),
-  noOfHHCsUndergoneLTBITest: z.number().optional(),
-  noOfEligibleForTPT: z.number().optional(),
-  noOfHHCsInitiatedTPT: z.number().optional(),
-});
+const contactScreeningDetailsSchema = z
+  .object({
+    contactScreeningDone: z.boolean(),
+    dateOfContactScreening: z.string().optional(),
+    noOfHHCsAvailable: z.number().optional(),
+    noOfHHCsScreened: z.number().optional(),
+    noOfHHCsWithTBSymptoms: z.number().optional(),
+    noOfHHCsReferredTBTesting: z.number().optional(),
+    noOfHHCsDiagnosedTB: z.number().optional(),
+    noOfHHCsTBInitiatedATT: z.number().optional(),
+    noOfHHCsUndergoneLTBITest: z.number().optional(),
+    noOfEligibleForTPT: z.number().optional(),
+    noOfHHCsInitiatedTPT: z.number().optional(),
+  })
+  .superRefine((data, ctx) => {
+    const isValidDate = (dateStr: string) => !isNaN(Date.parse(dateStr));
+
+    if (data.contactScreeningDone) {
+      if (
+        !data.dateOfContactScreening ||
+        !isValidDate(data.dateOfContactScreening)
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Valid date is required",
+          path: ["dateOfContactScreening"],
+        });
+      }
+    }
+  });
 
 const ContactScreeningDetailsForm = ({
   language,
@@ -67,7 +84,6 @@ const ContactScreeningDetailsForm = ({
   patientName,
   loading,
 }: any) => {
-
   const [labels, setLabels] = useState<ContactScreeningDetailsFormLabelsData>({
     contactScreeningDetailsLabel: "",
     patientNameLabel: "",
@@ -141,7 +157,9 @@ const ContactScreeningDetailsForm = ({
 
   return (
     <Box>
-      <Typography variant="h6">{labels.contactScreeningDetailsLabel}</Typography>
+      <Typography variant="h6">
+        {labels.contactScreeningDetailsLabel}
+      </Typography>
       <form onSubmit={handleSubmit(onFormSubmit)}>
         {functionality === "register" && (
           <TextField
@@ -158,8 +176,15 @@ const ContactScreeningDetailsForm = ({
             }}
           />
         )}
-        <FormControl fullWidth margin="normal">
-          <InputLabel>{labels.contactScreeningDoneLabel.label}</InputLabel>
+        <FormControl
+          fullWidth
+          margin="normal"
+          error={!!errors.contactScreeningDone}
+          variant="outlined"
+        >
+          <InputLabel shrink={true} id="contactScreening-status-label">
+            {labels.contactScreeningDoneLabel.label}
+          </InputLabel>
           <Controller
             name="contactScreeningDone"
             control={control}
@@ -167,11 +192,16 @@ const ContactScreeningDetailsForm = ({
             render={({ field }) => (
               <Select
                 {...field}
+                labelId="contactScreening-status-label"
                 value={field.value ?? ""}
+                displayEmpty
+                label={labels.contactScreeningDoneLabel.label}
+                notched={true}
                 onChange={(e) => {
                   const value = e.target.value === "true";
                   field.onChange(value);
                   if (!value) {
+                    setValue("dateOfContactScreening", "");
                     Object.keys(labels).forEach((key) =>
                       setValue(key as keyof ContactScreeningData, "")
                     );
@@ -189,6 +219,9 @@ const ContactScreeningDetailsForm = ({
               </Select>
             )}
           />
+          <Typography variant="caption" color="error">
+            {errors.contactScreeningDone?.message}
+          </Typography>
         </FormControl>
 
         {contactScreeningDone && (

@@ -4,7 +4,7 @@ import axios from "axios";
 // import { store } from "../store/store";
 
 const BACKEND_SERVICE_NAME =
-  "http://" + (import.meta.env.VITE_BACKEND_SERVICE_NAME || "localhost");
+  "http://" + (import.meta.env.VITE_BACKEND_SERVICE_NAME || "localhost:8080");
 // const SERVER_PORT = import.meta.env.VITE_SPRINGBOOT_HOST_PORT || "8080";
 
 const axiosInstance = axios.create({

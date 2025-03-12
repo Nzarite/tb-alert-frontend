@@ -3,10 +3,12 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControl, InputLabel,
-  MenuItem, Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -26,7 +28,7 @@ export type NikshayDetailsData = {
 };
 
 export interface NikshayDetailsFormLabelsData {
-  nikshayDetailsLabel: string,
+  nikshayDetailsLabel: string;
   patientNameLabel: string;
   nikshayIdLabel: string;
   udstStatusLabel: LabelOption;
@@ -114,7 +116,6 @@ const NikshayDetailsForm = ({
   patientName,
   loading,
 }: any) => {
-
   const [labels, setLabels] = useState<NikshayDetailsFormLabelsData>({
     nikshayDetailsLabel: "",
     patientNameLabel: "",
@@ -224,8 +225,10 @@ const NikshayDetailsForm = ({
           margin="normal"
         />
 
-        <FormControl fullWidth margin="normal" error={!!errors.udstStatus}>
-          <InputLabel>{labels.udstStatusLabel.label}</InputLabel>
+        <FormControl fullWidth margin="normal" error={!!errors.udstStatus} variant="outlined">
+          <InputLabel shrink={true} id="udst-status-label">
+            {labels.udstStatusLabel.label}
+          </InputLabel>
           <Controller
             name="udstStatus"
             control={control}
@@ -233,7 +236,11 @@ const NikshayDetailsForm = ({
             render={({ field }) => (
               <Select
                 {...field}
+                labelId="udst-status-label"
                 value={field.value ?? ""}
+                displayEmpty
+                label={labels.udstStatusLabel.label}
+                notched={true}
                 onChange={(e) => {
                   const value = e.target.value === "true";
                   field.onChange(value);
@@ -286,14 +293,22 @@ const NikshayDetailsForm = ({
         )}
 
         {udstStatus && (
-          <FormControl fullWidth margin="normal" error={!!errors.resultOfUdst}>
-            <InputLabel>{labels.resultOfUdstLabel.label}</InputLabel>
+          <FormControl fullWidth margin="normal" error={!!errors.resultOfUdst} variant="outlined">
+            <InputLabel shrink={true} id="resultOfUdst-label">
+              {labels.resultOfUdstLabel.label}
+            </InputLabel>
             <Controller
               name="resultOfUdst"
               control={control}
               disabled={loading}
               render={({ field }) => (
-                <Select {...field}>
+                <Select
+                  {...field}
+                  labelId="resultOfUdst-label"
+                  displayEmpty
+                  label={labels.resultOfUdstLabel.label}
+                  notched={true}
+                >
                   {labels.resultOfUdstLabel.options.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                       {option.label}
@@ -308,8 +323,15 @@ const NikshayDetailsForm = ({
           </FormControl>
         )}
 
-        <FormControl fullWidth margin="normal" error={!!errors.dbtStatus}>
-          <InputLabel>{labels.dbtStatusLabel.label}</InputLabel>
+        <FormControl
+          fullWidth
+          margin="normal"
+          error={!!errors.dbtStatus}
+          variant="outlined"
+        >
+          <InputLabel shrink={true} id="dbt-status-label">
+            {labels.dbtStatusLabel.label}
+          </InputLabel>
           <Controller
             name="dbtStatus"
             control={control}
@@ -317,7 +339,11 @@ const NikshayDetailsForm = ({
             render={({ field }) => (
               <Select
                 {...field}
+                labelId="dbt-status-label"
                 value={field.value ?? ""}
+                displayEmpty
+                label={labels.dbtStatusLabel.label}
+                notched={true}
                 onChange={(e) => {
                   const value = e.target.value === "true";
                   field.onChange(value);
@@ -370,15 +396,22 @@ const NikshayDetailsForm = ({
           margin="normal"
           disabled={loading}
           error={!!errors.nikshayMitraStatus}
+          variant="outlined"
         >
-          <InputLabel>{labels.nikshayMitraStatusLabel.label}</InputLabel>
+          <InputLabel shrink={true} id="nikshaymitra-status-label">
+            {labels.nikshayMitraStatusLabel.label}
+          </InputLabel>
           <Controller
             name="nikshayMitraStatus"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
+                labelId="nikshaymitra-status-label"
                 value={field.value ?? ""}
+                displayEmpty
+                label={labels.nikshayMitraStatusLabel.label}
+                notched={true}
                 onChange={(e) => {
                   const value = e.target.value === "true";
                   field.onChange(value);
