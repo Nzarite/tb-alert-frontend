@@ -112,10 +112,14 @@ const EditPatientDetailsModal = ({ open, onClose, prop, patientId }: any) => {
         response = await axiosInstance.post(posturl, {
           ...updatedData,
           patientId,
+          updatedBy: userEmail,
         });
         console.log("Data created successfully!", response.data);
       } else if (JSON.stringify(updatedData) !== JSON.stringify(originalData)) {
-        response = await axiosInstance.put(updateurl, updatedData);
+        response = await axiosInstance.put(updateurl, {
+          ...updatedData,
+          updatedBy: userEmail,
+        });
         console.log("Data updated successfully!", response.data);
       } else {
         console.log("No changes detected. Skipping update.");

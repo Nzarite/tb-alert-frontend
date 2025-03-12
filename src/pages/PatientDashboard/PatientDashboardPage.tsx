@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -31,6 +32,7 @@ import PatientMedicineDetails from "./PatientMedicineDetails";
 import PatientNikshayDetails from "./PatientNikshayDetails";
 import PatientPersonalDetails from "./PatientPersonalDetails";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
 
 const PatientDashboardPage = () => {
   const { patientId } = useParams<{ patientId: string }>();

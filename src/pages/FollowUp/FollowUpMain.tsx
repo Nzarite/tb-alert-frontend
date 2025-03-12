@@ -29,6 +29,9 @@ import {
 } from "../../components/datatypes/DataTypes";
 import axiosInstance from "../../components/axiosInstance";
 import EditPatientDetailsModal from "../../components/PatientRegistrationModals/EditPatientDetailsModal";
+import { useAuth } from "react-oidc-context";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 interface Props {
   index: number;
@@ -74,6 +77,12 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const auth = useAuth();
+
+  const userEmail =
+    useSelector((state: RootState) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
 
   const {
     control,
@@ -124,7 +133,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
     }`;
   }
 
-  const handleModalClose = async() => {
+  const handleModalClose = async () => {
     setModalOpen(false);
     if (data?.patient.patientId) {
       await getPatientData(data.patient.patientId.toString());
@@ -139,6 +148,7 @@ const FollowUpFormComponent = ({ index, data, getPatientData }: Props) => {
         ...formData,
         date: data?.followUpDetails[index].date,
         currentStatus: formData.currentStatus ? "alive" : "dead",
+        updatedBy: userEmail,
       };
       await axiosInstance.put(
         `/followup/${data?.patient.patientId}`,
