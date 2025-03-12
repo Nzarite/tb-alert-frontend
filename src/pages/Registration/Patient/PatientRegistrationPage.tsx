@@ -34,6 +34,7 @@ import TbDetailsForm, {
 } from "../../../components/TbDetailsForm/TbDetailsForm";
 import axiosInstance from "../../../components/axiosInstance";
 import { RootState } from "../../../redux/store";
+import { Role } from "../../../components/Authorization/Roles/Types";
 
 const PatientRegistrationPage = () => {
   const location = useLocation();
@@ -54,24 +55,29 @@ const PatientRegistrationPage = () => {
   const userEmail =
     useSelector((state: RootState) => state.user?.profile?.email) ||
     auth.user?.profile?.email;
-  const userRole = auth.user?.profile.client_roles || {};
+  const userRole: Role[] = useSelector(
+    (state: any) =>
+      state.user?.profile?.client_roles || auth?.user?.profile?.client_roles
+  ) as Role[];
+
+  const isTelecaller = userRole.length === 1 && userRole.includes("Telecaller");
 
   useEffect(() => {
-      fetch(`/locales/patientregistration_steppers_${language}.json`)
-        .then((response) => response.json())
-        .then((data) => setLabels(data.patientRegistration))
-        .catch((error) => {
-          console.error("Error loading form labels file:", error);
-          alert("Failed to load form labels data. Please try again.");
-        });
-    }, [language]);
+    fetch(`/locales/patientregistration_steppers_${language}.json`)
+      .then((response) => response.json())
+      .then((data) => setLabels(data.patientRegistration))
+      .catch((error) => {
+        console.error("Error loading form labels file:", error);
+        alert("Failed to load form labels data. Please try again.");
+      });
+  }, [language]);
 
   const steps = [
     labels?.patientDetails,
-    labels?.currentTbStatus,
+    ...(isTelecaller ? [] : [labels?.currentTbStatus]),
     labels?.tbDetails,
     labels?.nikshayDetails,
-    labels?.contactScreeningDetails
+    labels?.contactScreeningDetails,
   ];
 
   const [formData, setFormData] = useState({
@@ -101,10 +107,18 @@ const PatientRegistrationPage = () => {
         if (stepData.createdBy === "") createdBy = userEmail;
         else createdBy = stepData.createdBy;
 
-        response = await axiosInstance.post("/patient/register", {
-          ...stepData,
-          createdBy: createdBy,
-        });
+        if (isTelecaller) {
+          response = await axiosInstance.post("/patient/register", {
+            ...stepData,
+            createdBy: createdBy,
+            isDiagnosedWithTB: true,
+          });
+        } else {
+          response = await axiosInstance.post("/patient/register", {
+            ...stepData,
+            createdBy: createdBy,
+          });
+        }
         console.log(stepData);
         if (response.status === 200 || 201 || 202) {
           setPatientId(response.data.patientId);
@@ -116,7 +130,7 @@ const PatientRegistrationPage = () => {
           setActiveStep(activeStep + 1);
           toast.success("Patient details registered successfully!");
         }
-      } else if (activeStep === 1) {
+      } else if (activeStep === 1 && !isTelecaller) {
         if (!patientId) {
           throw new Error("Patient ID not found. Please complete step 1.");
         }
@@ -128,7 +142,7 @@ const PatientRegistrationPage = () => {
         }
         toast.success("Referral Patient Registered");
         navigate(`/patient-dashboard/${patientId}`);
-      } else if (activeStep === 2) {
+      } else if ((activeStep === 1 && isTelecaller) || activeStep === 2) {
         if (!patientId) {
           throw new Error("Patient ID not found. Please complete step 1.");
         }
@@ -141,7 +155,7 @@ const PatientRegistrationPage = () => {
           setActiveStep(activeStep + 1);
           toast.success("TB details registered successfully!");
         }
-      } else if (activeStep === 3) {
+      } else if ((activeStep === 2 && isTelecaller) || activeStep === 3) {
         if (!formData.tbDetails) {
           throw new Error("TB Details not found. Please complete step 2.");
         }
@@ -154,7 +168,7 @@ const PatientRegistrationPage = () => {
           setActiveStep(activeStep + 1);
           toast.success("Nikshay details registered successfully!");
         }
-      } else if (activeStep === 4) {
+      } else if ((activeStep === 3 && isTelecaller) || activeStep === 4) {
         if (!formData.nikshayDetails) {
           throw new Error("Nikshay Details not found. Please complete step 3.");
         }
@@ -183,6 +197,7 @@ const PatientRegistrationPage = () => {
       setLoading(false);
     }
   };
+
   const handleConfirm = async (confirmed: boolean) => {
     setConfirmModalOpen(false);
 
@@ -260,7 +275,7 @@ const PatientRegistrationPage = () => {
                   loading={loading}
                 />
               )}
-              {activeStep === 1 && (
+              {!isTelecaller && activeStep === 1 && (
                 <DiagnosedWithTB
                   language={language}
                   data={formData.tbDetails}
@@ -272,7 +287,7 @@ const PatientRegistrationPage = () => {
                   loading={loading}
                 />
               )}
-              {activeStep === 2 && (
+              {(isTelecaller ? activeStep === 1 : activeStep === 2) && (
                 <TbDetailsForm
                   language={language}
                   data={formData.tbDetails}
@@ -284,7 +299,7 @@ const PatientRegistrationPage = () => {
                   loading={loading}
                 />
               )}
-              {activeStep === 3 && (
+              {(isTelecaller ? activeStep === 2 : activeStep === 3) && (
                 <NikshayDetailsForm
                   language={language}
                   data={formData.nikshayDetails}
@@ -296,7 +311,7 @@ const PatientRegistrationPage = () => {
                   loading={loading}
                 />
               )}
-              {activeStep === 4 && (
+              {(isTelecaller ? activeStep === 3 : activeStep === 4) && (
                 <ContactScreeningDetailsForm
                   language={language}
                   data={formData.contactScreeningDetails}
