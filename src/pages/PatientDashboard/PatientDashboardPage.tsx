@@ -162,7 +162,7 @@ const PatientDashboardPage = () => {
             size: 6,
             editURL: null,
             prop: "patient",
-            hidden: true,
+            hidden: false,
           },
           {
             title: "Nikshay Details",
@@ -225,7 +225,7 @@ const PatientDashboardPage = () => {
           },
         ].map(
           (section, index) =>
-            section.hidden && (
+            !section.hidden && (
               <Grid item xs={12} sm={section.size} key={index}>
                 <Paper sx={{ p: 3, height: "100%", overflowY: "auto" }}>
                   <Box

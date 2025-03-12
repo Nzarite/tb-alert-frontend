@@ -3,7 +3,6 @@ import {
   Box,
   CircularProgress,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
