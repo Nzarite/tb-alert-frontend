@@ -13,6 +13,9 @@ import { z } from "zod";
 import { VisitDataInterface } from "../../components/datatypes/DataTypes";
 import axiosInstance from "../../components/axiosInstance";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { useAuth } from "react-oidc-context";
 
 interface DialogProps {
   open: boolean;
@@ -48,6 +51,12 @@ const AddFollowupDialog = ({
     reset,
   } = useForm<FormData>({ resolver: zodResolver(schema), mode: "onChange" });
 
+  const auth = useAuth();
+
+  const userEmail =
+    useSelector((state: RootState) => state.user?.profile?.email) ||
+    auth.user?.profile?.email;
+
   // Resets the form when the dialog opens
   useEffect(() => {
     if (open) reset();
@@ -55,7 +64,11 @@ const AddFollowupDialog = ({
 
   const submitHandler = async (formData: FormData) => {
     try {
-      const submitData = { ...formData, patientCondition: 0 };
+      const submitData = {
+        ...formData,
+        patientCondition: 0,
+        createdBy: userEmail,
+      };
       await axiosInstance.post(
         `/followup/${data.patient.patientId}`,
         submitData

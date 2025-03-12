@@ -94,7 +94,6 @@ const PatientRegistrationPage = () => {
           ...stepData,
           createdBy: createdBy,
         });
-        console.log(stepData);
         if (response.status === 200 || 201 || 202) {
           setPatientId(response.data.patientId);
           setPatientName(
